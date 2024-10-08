@@ -1,0 +1,129 @@
+{{- if .Values.guard.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rad-guard
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-guard
+    app_version: {{ .Values.guard.image.tag | quote }}
+    maintained_by: rad
+spec:
+  minReadySeconds: 90
+  replicas: {{ .Values.guard.replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app_name: rad-guard
+  template:
+    metadata:
+      labels:
+        app_name: rad-guard
+        app_version: {{ .Values.guard.image.tag | quote }}
+        maintained_by: rad
+      annotations:
+        {{- if .Values.workloads.disableServiceMesh }}
+        linkerd.io/inject: disabled
+        sidecar.istio.io/inject: "false"
+        {{- end }}
+        {{- with .Values.guard.podAnnotations }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: rad-guard
+      {{- if .Values.workloads.imagePullSecretName }}
+      imagePullSecrets:
+        - name: {{ .Values.workloads.imagePullSecretName }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+      {{- if .Values.rad.seccompProfile.enabled }}
+        seccompProfile:
+          type: RuntimeDefault
+      {{- end }}
+      automountServiceAccountToken: false
+      initContainers:
+{{ include "rad-plugins.bootstrap-initcontainer" . | indent 8 }}
+      containers:
+        - name: rad-guard
+          image: {{ .Values.guard.image.repository }}:{{ .Values.guard.image.tag }}
+          imagePullPolicy: Always
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            {{- if .Values.rad.seccompProfile.enabled }}
+            seccompProfile:
+              type: RuntimeDefault
+            {{- end }}
+          env:
+            - name: AGENT_VERSION
+              value: {{ .Values.guard.image.tag | quote }}
+            - name: CHART_VERSION
+              value: {{ .Chart.Version }}
+            - name: API_URL
+              value: {{ .Values.rad.apiUrl }}
+            - name: NAMESPACE
+              value: {{ .Release.Namespace }}
+            {{- if .Values.rad.awsSecretId }}
+            - name: RAD_AWS_SECRET_ID
+              value: {{ .Values.rad.awsSecretId }}
+            {{- else }}
+{{ include "rad-plugins.access-key-env-secret" . | indent 12 }}
+            {{- end }}
+            - name: INSTALL_CRDS
+              value: "true"
+            {{- range $key, $value := .Values.guard.config }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8001
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          volumeMounts:
+          - mountPath: /tmp/k8s-webhook-server/serving-certs
+            name: cert
+            readOnly: true
+          - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+            name: api-token
+            readOnly: true
+          resources:
+{{ toYaml .Values.guard.resources | indent 12 }}
+      {{- with .Values.guard.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.guard.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      volumes:
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: rad-guard-self-signed-cert
+      - name: api-token
+        secret:
+          secretName: rad-guard-api-token-secret
+{{- end -}}

@@ -1,0 +1,19 @@
+{{- if .Values.sbom.enabled -}}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: rad-sbom
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-sbom
+    app_version: {{ .Values.sbom.image.tag | quote }}
+    maintained_by: rad.security
+spec:
+  dnsNames:
+  - rad-sbom.{{ .Release.Namespace }}.svc
+  - rad-sbom.{{ .Release.Namespace }}.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: rad-selfsigned-issuer
+  secretName: rad-sbom-self-signed-cert
+{{- end -}}

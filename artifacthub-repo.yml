@@ -1,0 +1,5 @@
+# Artifact Hub repository metadata file
+repositoryID: TBD
+owners:
+  - name: RAD Security
+    email: infrastructure@rad.security

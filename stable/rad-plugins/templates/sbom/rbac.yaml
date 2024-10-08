@@ -1,0 +1,168 @@
+{{- if .Values.sbom.enabled -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rad-sbom
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-sbom
+    app_version: {{ .Values.sbom.image.tag | quote }}
+    maintained_by: rad.security
+  {{- with .Values.sbom.serviceAccountAnnotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+automountServiceAccountToken: false
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rad-sbom-api-token-secret
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-sbom
+    app_version: {{ .Values.sbom.image.tag | quote }}
+    maintained_by: rad.security
+  annotations:
+    kubernetes.io/service-account.name: rad-sbom
+type: kubernetes.io/service-account-token
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: rad-sbom-configmap-reader
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-sbom
+    app_version: {{ .Values.sbom.image.tag | quote }}
+    maintained_by: rad.security
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: [ "rad-sbom-dynamic-configuration" ]
+    verbs: ["get", "list", "watch"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: rad-sbom
+  labels:
+    app_name: rad-sbom
+    app_version: {{ .Values.sbom.image.tag | quote }}
+    maintained_by: rad.security
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces", "pods"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: rad-sbom
+  labels:
+    app_name: rad-sbom
+    app_version: {{ .Values.sbom.image.tag | quote }}
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: rad-sbom
+subjects:
+  - kind: ServiceAccount
+    name: rad-sbom
+    namespace: {{ .Release.Namespace }}
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rad-sbom-configmap-reader
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-sbom
+    app_version: {{ .Values.sbom.image.tag | quote }}
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: rad-sbom-configmap-reader
+subjects:
+  - kind: ServiceAccount
+    name: rad-sbom
+    namespace: {{ .Release.Namespace }}
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rad-sbom-leader-election
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-sbom
+    app_version: {{ .Values.sbom.image.tag | quote }}
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: rad-leader-election-role
+subjects:
+- kind: ServiceAccount
+  name: rad-sbom
+  namespace: {{ .Release.Namespace }}
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: rad-sbom-proxy
+  labels:
+    app_name: rad-sbom
+    app_version: {{ .Values.sbom.image.tag | quote }}
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: rad-proxy-role
+subjects:
+- kind: ServiceAccount
+  name: rad-sbom
+  namespace: system
+
+---
+
+{{ if ( eq .Values.eksAddon.enabled false ) }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rad-sbom-kube-root-ca-reader
+  namespace: kube-system
+  labels:
+    app_name: rad-sbom
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: rad-kube-root-ca-reader
+subjects:
+  - kind: ServiceAccount
+    name: rad-sbom
+    namespace: {{ .Release.Namespace }}
+
+---
+
+{{- end }}
+{{- end }}

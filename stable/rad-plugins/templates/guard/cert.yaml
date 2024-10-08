@@ -1,0 +1,19 @@
+{{- if .Values.guard.enabled -}}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: rad-guard
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-guard
+    app_version: {{ .Values.guard.image.tag | quote }}
+    maintained_by: rad.security
+spec:
+  dnsNames:
+  - rad-guard.{{ .Release.Namespace }}.svc
+  - rad-guard.{{ .Release.Namespace }}.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: rad-selfsigned-issuer
+  secretName: rad-guard-self-signed-cert
+{{- end -}}

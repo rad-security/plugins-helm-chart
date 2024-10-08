@@ -1,0 +1,14 @@
+{{- if and .Values.watch.enabled .Values.watch.ingestCustomResources -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rad-watch-custom-resource-rules
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-watch
+    app_version: {{ .Values.watch.image.tag | quote }}
+    maintained_by: rad.security
+data:
+  rules.yaml: |
+  {{- .Values.watch.customResourceRules | toYaml | nindent 4 }}
+{{- end -}}

@@ -1,0 +1,108 @@
+{{- if .Values.sync.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rad-sync
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-sync
+    app_version: {{ .Values.sync.image.tag | quote }}
+    maintained_by: rad.security
+spec:
+  minReadySeconds: 90
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app_name: rad-sync
+  template:
+    metadata:
+      labels:
+        app_name: rad-sync
+        app_version: {{ .Values.sync.image.tag | quote }}
+        maintained_by: rad.security
+      annotations:
+        {{- if .Values.workloads.disableServiceMesh }}
+        linkerd.io/inject: disabled
+        sidecar.istio.io/inject: "false"
+        {{- end }}
+        {{- with .Values.sync.podAnnotations }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: rad-sync
+      {{- if .Values.workloads.imagePullSecretName }}
+      imagePullSecrets:
+        - name: {{ .Values.workloads.imagePullSecretName }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+      {{- if .Values.rad.seccompProfile.enabled }}
+        seccompProfile:
+          type: RuntimeDefault
+      {{- end }}
+      automountServiceAccountToken: false
+      initContainers:
+{{ include "rad-plugins.bootstrap-initcontainer" . | indent 8 }}
+      containers:
+        - name: rad-sync
+          image: {{ .Values.sync.image.repository }}:{{ .Values.sync.image.tag }}
+          imagePullPolicy: Always
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+          {{- if .Values.rad.seccompProfile.enabled }}
+            seccompProfile:
+              type: RuntimeDefault
+          {{- end }}
+          env:
+            - name: AGENT_VERSION
+              value: {{ .Values.sync.image.tag | quote }}
+            - name: CHART_VERSION
+              value: {{ .Chart.Version }}
+            - name: API_URL
+              value: {{ .Values.rad.apiUrl }}
+            - name: NAMESPACE
+              value: {{ .Release.Namespace }}
+            {{- if .Values.rad.awsSecretId }}
+            - name: RAD_AWS_SECRET_ID
+              value: {{ .Values.rad.awsSecretId }}
+            {{- else }}
+{{ include "rad-plugins.access-key-env-secret" . | indent 12 }}
+            {{- end }}
+            {{- range $key, $value := .Values.sync.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+            {{- end }}
+          volumeMounts:
+          - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+            name: api-token
+            readOnly: true
+          resources:
+{{ toYaml .Values.sync.resources | indent 12 }}
+      {{- with .Values.sync.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.sync.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+  {{- end }}
+      volumes:
+      - name: api-token
+        secret:
+          secretName: rad-sync-api-token-secret
+{{- end -}}

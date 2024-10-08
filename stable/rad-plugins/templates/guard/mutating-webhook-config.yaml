@@ -1,0 +1,46 @@
+{{- if .Values.guard.enabled -}}
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: rad-guard
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    cert-manager.io/inject-ca-from: {{ .Release.Namespace }}/rad-guard
+  labels:
+    app_name: rad-guard
+    app_version: {{ .Values.guard.image.tag | quote }}
+    maintained_by: rad
+webhooks:
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: rad-guard
+        namespace: {{ .Release.Namespace }}
+        path: /mutate
+    failurePolicy: Ignore
+    timeoutSeconds: {{ .Values.guard.webhook.timeoutSeconds }}
+    name: guard.rad.security
+    {{- with .Values.guard.webhook.objectSelector}}
+    objectSelector:
+{{ toYaml . | indent 6 }}
+    {{- end }}
+    rules:
+      - apiGroups: [ "apps" ]
+        apiVersions: [ "v1" ]
+        operations: [ "CREATE", "UPDATE" ]
+        resources: [ "daemonsets", "deployments", "statefulsets" ]
+      - apiGroups: [ "batch" ]
+        apiVersions: [ "v1" ]
+        operations: [ "CREATE", "UPDATE" ]
+        resources: [ "jobs", "cronjobs" ]
+      - apiGroups: [ "rbac.authorization.k8s.io" ]
+        apiVersions: [ "v1" ]
+        operations: [ "CREATE", "UPDATE" ]
+        resources: [ "rolebindings", "clusterrolebindings", "roles", "clusterroles" ]
+      - apiGroups: [ "" ]
+        apiVersions: [ "v1" ]
+        operations: [ "CREATE", "UPDATE" ]
+        resources: [ "pods", "namespaces" ]
+    sideEffects: NoneOnDryRun
+{{- end -}}
