@@ -115,6 +115,8 @@ spec:
           resources:
 {{ toYaml .Values.runtime.agent.resources | indent 12 }}
           securityContext:
+            appArmorProfile:
+              type: Unconfined
             capabilities:
               add:
                 - SYS_ADMIN
