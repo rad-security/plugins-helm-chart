@@ -1,0 +1,126 @@
+{{- if .Values.sync.enabled -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rad-sync
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-sync
+    app_version: {{ .Values.sync.image.tag | quote }}
+    maintained_by: rad.security
+  {{- with .Values.sync.serviceAccountAnnotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+automountServiceAccountToken: false
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rad-sync-api-token-secret
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-sync
+    app_version: {{ .Values.sync.image.tag | quote }}
+    maintained_by: rad.security
+  annotations:
+    kubernetes.io/service-account.name: rad-sync
+type: kubernetes.io/service-account-token
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: rad-sync-configmap-mutator
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-sync
+    app_version: {{ .Values.sync.image.tag | quote }}
+    maintained_by: rad.security
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: [ "rad-guard-dynamic-configuration", "rad-sbom-dynamic-configuration", "rad-sync-dynamic-configuration", "rad-watch-dynamic-configuration", "rad-runtime-dynamic-configuration", "rad-runtime-exporter-dynamic-configuration" ]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: rad-sync
+  labels:
+    app_name: rad-sync
+    app_version: {{ .Values.sync.image.tag | quote }}
+    maintained_by: rad.security
+rules:
+  - apiGroups: [ "ksoc.com" ]
+    resources: [ "guardpolicies" ]
+    verbs: [ "get", "list", "watch", "create", "update", "patch", "delete" ]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: rad-sync
+  labels:
+    app_name: rad-sync
+    app_version: {{ .Values.sync.image.tag | quote }}
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: rad-sync
+subjects:
+  - kind: ServiceAccount
+    name: rad-sync
+    namespace: {{ .Release.Namespace }}
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rad-sync-configmap-mutator
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-sync
+    app_version: {{ .Values.sync.image.tag | quote }}
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: rad-sync-configmap-mutator
+subjects:
+  - kind: ServiceAccount
+    name: rad-sync
+    namespace: {{ .Release.Namespace }}
+
+---
+
+{{ if ( eq .Values.eksAddon.enabled false ) -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rad-sync-kube-root-ca-reader
+  namespace: kube-system
+  labels:
+    app_name: rad-sync
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: rad-kube-root-ca-reader
+subjects:
+  - kind: ServiceAccount
+    name: rad-sync
+    namespace: {{ .Release.Namespace }}
+
+---
+
+{{- end }}
+{{- end }}

@@ -1,0 +1,132 @@
+{{- if .Values.sbom.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rad-sbom
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-sbom
+    app_version: {{ .Values.sbom.image.tag | quote }}
+    maintained_by: rad.security
+spec:
+  minReadySeconds: 90
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app_name: rad-sbom
+  template:
+    metadata:
+      labels:
+        app_name: rad-sbom
+        app_version: {{ .Values.sbom.image.tag | quote }}
+        maintained_by: rad.security
+      annotations:
+        {{- if .Values.workloads.disableServiceMesh }}
+        linkerd.io/inject: disabled
+        sidecar.istio.io/inject: "false"
+        {{- end }}
+        {{- with .Values.sbom.podAnnotations }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: rad-sbom
+      {{- if .Values.workloads.imagePullSecretName }}
+      imagePullSecrets:
+        - name: {{ .Values.workloads.imagePullSecretName }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+      {{- if .Values.rad.seccompProfile.enabled }}
+        seccompProfile:
+          type: RuntimeDefault
+      {{- end }}
+      automountServiceAccountToken: false
+      initContainers:
+{{ include "rad-plugins.bootstrap-initcontainer" . | indent 8 }}
+      containers:
+        - name: rad-sbom
+          image: {{ .Values.sbom.image.repository }}:{{ .Values.sbom.image.tag }}
+          imagePullPolicy: Always
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+          {{- if .Values.rad.seccompProfile.enabled }}
+            seccompProfile:
+              type: RuntimeDefault
+          {{- end }}
+          env:
+            - name: AGENT_VERSION
+              value: {{ .Values.sbom.image.tag | quote }}
+            - name: CHART_VERSION
+              value: {{ .Chart.Version }}
+            - name: API_URL
+              value: {{ .Values.rad.apiUrl }}
+            - name: NAMESPACE
+              value: {{ .Release.Namespace }}
+            {{- if .Values.rad.awsSecretId }}
+            - name: RAD_AWS_SECRET_ID
+              value: {{ .Values.rad.awsSecretId }}
+            {{- else }}
+{{ include "rad-plugins.access-key-env-secret" . | indent 12 }}
+            {{- end }}
+            {{- range $key, $value := .Values.sbom.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          volumeMounts:
+          - mountPath: /tmp
+            name: temp-image-dir
+            readOnly: false
+          - mountPath: /tmp/k8s-webhook-server/serving-certs
+            name: cert
+            readOnly: true
+          - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+            name: api-token
+            readOnly: true
+          resources:
+{{ toYaml .Values.sbom.resources | indent 12 }}
+      {{- with .Values.sbom.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.sbom.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+  {{- end }}
+      volumes:
+      - name: temp-image-dir
+        emptyDir: {}
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: rad-sbom-self-signed-cert
+      - name: api-token
+        secret:
+          secretName: rad-sbom-api-token-secret
+{{- end -}}

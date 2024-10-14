@@ -1,0 +1,135 @@
+{{- if and .Values.runtime .Values.runtime.enabled -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rad-runtime
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-runtime
+    app_version: {{ .Values.runtime.image.tag | quote }}
+    maintained_by: rad.security
+  {{- with .Values.runtime.serviceAccountAnnotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+automountServiceAccountToken: false
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: rad-runtime-configmap-reader
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-runtime
+    app_version: {{ .Values.runtime.image.tag | quote }}
+    maintained_by: rad.security
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: [ "rad-runtime-dynamic-configuration", "rad-runtime-exporter-dynamic-configuration" ]
+    verbs: ["get", "list", "watch"]
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rad-runtime-api-token-secret
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-runtime
+    app_version: {{ .Values.runtime.image.tag | quote }}
+    maintained_by: rad.security
+  annotations:
+    kubernetes.io/service-account.name: rad-runtime
+type: kubernetes.io/service-account-token
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: rad-runtime
+  labels:
+    app_name: rad-runtime
+    app_version: {{ .Values.runtime.image.tag | quote }}
+    maintained_by: rad.security
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "watch", "list"]
+
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get", "watch", "list"]
+
+  - apiGroups: [ "" ]
+    resources: [ "nodes" ]
+    verbs: [ "get", "watch", "list" ]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: rad-runtime
+  labels:
+    app_name: rad-runtime
+    app_version: {{ .Values.runtime.image.tag | quote }}
+    maintained_by: rad.security
+roleRef:
+  kind: ClusterRole
+  name: rad-runtime
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: ServiceAccount
+    name: rad-runtime
+    namespace: {{ .Release.Namespace }}
+
+---
+
+{{- if ( eq .Values.eksAddon.enabled false ) }}
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rad-runtime-kube-root-ca-reader
+  namespace: kube-system
+  labels:
+    app_name: rad-runtime
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: rad-kube-root-ca-reader
+subjects:
+  - kind: ServiceAccount
+    name: rad-runtime
+    namespace: {{ .Release.Namespace }}
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rad-runtime-configmap-reader
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-runtime
+    app_version: {{ .Values.runtime.image.tag | quote }}
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: rad-runtime-configmap-reader
+subjects:
+  - kind: ServiceAccount
+    name: rad-runtime
+    namespace: {{ .Release.Namespace }}
+
+---
+
+{{- end }}
+{{- end }}

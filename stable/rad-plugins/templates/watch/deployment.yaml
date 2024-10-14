@@ -1,0 +1,124 @@
+{{- if .Values.watch.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rad-watch
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-watch
+    app_version: {{ .Values.watch.image.tag | quote }}
+    maintained_by: rad.security
+spec:
+  minReadySeconds: 90
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app_name: rad-watch
+  template:
+    metadata:
+      labels:
+        app_name: rad-watch
+        app_version: {{ .Values.watch.image.tag | quote }}
+        maintained_by: rad.security
+      annotations:
+        {{- if .Values.workloads.disableServiceMesh }}
+        linkerd.io/inject: disabled
+        sidecar.istio.io/inject: "false"
+        {{- end }}
+        {{- with .Values.watch.podAnnotations }}
+{{ toYaml . | indent 8 }}
+        {{- end }}
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+      {{- if .Values.rad.seccompProfile.enabled }}
+        seccompProfile:
+          type: RuntimeDefault
+      {{- end }}
+      automountServiceAccountToken: false
+      serviceAccountName: rad-watch
+      {{- if .Values.workloads.imagePullSecretName }}
+      imagePullSecrets:
+        - name: {{ .Values.workloads.imagePullSecretName }}
+      {{- end }}
+      initContainers:
+{{ include "rad-plugins.bootstrap-initcontainer" . | indent 8 }}
+      containers:
+        - name: rad-watch
+          image: {{ .Values.watch.image.repository }}:{{ .Values.watch.image.tag }}
+          imagePullPolicy: Always
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+          {{- if .Values.rad.seccompProfile.enabled }}
+            seccompProfile:
+              type: RuntimeDefault
+          {{- end }}
+          env:
+            - name: AGENT_VERSION
+              value: {{ .Values.watch.image.tag | quote }}
+            - name: CHART_VERSION
+              value: {{ .Chart.Version }}
+            - name: API_URL
+              value: {{ .Values.rad.apiUrl }}
+            - name: NAMESPACE
+              value: {{ .Release.Namespace }}
+            {{- if .Values.rad.awsSecretId }}
+            - name: RAD_AWS_SECRET_ID
+              value: {{ .Values.rad.awsSecretId }}
+            {{- else }}
+{{ include "rad-plugins.access-key-env-secret" . | indent 12 }}
+            {{- end }}
+            {{- if .Values.watch.ingestCustomResources }}
+            - name: INGEST_CUSTOM_RESOURCES
+              value: "true"
+            - name: CUSTOM_RESOURCE_RULES_PATH
+              value: /var/run/custom-resource-rules/rules.yaml
+            {{- end }}
+            {{- range $key, $value := .Values.watch.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+            {{- end }}
+          volumeMounts:
+          - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+            name: api-token
+            readOnly: true
+          {{- if .Values.watch.ingestCustomResources }}
+          - mountPath: /var/run/custom-resource-rules
+            name: custom-resource-rules
+            readOnly: true
+          {{- end }}
+          resources:
+{{ toYaml .Values.watch.resources | indent 12 }}
+      {{- with .Values.watch.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.watch.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+  {{- end }}
+      volumes:
+      - name: api-token
+        secret:
+          secretName: rad-watch-api-token-secret
+      {{- if .Values.watch.ingestCustomResources }}
+      - name: custom-resource-rules
+        configMap:
+          name: rad-watch-custom-resource-rules
+      {{- end }}
+{{- end -}}

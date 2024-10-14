@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rad-watch-dynamic-configuration
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-watch
+    app_version: {{ .Values.watch.image.tag | quote }}
+    maintained_by: rad.security
+data:
+# Placeholder for dynamic configuration created via rad-sync
+# Main purpose of this ConfigMap is to delete it when rad-plugins helm chart is uninstalled

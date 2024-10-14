@@ -1,0 +1,20 @@
+{{- if .Values.guard.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name:  rad-guard
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-guard
+    app_version: {{ .Values.guard.image.tag | quote }}
+    maintained_by: rad.security
+spec:
+  ports:
+    - port: 443
+      protocol: TCP
+      targetPort: 9443
+  selector:
+    app_name: rad-guard
+    app_version: {{ .Values.guard.image.tag | quote }}
+    maintained_by: rad.security
+{{- end -}}

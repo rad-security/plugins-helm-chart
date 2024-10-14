@@ -1,0 +1,82 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: rad-leader-election-role
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-sbom
+    app_version: {{ .Values.sbom.image.tag | quote }}
+    maintained_by: rad
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: rad-proxy-role
+  labels:
+    maintained_by: rad
+rules:
+  - apiGroups:
+      - authentication.k8s.io
+    resources:
+      - tokenreviews
+    verbs:
+      - create
+  - apiGroups:
+      - authorization.k8s.io
+    resources:
+      - subjectaccessreviews
+    verbs:
+      - create
+
+---
+
+{{ if ( eq .Values.eksAddon.enabled false ) -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: rad-kube-root-ca-reader
+  namespace: kube-system
+  labels:
+    maintained_by: rad
+rules:
+  - apiGroups: [""]
+    resources: [ "configmaps" ]
+    resourceNames: [ "kube-root-ca.crt" ]
+    verbs: ["get", "watch", "list"]
+
+---
+{{ end -}}

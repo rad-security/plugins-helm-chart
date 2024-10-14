@@ -1,0 +1,173 @@
+{{- if .Values.guard.enabled -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rad-guard
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-guard
+    app_version: {{ .Values.guard.image.tag | quote }}
+    maintained_by: rad.security
+  {{- with .Values.guard.serviceAccountAnnotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+automountServiceAccountToken: false
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rad-guard-api-token-secret
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-guard
+    app_version: {{ .Values.guard.image.tag | quote }}
+    maintained_by: rad.security
+  annotations:
+    kubernetes.io/service-account.name: rad-guard
+type: kubernetes.io/service-account-token
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: rad-guard-configmap-reader
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-guard
+    app_version: {{ .Values.guard.image.tag | quote }}
+    maintained_by: rad.security
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: [ "rad-guard-dynamic-configuration" ]
+    verbs: ["get", "list", "watch"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: rad-guard
+  labels:
+    app_name: rad-guard
+    app_version: {{ .Values.guard.image.tag | quote }}
+    maintained_by: rad.security
+rules:
+  - apiGroups: [ "apiextensions.k8s.io" ]
+    resources: [ "customresourcedefinitions" ]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: [ "ksoc.com" ]
+    resources: [ "guardpolicies" ]
+    verbs: [ "get", "list", "watch", "update" ]
+  - apiGroups: [ "ksoc.com" ]
+    resources: [ "guardresults" ]
+    verbs: [ "create", "delete", "list", "watch" ]
+  - apiGroups: [ "ksoc.com" ]
+    resources: [ "guardpolicies/status", "guardresults/status" ]
+    verbs: [ "get" ]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: rad-guard
+  labels:
+    app_name: rad-guard
+    app_version: {{ .Values.guard.image.tag | quote }}
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: rad-guard
+subjects:
+- kind: ServiceAccount
+  name: rad-guard
+  namespace: {{ .Release.Namespace }}
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rad-guard-configmap-reader
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-guard
+    app_version: {{ .Values.guard.image.tag | quote }}
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: rad-guard-configmap-reader
+subjects:
+  - kind: ServiceAccount
+    name: rad-guard
+    namespace: {{ .Release.Namespace }}
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rad-guard-leader-election
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-guard
+    app_version: {{ .Values.guard.image.tag | quote }}
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: rad-leader-election-role
+subjects:
+  - kind: ServiceAccount
+    name: rad-guard
+    namespace: {{ .Release.Namespace }}
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: rad-guard-proxy
+  labels:
+    app_name: rad-guard
+    app_version: {{ .Values.guard.image.tag | quote }}
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: rad-proxy-role
+subjects:
+  - kind: ServiceAccount
+    name: rad-guard
+    namespace: system
+
+---
+
+{{- if ( eq .Values.eksAddon.enabled false ) }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rad-guard-kube-root-ca-reader
+  namespace: kube-system
+  labels:
+    app_name: rad-guard
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: rad-kube-root-ca-reader
+subjects:
+  - kind: ServiceAccount
+    name: rad-guard
+    namespace: {{ .Release.Namespace }}
+
+---
+{{- end }}
+{{- end }}

@@ -1,0 +1,22 @@
+{{- if and .Values.eksAddon .Values.eksAddon.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rad-eks-marketplace-deployment
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-eks-marketplace-deployment
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app_name: rad-eks-marketplace-deployment
+  template:
+    metadata:
+      labels:
+        app_name: rad-eks-marketplace-deployment
+    spec:
+      containers:
+      - name: pause
+        image: {{ .Values.eksAddon.image.repository }}:{{ .Values.eksAddon.image.tag }}
+{{- end }}

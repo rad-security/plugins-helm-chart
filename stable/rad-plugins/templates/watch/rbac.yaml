@@ -1,0 +1,161 @@
+{{- if .Values.watch.enabled -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rad-watch
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-watch
+    app_version: {{ .Values.watch.image.tag | quote }}
+    maintained_by: rad.security
+  {{- with .Values.watch.serviceAccountAnnotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+automountServiceAccountToken: false
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rad-watch-api-token-secret
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-watch
+    app_version: {{ .Values.watch.image.tag | quote }}
+    maintained_by: rad.security
+  annotations:
+    kubernetes.io/service-account.name: rad-watch
+type: kubernetes.io/service-account-token
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: rad-watch-configmap-reader
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-watch
+    app_version: {{ .Values.watch.image.tag | quote }}
+    maintained_by: rad.security
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: [ "rad-watch-dynamic-configuration" ]
+    verbs: ["get", "list", "watch"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: rad-watch
+  labels:
+    app_name: rad-watch
+    app_version: {{ .Values.watch.image.tag | quote }}
+    maintained_by: rad.security
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps", "namespaces", "nodes", "pods", "services", "serviceaccounts"]
+    verbs: ["get", "list", "watch"]
+
+  - apiGroups: [ "apps" ]
+    resources: [ "daemonsets", "deployments", "replicasets", "statefulsets"]
+    verbs: [ "get", "list", "watch" ]
+
+  - apiGroups: [ "batch" ]
+    resources: [ "cronjobs", "jobs"]
+    verbs: [ "get", "list", "watch" ]
+
+  - apiGroups: [ "discovery.k8s.io" ]
+    resources: [ "endpointslices" ]
+    verbs: [ "get", "list", "watch" ]
+
+  - apiGroups: [ "rbac.authorization.k8s.io" ]
+    resources: [ "clusterrolebindings", "clusterroles", "rolebindings", "roles" ]
+    verbs: [ "get", "list", "watch" ]
+
+  - apiGroups: [ "ksoc.com" ]
+    resources: [ "guardpolicies", "guardresults" ]
+    verbs: [ "get", "list", "watch" ]
+
+  - apiGroups: [ "networking.k8s.io" ]
+    resources: [ "ingresses", "networkpolicies" ]
+    verbs: [ "get", "list", "watch" ]
+
+  - apiGroups: [ "apiextensions.k8s.io" ]
+    resources: [ "customresourcedefinitions" ]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+
+  {{- if .Values.watch.ingestCustomResources }}
+  {{ range .Values.watch.customResourceRules.allowlist }}
+  - apiGroups: {{ .apiGroups | toJson }}
+    resources: {{ .resources | toJson }}
+    verbs: [ "get", "list", "watch" ]
+  {{ end }}
+  {{- end }}
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rad-watch-configmap-reader
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-watch
+    app_version: {{ .Values.watch.image.tag | quote }}
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: rad-watch-configmap-reader
+subjects:
+  - kind: ServiceAccount
+    name: rad-watch
+    namespace: {{ .Release.Namespace }}
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: rad-watch
+  labels:
+    app_name: rad-watch
+    app_version: {{ .Values.watch.image.tag | quote }}
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: rad-watch
+subjects:
+  - kind: ServiceAccount
+    name: rad-watch
+    namespace: {{ .Release.Namespace }}
+
+---
+
+{{ if ( eq .Values.eksAddon.enabled false ) }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rad-watch-kube-root-ca-reader
+  namespace: kube-system
+  labels:
+    app_name: rad-watch
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: rad-kube-root-ca-reader
+subjects:
+  - kind: ServiceAccount
+    name: rad-watch
+    namespace: {{ .Release.Namespace }}
+
+---
+
+{{- end }}
+{{- end }}
