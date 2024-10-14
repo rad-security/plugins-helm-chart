@@ -14,8 +14,6 @@ jobs:
     steps:
       - name: clone repo
         uses: actions/checkout@v4
-      - name: repo update
-        run: helm repo update
       - name: sync registry
         run: make sync-repo-cloudflare
         env:
