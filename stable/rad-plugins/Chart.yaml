@@ -1,6 +1,6 @@
 apiVersion: v2
 name: rad-plugins
-version: 2.0.0
+version: 2.0.1
 description: A Helm chart to run the RAD Security plugins
 home: https://rad.security
 icon: https://rad.security/hs-fs/hubfs/Supplementary%20COMBO@2x.png?width=655&height=229&name=Supplementary%20COMBO@2x.png
@@ -18,8 +18,8 @@ annotations:
   # Possible kind options are added, changed, deprecated, removed, fixed and security.
   artifacthub.io/changes: |
     - kind: added
-      description: Add first version of the chart
-  artifacthub.io/containsSecurityUpdates: "true"
+      description: Add experimental support for OpenShift and cri-o
+  artifacthub.io/containsSecurityUpdates: "false"
   artifacthub.io/links: |
     - name: source
       url: https://github.com/rad-security/plugins-helm-chart

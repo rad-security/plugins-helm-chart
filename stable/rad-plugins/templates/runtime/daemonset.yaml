@@ -1,4 +1,5 @@
 {{- if and .Values.runtime .Values.runtime.enabled -}}
+{{- $openshiftEnabled := and .Values.openshift .Values.openshift.enabled }}
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
@@ -39,7 +40,8 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.workloads.imagePullSecretName }}
       {{- end }}
-      hostPID: {{ .Values.runtime.agent.hostPID }}
+      # hostPID is enabled by default when running on openshift
+      hostPID: {{ (quote .Values.runtime.agent.hostPID | empty) | ternary $openshiftEnabled .Values.runtime.agent.hostPID }}
       initContainers:
 {{ include "rad-plugins.bootstrap-initcontainer" . | indent 8 }}
       containers:
@@ -63,18 +65,20 @@ spec:
             - name: HOST_ROOT
               value: /host
             {{- with .Values.runtime.agent.collectors }}
-            - name: TRACER_COLLECTOR_DOCKER_ENABLED
-              value: {{ .docker.enabled | quote }}
-            {{- if .docker.enabled }}
-            - name: TRACER_COLLECTOR_DOCKER_SOCKET
-              value: {{ .docker.socket | quote }}
-            {{- end }}
+            # containerd is enabled by default unless running on OpenShift.
             - name: TRACER_COLLECTOR_CONTAINERD_ENABLED
-              value: {{ .containerd.enabled | quote }}
-            {{- if .containerd.enabled }}
+              value: {{ (quote .containerd.enabled | empty) | ternary (not $openshiftEnabled) .containerd.enabled | quote }}
             - name: TRACER_COLLECTOR_CONTAINERD_SOCKET
               value: {{ .containerd.socket | quote }}
-            {{- end }}
+            # crio is enabled by default when running on OpenShift.
+            - name: TRACER_COLLECTOR_CRIO_ENABLED
+              value: {{ (quote .crio.enabled | empty) | ternary $openshiftEnabled .crio.enabled | quote}}
+            - name: TRACER_COLLECTOR_CRIO_SOCKET
+              value: {{ .crio.socket | quote }}
+            - name: TRACER_COLLECTOR_DOCKER_ENABLED
+              value: {{ .docker.enabled | quote }}
+            - name: TRACER_COLLECTOR_DOCKER_SOCKET
+              value: {{ .docker.socket | quote }}
             {{- if .runtimePath }}
             - name: RUNTIME_PATH
               value: {{ .runtimePath | quote }}
@@ -220,7 +224,6 @@ spec:
         {{- end }}
       restartPolicy: Always
       automountServiceAccountToken: false
-      serviceAccount: rad-runtime
       serviceAccountName: rad-runtime
       terminationGracePeriodSeconds: 30
       tolerations:
