@@ -518,7 +518,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.exporter.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
 | runtime.exporter.resources.requests.memory | string | `"128Mi"` |  |
 | runtime.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-runtime"` |  |
-| runtime.image.tag | string | `"v0.1.1"` |  |
+| runtime.image.tag | string | `"v0.1.2"` |  |
 | runtime.nodeName | string | `""` |  |
 | runtime.nodeSelector | object | `{}` |  |
 | runtime.reachableVulnerabilitiesEnabled | bool | `true` |  |
