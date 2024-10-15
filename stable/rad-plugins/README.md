@@ -495,8 +495,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.agent.collectors.docker.enabled | bool | `false` |  |
 | runtime.agent.collectors.docker.socket | string | `"/run/docker.sock"` |  |
 | runtime.agent.collectors.runtimePath | string | `""` |  |
-| runtime.agent.env.AGENT_LOG_LEVEL | string | `"INFO"` |  |
-| runtime.agent.env.AGENT_TRACER_IGNORE_NAMESPACES | string | `"cert-manager,\nrad,\nkube-node-lease,\nkube-public,\nkube-system\n"` |  |
+| runtime.agent.env.LOG_LEVEL | string | `"INFO"` |  |
+| runtime.agent.env.TRACER_IGNORE_NAMESPACES | string | `"cert-manager,\nrad,\nksoc,\nkube-node-lease,\nkube-public,\nkube-system\n"` |  |
 | runtime.agent.eventQueueSize | int | `20000` |  |
 | runtime.agent.grpcServerBatchSize | int | `2000` |  |
 | runtime.agent.hostPID | string | `nil` |  |
@@ -509,7 +509,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.agent.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
 | runtime.agent.resources.requests.memory | string | `"128Mi"` |  |
 | runtime.enabled | bool | `false` |  |
-| runtime.exporter.env.EXPORTER_LOG_LEVEL | string | `"INFO"` |  |
+| runtime.exporter.env.LOG_LEVEL | string | `"INFO"` |  |
 | runtime.exporter.execFilters | list | `[]` | Allows to specify wildcard rules for filtering command arguments. |
 | runtime.exporter.resources.limits.cpu | string | `"500m"` |  |
 | runtime.exporter.resources.limits.ephemeral-storage | string | `"1Gi"` |  |

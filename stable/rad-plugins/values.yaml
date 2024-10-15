@@ -187,10 +187,11 @@ runtime:
     tag: v0.1.1
   agent:
     env:
-      AGENT_LOG_LEVEL: INFO
-      AGENT_TRACER_IGNORE_NAMESPACES: |
+      LOG_LEVEL: INFO
+      TRACER_IGNORE_NAMESPACES: |
         cert-manager,
         rad,
+        ksoc,
         kube-node-lease,
         kube-public,
         kube-system
@@ -228,7 +229,7 @@ runtime:
     grpcServerBatchSize: 2000
   exporter:
     env:
-      EXPORTER_LOG_LEVEL: INFO
+      LOG_LEVEL: INFO
 
     # -- Allows to specify wildcard rules for filtering command arguments.
     execFilters: []
