@@ -488,8 +488,10 @@ The command removes all the Kubernetes components associated with the chart and 
 | rad.base64SecretKey | string | `""` | The secret key part of the Access Key used in this cluster (base64). |
 | rad.clusterName | string | `""` | The name of the cluster you want displayed in RAD Security. |
 | rad.seccompProfile | object | `{"enabled":true}` | Enable seccompProfile for all RAD Security pods |
-| runtime.agent.collectors.containerd.enabled | bool | `true` |  |
+| runtime.agent.collectors.containerd.enabled | string | `nil` |  |
 | runtime.agent.collectors.containerd.socket | string | `"/run/containerd/containerd.sock"` |  |
+| runtime.agent.collectors.crio.enabled | string | `nil` |  |
+| runtime.agent.collectors.crio.socket | string | `"/run/crio/crio.sock"` |  |
 | runtime.agent.collectors.docker.enabled | bool | `false` |  |
 | runtime.agent.collectors.docker.socket | string | `"/run/docker.sock"` |  |
 | runtime.agent.collectors.runtimePath | string | `""` |  |
@@ -497,7 +499,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.agent.env.AGENT_TRACER_IGNORE_NAMESPACES | string | `"cert-manager,\nrad,\nkube-node-lease,\nkube-public,\nkube-system\n"` |  |
 | runtime.agent.eventQueueSize | int | `20000` |  |
 | runtime.agent.grpcServerBatchSize | int | `2000` |  |
-| runtime.agent.hostPID | bool | `false` |  |
+| runtime.agent.hostPID | string | `nil` |  |
 | runtime.agent.mounts.volumeMounts | list | `[]` |  |
 | runtime.agent.mounts.volumes | list | `[]` |  |
 | runtime.agent.resources.limits.cpu | string | `"200m"` |  |
