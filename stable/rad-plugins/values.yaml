@@ -184,13 +184,14 @@ runtime:
   reachableVulnerabilitiesEnabled: true
   image:
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-runtime
-    tag: v0.1.0
+    tag: v0.1.2
   agent:
     env:
-      AGENT_LOG_LEVEL: INFO
-      AGENT_TRACER_IGNORE_NAMESPACES: |
+      LOG_LEVEL: INFO
+      TRACER_IGNORE_NAMESPACES: |
         cert-manager,
         rad,
+        ksoc,
         kube-node-lease,
         kube-public,
         kube-system
@@ -203,16 +204,22 @@ runtime:
         cpu: 100m
         memory: 128Mi
         ephemeral-storage: 100Mi
-    hostPID: false
+    # Disabled by default unless running on OpenShift.
+    hostPID: null
     collectors:
       # An absolute path to the runc binary executable.
       runtimePath: ""
+      containerd:
+        # Enabled by default unless running on OpenShift.
+        enabled: null
+        socket: /run/containerd/containerd.sock
+      crio:
+        # Enabled by default when running on OpenShift.
+        enabled: null
+        socket: /run/crio/crio.sock
       docker:
         enabled: false
         socket: /run/docker.sock
-      containerd:
-        enabled: true
-        socket: /run/containerd/containerd.sock
     mounts:
       # A list of volumes you want to add to the agent pods.
       volumes: []
@@ -222,7 +229,7 @@ runtime:
     grpcServerBatchSize: 2000
   exporter:
     env:
-      EXPORTER_LOG_LEVEL: INFO
+      LOG_LEVEL: INFO
 
     # -- Allows to specify wildcard rules for filtering command arguments.
     execFilters: []
@@ -248,7 +255,7 @@ runtime:
       maxSurge: 0
   serviceAccountAnnotations: {}
 
-# Toggles support for Openshift. Please note that functionality is limited at the moment.
+# Enables support for OpenShift.
 openshift:
   enabled: false
 

@@ -63,18 +63,22 @@ When `rad-runtime
 - Filesystem information
 - Container information
 
-By default plugin uses `containerd` as a container runtime. If you are using `docker` container runtime, you can enable it by switching the collector to `docker` in the `values.yaml` file.
+By default the plugin uses `containerd` as a container runtime. If you are using `docker` or `crio-o` as your container runtime, you can enable it by configuring collectors in the `values.yaml` file.
 
 ```yaml
 runtime:
   enabled: true
-  collectors:
-    docker:
-      enabled: false
-      socket: /run/docker.sock
-    containerd:
-      enabled: true
-      socket: /run/containerd/containerd.sock
+  agent:
+    collectors:
+      containerd:
+        enabled: true
+        socket: /run/containerd/containerd.sock
+      crio:
+        enabled: false
+        socket: /run/crio/crio.sock
+      docker:
+        enabled: false
+        socket: /run/docker.sock
 ```
 
 Each plugin pod contains `agent` and `exporter` containers. The `agent` container is responsible for collecting runtime information from the nodes in the cluster. The `exporter` container is responsible for exporting the collected information to the RAD Security platform.
@@ -484,16 +488,18 @@ The command removes all the Kubernetes components associated with the chart and 
 | rad.base64SecretKey | string | `""` | The secret key part of the Access Key used in this cluster (base64). |
 | rad.clusterName | string | `""` | The name of the cluster you want displayed in RAD Security. |
 | rad.seccompProfile | object | `{"enabled":true}` | Enable seccompProfile for all RAD Security pods |
-| runtime.agent.collectors.containerd.enabled | bool | `true` |  |
+| runtime.agent.collectors.containerd.enabled | string | `nil` |  |
 | runtime.agent.collectors.containerd.socket | string | `"/run/containerd/containerd.sock"` |  |
+| runtime.agent.collectors.crio.enabled | string | `nil` |  |
+| runtime.agent.collectors.crio.socket | string | `"/run/crio/crio.sock"` |  |
 | runtime.agent.collectors.docker.enabled | bool | `false` |  |
 | runtime.agent.collectors.docker.socket | string | `"/run/docker.sock"` |  |
 | runtime.agent.collectors.runtimePath | string | `""` |  |
-| runtime.agent.env.AGENT_LOG_LEVEL | string | `"INFO"` |  |
-| runtime.agent.env.AGENT_TRACER_IGNORE_NAMESPACES | string | `"cert-manager,\nrad,\nkube-node-lease,\nkube-public,\nkube-system\n"` |  |
+| runtime.agent.env.LOG_LEVEL | string | `"INFO"` |  |
+| runtime.agent.env.TRACER_IGNORE_NAMESPACES | string | `"cert-manager,\nrad,\nksoc,\nkube-node-lease,\nkube-public,\nkube-system\n"` |  |
 | runtime.agent.eventQueueSize | int | `20000` |  |
 | runtime.agent.grpcServerBatchSize | int | `2000` |  |
-| runtime.agent.hostPID | bool | `false` |  |
+| runtime.agent.hostPID | string | `nil` |  |
 | runtime.agent.mounts.volumeMounts | list | `[]` |  |
 | runtime.agent.mounts.volumes | list | `[]` |  |
 | runtime.agent.resources.limits.cpu | string | `"200m"` |  |
@@ -503,7 +509,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.agent.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
 | runtime.agent.resources.requests.memory | string | `"128Mi"` |  |
 | runtime.enabled | bool | `false` |  |
-| runtime.exporter.env.EXPORTER_LOG_LEVEL | string | `"INFO"` |  |
+| runtime.exporter.env.LOG_LEVEL | string | `"INFO"` |  |
 | runtime.exporter.execFilters | list | `[]` | Allows to specify wildcard rules for filtering command arguments. |
 | runtime.exporter.resources.limits.cpu | string | `"500m"` |  |
 | runtime.exporter.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
@@ -512,7 +518,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.exporter.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
 | runtime.exporter.resources.requests.memory | string | `"128Mi"` |  |
 | runtime.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-runtime"` |  |
-| runtime.image.tag | string | `"v0.1.0"` |  |
+| runtime.image.tag | string | `"v0.1.2"` |  |
 | runtime.nodeName | string | `""` |  |
 | runtime.nodeSelector | object | `{}` |  |
 | runtime.reachableVulnerabilitiesEnabled | bool | `true` |  |
