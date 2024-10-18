@@ -548,7 +548,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | sync.enabled | bool | `true` |  |
 | sync.env | object | `{}` |  |
 | sync.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-sync"` | The image to use for the rad-sync deployment |
-| sync.image.tag | string | `"v1.1.11"` |  |
+| sync.image.tag | string | `"v1.1.13"` |  |
 | sync.nodeSelector | object | `{}` |  |
 | sync.podAnnotations | object | `{}` |  |
 | sync.resources.limits.cpu | string | `"200m"` |  |
