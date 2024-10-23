@@ -4,6 +4,6 @@ metadata:
   name: rad-selfsigned-issuer
   namespace: {{ .Release.Namespace }}
   labels:
-    maintained_by: rad-security
+    maintained_by: rad.security
 spec:
   selfSigned: {}

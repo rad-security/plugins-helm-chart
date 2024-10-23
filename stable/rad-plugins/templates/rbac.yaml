@@ -6,7 +6,7 @@ metadata:
   labels:
     app_name: rad-sbom
     app_version: {{ .Values.sbom.image.tag | quote }}
-    maintained_by: rad
+    maintained_by: rad.security
 rules:
   - apiGroups:
       - ""
@@ -47,7 +47,7 @@ kind: ClusterRole
 metadata:
   name: rad-proxy-role
   labels:
-    maintained_by: rad
+    maintained_by: rad.security
 rules:
   - apiGroups:
       - authentication.k8s.io
@@ -71,7 +71,7 @@ metadata:
   name: rad-kube-root-ca-reader
   namespace: kube-system
   labels:
-    maintained_by: rad
+    maintained_by: rad.security
 rules:
   - apiGroups: [""]
     resources: [ "configmaps" ]
