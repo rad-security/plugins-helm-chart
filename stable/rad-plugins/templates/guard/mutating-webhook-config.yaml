@@ -9,7 +9,7 @@ metadata:
   labels:
     app_name: rad-guard
     app_version: {{ .Values.guard.image.tag | quote }}
-    maintained_by: rad
+    maintained_by: rad.security
 webhooks:
   - admissionReviewVersions:
       - v1
