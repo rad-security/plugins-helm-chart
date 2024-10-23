@@ -20,7 +20,7 @@ webhooks:
         path: /validate
     failurePolicy: Ignore
     timeoutSeconds: {{ .Values.guard.webhook.timeoutSeconds }}
-    name: guard.rad.com
+    name: guard.rad.security
     {{- with .Values.guard.webhook.objectSelector}}
     objectSelector:
 {{ toYaml . | indent 6 }}
