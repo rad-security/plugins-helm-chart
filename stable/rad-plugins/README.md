@@ -459,7 +459,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | guard.config.LOG_LEVEL | string | `"info"` | The log level to use. |
 | guard.enabled | bool | `true` |  |
 | guard.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-guard"` | The image to use for the rad-guard deployment |
-| guard.image.tag | string | `"v1.1.14"` |  |
+| guard.image.tag | string | `"v1.1.15"` |  |
 | guard.nodeSelector | object | `{}` |  |
 | guard.podAnnotations | object | `{}` |  |
 | guard.replicas | int | `1` |  |
