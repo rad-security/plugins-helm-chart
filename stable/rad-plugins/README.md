@@ -529,12 +529,13 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.updateStrategy.type | string | `"RollingUpdate"` |  |
 | sbom.enabled | bool | `true` |  |
 | sbom.env.IMAGE_PULL_SECRETS | string | `""` | Comma separated list of image pull secrets to use to pull container images. Important: The secrets must be created in the same namespace as the rad-sbom deployment. By default 'rad-sbom' tries to read imagePullSecrets from the manifest spec, but additionally, you can specify the secrets here. If you use AWS ECR private registry, we recommend to use EKS Pod Identity or IRSA to add access to "rad-sbom" to the ECR registry. |
-| sbom.env.LOG_LEVEL | string | `"info"` | The log level to use.  Options are trace, debug, info, warn, error |
+| sbom.env.LOG_LEVEL | string | `"info"` | The log level to use. Options are trace, debug, info, warn, error |
 | sbom.env.MUTATE_ANNOTATIONS | bool | `false` | Whether to mutate the annotations in pod spec by adding images digests. Annotations can be used to track image digests in addition to, or instead of the image tag mutation. |
 | sbom.env.MUTATE_IMAGE | bool | `true` | Whether to mutate the image in pod spec by adding digest at the end. By default, digests are added to images to ensure that the image that runs in the cluster matches the digest of the build.  Disable this if your continuous deployment reconciler requires a strict image tag match. |
+| sbom.env.SBOM_CHECK_LATEST | bool | `false` | Experimental: Whether to check for the latest image in the container registry and generate SBOM for it. If deployed image has tag with semver format, rad-sbom tries to get the newest image, newest minor version, or newest patch version. If the tag is not in semver format, rad-sbom tries to get the newest image from the container registry based on the tag time. Please be aware that time-based algorithm requires many requests to the container registry and may be slow. It works only if credentials are provided. Please note that this feature is experimental and may not work with all container registries. |
 | sbom.env.SBOM_FORMAT | string | `"cyclonedx-json"` | The format of the generated SBOM. Currently we support: syft-json,cyclonedx-json,spdx-json |
 | sbom.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-sbom"` | The image to use for the rad-sbom deployment |
-| sbom.image.tag | string | `"v1.1.28"` |  |
+| sbom.image.tag | string | `"v1.1.30"` |  |
 | sbom.nodeSelector | object | `{}` |  |
 | sbom.podAnnotations | object | `{}` |  |
 | sbom.resources.limits.cpu | string | `"1000m"` |  |
