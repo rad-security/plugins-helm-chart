@@ -195,7 +195,7 @@ runtime:
   reachableVulnerabilitiesEnabled: true
   image:
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-runtime
-    tag: v0.1.3
+    tag: v0.1.4
   agent:
     env:
       LOG_LEVEL: INFO
