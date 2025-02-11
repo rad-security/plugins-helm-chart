@@ -47,7 +47,7 @@ spec:
       initContainers:
 {{ include "rad-plugins.bootstrap-initcontainer" . | indent 8 }}
       containers:
-          env:
+        - env:
             - name: AGENT_VERSION
               value: {{ .Values.runtime.agent.image.tag | quote }}
             - name: CHART_VERSION
@@ -171,7 +171,7 @@ spec:
             {{- with .Values.runtime.agent.mounts.volumeMounts }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
-          env:
+        - env:
             - name: AGENT_VERSION
               value: {{ .Values.runtime.agent.image.tag | quote }}
             - name: CHART_VERSION
