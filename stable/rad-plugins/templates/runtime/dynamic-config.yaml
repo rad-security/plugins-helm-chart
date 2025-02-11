@@ -5,7 +5,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app_name: rad-runtime
-    app_version: {{ .Values.runtime.image.tag | quote }}
+    app_version: {{ .Values.runtime.agent.image.tag | quote }}
     maintained_by: rad.security
 data:
 # Placeholder for dynamic configuration
@@ -19,7 +19,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app_name: rad-runtime
-    app_version: {{ .Values.runtime.image.tag | quote }}
+    app_version: {{ .Values.runtime.agent.image.tag | quote }}
     maintained_by: rad.security
 data:
 # Placeholder for dynamic configuration
