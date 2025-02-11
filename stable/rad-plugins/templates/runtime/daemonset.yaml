@@ -19,7 +19,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app_name: rad-runtime
-    app_version: {{ .Values.runtime.image.tag | quote }}
+    app_version: {{ .Values.runtime.agent.image.tag | quote }}
     maintained_by: rad.security
 spec:
   selector:
@@ -35,7 +35,7 @@ spec:
         prometheus.io/scrape: "true"
       labels:
         app_name: rad-runtime
-        app_version: {{ .Values.runtime.image.tag | quote }}
+        app_version: {{ .Values.runtime.agent.image.tag | quote }}
         maintained_by: rad.security
     spec:
       {{- if .Values.workloads.imagePullSecretName }}
@@ -47,11 +47,9 @@ spec:
       initContainers:
 {{ include "rad-plugins.bootstrap-initcontainer" . | indent 8 }}
       containers:
-        - command:
-            - micro-agent
           env:
             - name: AGENT_VERSION
-              value: {{ .Values.runtime.image.tag | quote }}
+              value: {{ .Values.runtime.agent.image.tag | quote }}
             - name: CHART_VERSION
               value: {{ .Chart.Version }}
             - name: API_URL
@@ -113,7 +111,7 @@ spec:
             - name: "{{ $key }}"
               value: "{{ $value }}"
             {{- end }}
-          image: {{ .Values.runtime.image.repository }}:{{ .Values.runtime.image.tag }}
+          image: {{ .Values.runtime.agent.image.repository }}:{{ .Values.runtime.agent.image.tag }}
           imagePullPolicy: Always
           name: agent
           ports:
@@ -173,11 +171,9 @@ spec:
             {{- with .Values.runtime.agent.mounts.volumeMounts }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
-        - command:
-            - micro-exporter
           env:
             - name: AGENT_VERSION
-              value: {{ .Values.runtime.image.tag | quote }}
+              value: {{ .Values.runtime.agent.image.tag | quote }}
             - name: CHART_VERSION
               value: {{ .Chart.Version }}
             - name: API_URL
@@ -203,7 +199,7 @@ spec:
             - name: "{{ $key }}"
               value: "{{ $value }}"
             {{- end }}
-          image: {{ .Values.runtime.image.repository }}:{{ .Values.runtime.image.tag }}
+          image: {{ .Values.runtime.exporter.image.repository }}:{{ .Values.runtime.exporter.image.tag }}
           imagePullPolicy: Always
           name: exporter
           ports:
