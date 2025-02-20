@@ -106,7 +106,7 @@ spec:
             - name: TRACER_HTTP_PII_DETECTOR_PRESIDIO_ENABLED
               value: "true"
             - name: TRACER_HTTP_PII_DETECTOR_PRESIDIO_URL
-              value: "http://rad-pii-analyzer.rad.svc.cluster.local"
+              value: "http://rad-pii-analyzer.{{ .Release.Namespace }}.svc.cluster.local"
             {{- end }}
             {{- end }}
             {{- if .Values.runtime.agent.httpTracingEnabled }}
