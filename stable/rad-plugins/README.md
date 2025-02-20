@@ -501,7 +501,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.agent.grpcServerBatchSize | int | `2000` |  |
 | runtime.agent.hostPID | string | `nil` |  |
 | runtime.agent.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-runtime"` |  |
-| runtime.agent.image.tag | string | `"v0.1.13"` |  |
+| runtime.agent.image.tag | string | `"v0.1.15"` |  |
 | runtime.agent.mounts.volumeMounts | list | `[]` |  |
 | runtime.agent.mounts.volumes | list | `[]` |  |
 | runtime.agent.resources.limits.cpu | string | `"200m"` |  |
@@ -514,15 +514,24 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.exporter.env.LOG_LEVEL | string | `"INFO"` |  |
 | runtime.exporter.execFilters | list | `[]` | Allows to specify wildcard rules for filtering command arguments. |
 | runtime.exporter.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-runtime-exporter"` |  |
-| runtime.exporter.image.tag | string | `"v0.1.13"` |  |
+| runtime.exporter.image.tag | string | `"v0.1.15"` |  |
 | runtime.exporter.resources.limits.cpu | string | `"500m"` |  |
 | runtime.exporter.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | runtime.exporter.resources.limits.memory | string | `"1Gi"` |  |
 | runtime.exporter.resources.requests.cpu | string | `"100m"` |  |
 | runtime.exporter.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
 | runtime.exporter.resources.requests.memory | string | `"128Mi"` |  |
+| runtime.httpTracingEnabled | bool | `false` |  |
 | runtime.nodeName | string | `""` |  |
 | runtime.nodeSelector | object | `{}` |  |
+| runtime.piiAnalyzer.enabled | bool | `false` |  |
+| runtime.piiAnalyzer.image.repository | string | `"mcr.microsoft.com/presidio-analyzer"` |  |
+| runtime.piiAnalyzer.image.tag | string | `"2.2.4"` |  |
+| runtime.piiAnalyzer.replicas | int | `1` |  |
+| runtime.piiAnalyzer.resources.limits.cpu | string | `"1000m"` |  |
+| runtime.piiAnalyzer.resources.limits.memory | string | `"2Gi"` |  |
+| runtime.piiAnalyzer.resources.requests.cpu | string | `"100m"` |  |
+| runtime.piiAnalyzer.resources.requests.memory | string | `"128Mi"` |  |
 | runtime.reachableVulnerabilitiesEnabled | bool | `true` |  |
 | runtime.serviceAccountAnnotations | object | `{}` |  |
 | runtime.tolerations | list | `[]` |  |
