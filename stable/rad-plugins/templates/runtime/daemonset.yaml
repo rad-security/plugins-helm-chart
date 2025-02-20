@@ -99,6 +99,18 @@ spec:
             - name: TRACER_OPEN_PREFIXES
               value: "/lib,/lib64,/usr,/bin,/sbin"
             {{- end }}
+            {{- if .Values.runtime.httpTracingEnabled }}
+            - name: TRACER_HTTP_ENABLED
+              value: "true"
+            {{- if and .Values.runtime.piiAnalyzer .Values.runtime.piiAnalyzer.enabled }}
+            - name: TRACER_HTTP_PII_DETECTOR_PRESIDIO_ENABLED
+              value: "true"
+            - name: TRACER_HTTP_PII_DETECTOR_PRESIDIO_URL
+              value: "http://rad-pii-analyzer.rad.svc.cluster.local"
+            {{- end }}
+            {{- end }}
+            {{- if .Values.runtime.agent.httpTracingEnabled }}
+            {{- end }}
             {{- if .Values.runtime.agent.eventQueueSize }}
             - name: EVENT_QUEUE_SIZE
               value: {{ .Values.runtime.agent.eventQueueSize | quote }}

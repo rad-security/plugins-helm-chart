@@ -193,6 +193,7 @@ watch:
 runtime:
   enabled: false
   reachableVulnerabilitiesEnabled: true
+  httpTracingEnabled: false
   agent:
     env:
       LOG_LEVEL: INFO
@@ -205,7 +206,7 @@ runtime:
         kube-system
     image:
       repository: public.ecr.aws/n8h5y2v5/rad-security/rad-runtime
-      tag: v0.1.13
+      tag: v0.1.15
     resources:
       limits:
         cpu: 200m
@@ -244,7 +245,7 @@ runtime:
 
     image:
       repository: public.ecr.aws/n8h5y2v5/rad-security/rad-runtime-exporter
-      tag: v0.1.13
+      tag: v0.1.15
 
     # -- Allows to specify wildcard rules for filtering command arguments.
     execFilters: []
@@ -258,6 +259,20 @@ runtime:
         cpu: 100m
         memory: 128Mi
         ephemeral-storage: 100Mi
+  piiAnalyzer:
+    enabled: false
+    image:
+      repository: mcr.microsoft.com/presidio-analyzer
+      tag: 2.2.4
+    replicas: 1
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+
   nodeSelector: {}
   nodeName: ""
   tolerations: []
