@@ -521,17 +521,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.exporter.resources.requests.cpu | string | `"100m"` |  |
 | runtime.exporter.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
 | runtime.exporter.resources.requests.memory | string | `"128Mi"` |  |
-| runtime.httpTracingEnabled | bool | `false` |  |
 | runtime.nodeName | string | `""` |  |
 | runtime.nodeSelector | object | `{}` |  |
-| runtime.piiAnalyzer.enabled | bool | `false` |  |
-| runtime.piiAnalyzer.image.repository | string | `"mcr.microsoft.com/presidio-analyzer"` |  |
-| runtime.piiAnalyzer.image.tag | string | `"2.2.4"` |  |
-| runtime.piiAnalyzer.replicas | int | `1` |  |
-| runtime.piiAnalyzer.resources.limits.cpu | string | `"1000m"` |  |
-| runtime.piiAnalyzer.resources.limits.memory | string | `"2Gi"` |  |
-| runtime.piiAnalyzer.resources.requests.cpu | string | `"100m"` |  |
-| runtime.piiAnalyzer.resources.requests.memory | string | `"128Mi"` |  |
 | runtime.reachableVulnerabilitiesEnabled | bool | `true` |  |
 | runtime.serviceAccountAnnotations | object | `{}` |  |
 | runtime.tolerations | list | `[]` |  |
