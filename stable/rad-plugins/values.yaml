@@ -193,7 +193,6 @@ watch:
 runtime:
   enabled: false
   reachableVulnerabilitiesEnabled: true
-  httpTracingEnabled: false
   agent:
     env:
       LOG_LEVEL: INFO
@@ -259,19 +258,6 @@ runtime:
         cpu: 100m
         memory: 128Mi
         ephemeral-storage: 100Mi
-  piiAnalyzer:
-    enabled: false
-    image:
-      repository: mcr.microsoft.com/presidio-analyzer
-      tag: 2.2.4
-    replicas: 1
-    resources:
-      limits:
-        cpu: 1000m
-        memory: 2Gi
-      requests:
-        cpu: 100m
-        memory: 128Mi
 
   nodeSelector: {}
   nodeName: ""
