@@ -389,6 +389,17 @@ runtime:
     - wildcard: "secret=(*)"
 ```
 
+## Experimental PII detection
+The runtime plugin has an experimental feature to detect PII in http requests. This feature is disabled by default and can be enabled by setting the following values in the `values.yaml` file:
+
+```yaml
+runtime:
+  enabled: true
+  httpTracingEnabled: true
+  piiAnalyzer:
+    enabled: true
+```
+
 ## Upgrading the Chart
 
 Typically, we advise maintaining the most current versions of plugins. However, our [RAD Security](https://rad.security) plugins are designed to support upgrades between any two versions, with certain exceptions as outlined in our Helm chart changelog which you can access [here](https://artifacthub.io/packages/helm/rad/rad-plugins?modal=changelog).
