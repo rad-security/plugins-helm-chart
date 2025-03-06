@@ -9,7 +9,7 @@ metadata:
   labels:
     app: rad-pii-analyzer
 spec:
-  replicas: {{ default 1 .Values.runtime.piiAnalyzer.replicas }}
+  replicas: {{ .Values.runtime.piiAnalyzer.replicas }}
   selector:
     matchLabels:
       app: rad-pii-analyzer
@@ -17,44 +17,34 @@ spec:
     metadata:
       labels:
         app: rad-pii-analyzer
-{{- if and .Values.runtime .Values.runtime.piiAnalyzer .Values.runtime.piiAnalyzer.image .Values.runtime.piiAnalyzer.image.tag }}
-        app_version: {{ default "2.2.4" .Values.runtime.piiAnalyzer.image.tag | quote }}
-{{- else }}
-        app_version: "2.2.4"
-{{- end }}
+        app_version: {{ .Values.runtime.piiAnalyzer.image.tag | quote }}
     spec:
       containers:
       - name: rad-pii-analyzer
-{{- if and .Values.runtime .Values.runtime.piiAnalyzer .Values.runtime.piiAnalyzer.image }}
-        image: {{ default "mcr.microsoft.com/presidio-analyzer" .Values.runtime.piiAnalyzer.image.repository }}:{{ default "2.2.4" .Values.runtime.piiAnalyzer.image.tag }}
-{{- else }}
-        image: mcr.microsoft.com/presidio-analyzer:2.2.4
-{{- end }}
+        image: {{ .Values.runtime.piiAnalyzer.image.repository }}:{{ .Values.runtime.piiAnalyzer.image.tag }}
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
-{{- if and .Values.runtime .Values.runtime.piiAnalyzer .Values.runtime.piiAnalyzer.resources }}
         resources:
           requests:
-            memory: {{ default "128Mi" .Values.runtime.piiAnalyzer.resources.requests.memory }}
-            cpu: {{ default "100m" .Values.runtime.piiAnalyzer.resources.requests.cpu }}
+            memory: {{ .Values.runtime.piiAnalyzer.resources.requests.memory }}
+            cpu: {{ .Values.runtime.piiAnalyzer.resources.requests.cpu }}
           limits:
-            memory: {{ default "2Gi" .Values.runtime.piiAnalyzer.resources.limits.memory }}
-            cpu: {{ default "1000m" .Values.runtime.piiAnalyzer.resources.limits.cpu }}
-{{- else }}
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "100m"
-          limits:
-            memory: "2Gi"
-            cpu: "1000m"
-{{- end }}
+            memory: {{ .Values.runtime.piiAnalyzer.resources.limits.memory }}
+            cpu: {{ .Values.runtime.piiAnalyzer.resources.limits.cpu }}
         env:
           - name: PORT
             value: "8080"
+          {{- range $key, $value := .Values.runtime.piiAnalyzer.env }}
+          - name: "{{ $key }}"
+            value: "{{ $value }}"
+          {{- end }}
 {{- with .Values.runtime.piiAnalyzer.nodeSelector }}
       nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.runtime.piiAnalyzer.tolerations }}
+      tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}
 ---
