@@ -532,13 +532,25 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.exporter.resources.requests.cpu | string | `"100m"` |  |
 | runtime.exporter.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
 | runtime.exporter.resources.requests.memory | string | `"128Mi"` |  |
+| runtime.httpTracingEnabled | bool | `false` |  |
 | runtime.nodeName | string | `""` |  |
 | runtime.nodeSelector | object | `{}` |  |
+| runtime.piiAnalyzer.enabled | bool | `false` |  |
+| runtime.piiAnalyzer.env.LOG_LEVEL | string | `"WARNING"` |  |
+| runtime.piiAnalyzer.image.repository | string | `"mcr.microsoft.com/presidio-analyzer"` |  |
+| runtime.piiAnalyzer.image.tag | string | `"2.2.357"` |  |
+| runtime.piiAnalyzer.nodeSelector | object | `{}` |  |
+| runtime.piiAnalyzer.replicas | int | `3` |  |
+| runtime.piiAnalyzer.resources.limits.cpu | string | `"1000m"` |  |
+| runtime.piiAnalyzer.resources.limits.memory | string | `"2Gi"` |  |
+| runtime.piiAnalyzer.resources.requests.cpu | string | `"100m"` |  |
+| runtime.piiAnalyzer.resources.requests.memory | string | `"128Mi"` |  |
+| runtime.piiAnalyzer.tolerations | list | `[]` |  |
 | runtime.reachableVulnerabilitiesEnabled | bool | `true` |  |
 | runtime.serviceAccountAnnotations | object | `{}` |  |
 | runtime.tolerations | list | `[]` |  |
 | runtime.updateStrategy.rollingUpdate.maxSurge | int | `0` | The maximum number of pods that can be scheduled above the desired number of pods. Can be an absolute number or percent, e.g. `5` or `"10%"` |
-| runtime.updateStrategy.rollingUpdate.maxUnavailable | int | `1` | The maximum number of pods that can be unavailable during the update. Can be an absolute number or percent, e.g.  `5` or `"10%"` |
+| runtime.updateStrategy.rollingUpdate.maxUnavailable | string | `"25%"` | The maximum number of pods that can be unavailable during the update. Can be an absolute number or percent, e.g.  `5` or `"10%"` |
 | runtime.updateStrategy.type | string | `"RollingUpdate"` |  |
 | sbom.enabled | bool | `true` |  |
 | sbom.env.IMAGE_PULL_SECRETS | string | `""` | Comma separated list of image pull secrets to use to pull container images. Important: The secrets must be created in the same namespace as the rad-sbom deployment. By default 'rad-sbom' tries to read imagePullSecrets from the manifest spec, but additionally, you can specify the secrets here. If you use AWS ECR private registry, we recommend to use EKS Pod Identity or IRSA to add access to "rad-sbom" to the ECR registry. |
