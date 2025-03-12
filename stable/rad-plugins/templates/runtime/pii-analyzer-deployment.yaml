@@ -1,6 +1,21 @@
 {{- if and .Values.runtime .Values.runtime.enabled -}}
 {{- if .Values.runtime.httpTracingEnabled }}
 {{- if and .Values.runtime.piiAnalyzer .Values.runtime.piiAnalyzer.enabled -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rad-pii-analyzer
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-pii-analyzer
+    app_version: {{ .Values.runtime.piiAnalyzer.image.tag | quote }}
+    maintained_by: rad.security
+  {{- with .Values.runtime.piiAnalyzer.serviceAccountAnnotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+automountServiceAccountToken: false
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,6 +34,13 @@ spec:
         app: rad-pii-analyzer
         app_version: {{ .Values.runtime.piiAnalyzer.image.tag | quote }}
     spec:
+      serviceAccountName: rad-pii-analyzer
+      automountServiceAccountToken: false
+      securityContext:
+      {{- if .Values.rad.seccompProfile.enabled }}
+        seccompProfile:
+          type: RuntimeDefault
+      {{- end }}
       containers:
       - name: rad-pii-analyzer
         image: {{ .Values.runtime.piiAnalyzer.image.repository }}:{{ .Values.runtime.piiAnalyzer.image.tag }}
@@ -32,6 +54,16 @@ spec:
           limits:
             memory: {{ .Values.runtime.piiAnalyzer.resources.limits.memory }}
             cpu: {{ .Values.runtime.piiAnalyzer.resources.limits.cpu }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          privileged: false
+      {{- if .Values.rad.seccompProfile.enabled }}
+        seccompProfile:
+          type: RuntimeDefault
+      {{- end }}
         env:
           - name: PORT
             value: "8080"
