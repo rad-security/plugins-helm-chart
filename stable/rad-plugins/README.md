@@ -49,14 +49,14 @@ If admission is blocked, it can be seen in the RAD Security application under th
 
 ### rad-runtime
 
-`rad-runtime
+`rad-runtime` is the plugin responsible for gathering runtime information from the nodes in the cluster. The plugin is not enabled by default. To enable the plugin, set the `enabled` value to `true` in your values file.
 
 ```yaml
 runtime:
   enabled: true
 ```
 
-When `rad-runtime
+When `rad-runtime` is enabled, an additional daemonset can be seen in the cluster. The daemonset is responsible for collecting runtime information from the nodes in the cluster. The information collected includes the following:
 
 - Process information
 - Network information
