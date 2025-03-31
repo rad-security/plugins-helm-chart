@@ -1,6 +1,8 @@
 {{- if and .Values.runtime .Values.runtime.enabled -}}
 {{- if .Values.runtime.httpTracingEnabled }}
 {{- if and .Values.runtime.piiAnalyzer .Values.runtime.piiAnalyzer.enabled -}}
+
+{{- if eq (include "rad-plugins.deployRbac" .) "true" -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -16,6 +18,9 @@ metadata:
   {{- end }}
 automountServiceAccountToken: false
 ---
+{{- end }}
+
+{{- if eq (include "rad-plugins.deployResources" .) "true" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -96,6 +101,7 @@ spec:
     name: rad-pii-analyzer
   selector:
     app: rad-pii-analyzer
+{{- end }}
 {{- end -}}
 {{- end -}}
 {{- end -}}

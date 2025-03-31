@@ -1,4 +1,5 @@
 {{- if .Values.watch.enabled -}}
+{{- if eq (include "rad-plugins.deployRbac" .) "true" -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -154,8 +155,6 @@ subjects:
   - kind: ServiceAccount
     name: rad-watch
     namespace: {{ .Release.Namespace }}
-
----
-
+{{ end }}
 {{- end }}
 {{- end }}

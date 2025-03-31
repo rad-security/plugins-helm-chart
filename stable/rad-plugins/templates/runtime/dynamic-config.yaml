@@ -1,3 +1,5 @@
+{{- if and .Values.runtime .Values.runtime.enabled -}}
+{{- if eq (include "rad-plugins.deployResources" .) "true" -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,11 +9,8 @@ metadata:
     app_name: rad-runtime
     app_version: {{ .Values.runtime.agent.image.tag | quote }}
     maintained_by: rad.security
-data:
-# Placeholder for dynamic configuration
-
+data: {}
 ---
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -21,5 +20,6 @@ metadata:
     app_name: rad-runtime
     app_version: {{ .Values.runtime.agent.image.tag | quote }}
     maintained_by: rad.security
-data:
-# Placeholder for dynamic configuration
+data: {}
+{{- end }}
+{{- end }}

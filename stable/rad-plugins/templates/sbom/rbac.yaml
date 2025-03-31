@@ -1,4 +1,5 @@
 {{- if .Values.sbom.enabled -}}
+{{- if eq (include "rad-plugins.deployRbac" .) "true" -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -161,8 +162,6 @@ subjects:
   - kind: ServiceAccount
     name: rad-sbom
     namespace: {{ .Release.Namespace }}
-
----
-
+{{ end }}
 {{- end }}
 {{- end }}

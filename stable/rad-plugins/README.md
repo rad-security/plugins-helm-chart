@@ -83,7 +83,9 @@ runtime:
 
 Each plugin pod contains `agent` and `exporter` containers. The `agent` container is responsible for collecting runtime information from the nodes in the cluster. The `exporter` container is responsible for exporting the collected information to the RAD Security platform.
 
-The information collected is sent to the RAD Security platform for further processing. For more information on the `rad-runtime
+Like other plugins, the rad-runtime component also respects the `rad.deployment.rbac` and `rad.deployment.resources` configuration flags to allow deploying RBAC and resources separately if needed.
+
+The information collected is sent to the RAD Security platform for further processing. For more information on the `rad-runtime` plugin, please refer to the [RAD Security](https://rad.security) documentation.
 
 ## Prerequisites
 
@@ -212,7 +214,7 @@ rad:
   accessKeySecretNameOverride: "rad-access-key"
 ```
 
-RAD Security rad-guard plugin integrates with the Kubernetes admission controller. All admission controller communications require TLS. RAD Security Helm chart installs and rad-guard utilizes Let’s Encrypt to automate the issuance and renewal of certificates using the cert-manager add-on.
+RAD Security rad-guard plugin integrates with the Kubernetes admission controller. All admission controller communications require TLS. RAD Security Helm chart installs and rad-guard utilizes Let's Encrypt to automate the issuance and renewal of certificates using the cert-manager add-on.
 
 #### 4.2 AWS Secret Manager
 
@@ -498,6 +500,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | rad.base64AccessKeyId | string | `""` | The ID of the Access Key used in this cluster (base64). |
 | rad.base64SecretKey | string | `""` | The secret key part of the Access Key used in this cluster (base64). |
 | rad.clusterName | string | `""` | The name of the cluster you want displayed in RAD Security. |
+| rad.deployment | object | `{"rbac":true,"resources":true}` | Control which types of resources to deploy |
+| rad.deployment.rbac | bool | `true` | Deploy RBAC resources (ServiceAccounts, Roles, ClusterRoles, RoleBindings, ClusterRoleBindings) If false, no RBAC resources will be deployed |
+| rad.deployment.resources | bool | `true` | Deploy non-RBAC resources (Deployments, Services, ConfigMaps, Secrets, etc.) If false, no non-RBAC resources will be deployed |
 | rad.seccompProfile | object | `{"enabled":true}` | Enable seccompProfile for all RAD Security pods |
 | runtime.agent.collectors.containerd.enabled | string | `nil` |  |
 | runtime.agent.collectors.containerd.socket | string | `"/run/containerd/containerd.sock"` |  |

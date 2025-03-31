@@ -100,3 +100,33 @@ rad-bootstrap initContainer
   resources:
 {{ toYaml .Values.bootstrapper.resources | indent 4 }}
 {{- end -}}
+
+{{/*
+Check if RBAC resources should be deployed
+*/}}
+{{- define "rad-plugins.deployRbac" -}}
+{{- if hasKey .Values.rad "deployment" -}}
+{{- if hasKey .Values.rad.deployment "rbac" -}}
+{{- .Values.rad.deployment.rbac -}}
+{{- else -}}
+{{- true -}}
+{{- end -}}
+{{- else -}}
+{{- true -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Check if non-RBAC resources should be deployed
+*/}}
+{{- define "rad-plugins.deployResources" -}}
+{{- if hasKey .Values.rad "deployment" -}}
+{{- if hasKey .Values.rad.deployment "resources" -}}
+{{- .Values.rad.deployment.resources -}}
+{{- else -}}
+{{- true -}}
+{{- end -}}
+{{- else -}}
+{{- true -}}
+{{- end -}}
+{{- end -}}

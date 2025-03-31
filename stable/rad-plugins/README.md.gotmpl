@@ -83,7 +83,9 @@ runtime:
 
 Each plugin pod contains `agent` and `exporter` containers. The `agent` container is responsible for collecting runtime information from the nodes in the cluster. The `exporter` container is responsible for exporting the collected information to the RAD Security platform.
 
-The information collected is sent to the RAD Security platform for further processing. For more information on the `rad-runtime
+Like other plugins, the rad-runtime component also respects the `rad.deployment.rbac` and `rad.deployment.resources` configuration flags to allow deploying RBAC and resources separately if needed.
+
+The information collected is sent to the RAD Security platform for further processing. For more information on the `rad-runtime` plugin, please refer to the [RAD Security](https://rad.security) documentation.
 
 ## Prerequisites
 
@@ -212,7 +214,7 @@ rad:
   accessKeySecretNameOverride: "rad-access-key"
 ```
 
-RAD Security rad-guard plugin integrates with the Kubernetes admission controller. All admission controller communications require TLS. RAD Security Helm chart installs and rad-guard utilizes Let’s Encrypt to automate the issuance and renewal of certificates using the cert-manager add-on.
+RAD Security rad-guard plugin integrates with the Kubernetes admission controller. All admission controller communications require TLS. RAD Security Helm chart installs and rad-guard utilizes Let's Encrypt to automate the issuance and renewal of certificates using the cert-manager add-on.
 
 #### 4.2 AWS Secret Manager
 

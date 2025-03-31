@@ -18,6 +18,14 @@ rad:
   # -- Enable seccompProfile for all RAD Security pods
   seccompProfile:
     enabled: true
+  # -- Control which types of resources to deploy
+  deployment:
+    # -- Deploy RBAC resources (ServiceAccounts, Roles, ClusterRoles, RoleBindings, ClusterRoleBindings)
+    # If false, no RBAC resources will be deployed
+    rbac: true
+    # -- Deploy non-RBAC resources (Deployments, Services, ConfigMaps, Secrets, etc.)
+    # If false, no non-RBAC resources will be deployed
+    resources: true
 
 workloads:
   # -- Whether to disable service mesh integration.
