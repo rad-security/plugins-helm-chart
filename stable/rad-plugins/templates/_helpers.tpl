@@ -100,3 +100,33 @@ rad-bootstrap initContainer
   resources:
 {{ toYaml .Values.bootstrapper.resources | indent 4 }}
 {{- end -}}
+
+{{/*
+Check if resources in the release namespace should be deployed
+*/}}
+{{- define "rad-plugins.deployInReleaseNamespace" -}}
+{{- if hasKey .Values.rad "deployment" -}}
+{{- if hasKey .Values.rad.deployment "releaseNamespace" -}}
+{{- .Values.rad.deployment.releaseNamespace -}}
+{{- else -}}
+{{- true -}}
+{{- end -}}
+{{- else -}}
+{{- true -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Check if resources in the kube-system namespace should be deployed
+*/}}
+{{- define "rad-plugins.deployInKubeSystem" -}}
+{{- if hasKey .Values.rad "deployment" -}}
+{{- if hasKey .Values.rad.deployment "kubeSystem" -}}
+{{- .Values.rad.deployment.kubeSystem -}}
+{{- else -}}
+{{- true -}}
+{{- end -}}
+{{- else -}}
+{{- true -}}
+{{- end -}}
+{{- end -}}

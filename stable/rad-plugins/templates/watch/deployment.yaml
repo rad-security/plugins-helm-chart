@@ -1,4 +1,5 @@
 {{- if .Values.watch.enabled -}}
+{{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -34,6 +35,11 @@ spec:
 {{ toYaml . | indent 8 }}
         {{- end }}
     spec:
+      serviceAccountName: rad-watch
+      {{- if .Values.workloads.imagePullSecretName }}
+      imagePullSecrets:
+        - name: {{ .Values.workloads.imagePullSecretName }}
+      {{- end }}
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
@@ -43,11 +49,6 @@ spec:
           type: RuntimeDefault
       {{- end }}
       automountServiceAccountToken: false
-      serviceAccountName: rad-watch
-      {{- if .Values.workloads.imagePullSecretName }}
-      imagePullSecrets:
-        - name: {{ .Values.workloads.imagePullSecretName }}
-      {{- end }}
       initContainers:
 {{ include "rad-plugins.bootstrap-initcontainer" . | indent 8 }}
       containers:
@@ -87,7 +88,7 @@ spec:
             - name: INGEST_CUSTOM_RESOURCES
               value: "true"
             - name: CUSTOM_RESOURCE_RULES_PATH
-              value: /var/run/custom-resource-rules/rules.yaml
+              value: "/var/run/custom-resource-rules/rules.yaml"
             {{- end }}
             {{- range $key, $value := .Values.watch.env }}
             - name: "{{ $key }}"
@@ -121,4 +122,5 @@ spec:
         configMap:
           name: rad-watch-custom-resource-rules
       {{- end }}
+{{- end -}}
 {{- end -}}

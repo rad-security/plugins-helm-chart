@@ -24,7 +24,7 @@ In this way, we can avoid the degradation of the API server, which would occur i
 
 ### rad-sbom plugin
 
-`rad-sbom` is the plugin responsible for calculating [SBOMs](https://en.wikipedia.org/wiki/Software_supply_chain) directly on the customer cluster. The plugin is run as an admission/mutating webhook, adding an image digest next to its tag if it's missing. This mutation is performed so [TOCTOU](https://en.wikipedia.org/wiki/Time-of-check_to_time-of-use) does not impact the user. The image deployed is the image that RAD Security scanned. It sees all new workloads and calculates SBOMs for them. It continuously checks the RAD Security API to save time and resources to see if the SBOM is already known for any particular image digest. If not, it is being calculated and uploaded to RAD Security for further processing. By default we use `cyclonedx-json` format for SBOMs, but it can be changed to `spdx-json` or `syft-json` by setting the `SBOM_FORMAT` environment variable in the `values.yaml` file. To prevent the plugin from mutating the `Pod` resource, set the `MUTATE_IMAGE` and `MUTATE_ANNOTATIONS` environment variables to `false`. If observe a performance degradation while deploying new workloads, you can improve it significantly by disabling the mutation of the image tag and annotations.
+`rad-sbom` is the plugin responsible for calculating [SBOMs](https://en.wikipedia.org/wiki/Software_supply_chain) directly on the customer cluster. The plugin is run as an admission/mutating webhook, adding an image digest next to its tag if it's missing. This mutation is performed so [TOCTOU](https://en.wikipedia.org/wiki/Time-of-check_to_time-of_use) does not impact the user. The image deployed is the image that RAD Security scanned. It sees all new workloads and calculates SBOMs for them. It continuously checks the RAD Security API to save time and resources to see if the SBOM is already known for any particular image digest. If not, it is being calculated and uploaded to RAD Security for further processing. By default we use `cyclonedx-json` format for SBOMs, but it can be changed to `spdx-json` or `syft-json` by setting the `SBOM_FORMAT` environment variable in the `values.yaml` file. To prevent the plugin from mutating the `Pod` resource, set the `MUTATE_IMAGE` and `MUTATE_ANNOTATIONS` environment variables to `false`. If observe a performance degradation while deploying new workloads, you can improve it significantly by disabling the mutation of the image tag and annotations.
 
 ```yaml
 sbom:
@@ -212,7 +212,7 @@ rad:
   accessKeySecretNameOverride: "rad-access-key"
 ```
 
-RAD Security rad-guard plugin integrates with the Kubernetes admission controller. All admission controller communications require TLS. RAD Security Helm chart installs and rad-guard utilizes Let’s Encrypt to automate the issuance and renewal of certificates using the cert-manager add-on.
+RAD Security rad-guard plugin integrates with the Kubernetes admission controller. All admission controller communications require TLS. RAD Security Helm chart installs and rad-guard utilizes Let's Encrypt to automate the issuance and renewal of certificates using the cert-manager add-on.
 
 #### 4.2 AWS Secret Manager
 
@@ -498,6 +498,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | rad.base64AccessKeyId | string | `""` | The ID of the Access Key used in this cluster (base64). |
 | rad.base64SecretKey | string | `""` | The secret key part of the Access Key used in this cluster (base64). |
 | rad.clusterName | string | `""` | The name of the cluster you want displayed in RAD Security. |
+| rad.deployment | object | `{"kubeSystem":true,"releaseNamespace":true}` | Control which namespaces to deploy resources to |
+| rad.deployment.kubeSystem | bool | `true` | Deploy resources in the kube-system namespace If false, no resources will be deployed in the kube-system namespace |
+| rad.deployment.releaseNamespace | bool | `true` | Deploy resources in the release namespace (the namespace where the chart is installed) If false, no resources will be deployed in the release namespace |
 | rad.seccompProfile | object | `{"enabled":true}` | Enable seccompProfile for all RAD Security pods |
 | runtime.agent.collectors.containerd.enabled | string | `nil` |  |
 | runtime.agent.collectors.containerd.socket | string | `"/run/containerd/containerd.sock"` |  |
@@ -604,3 +607,10 @@ The command removes all the Kubernetes components associated with the chart and 
 | watch.tolerations | list | `[]` |  |
 | workloads.disableServiceMesh | bool | `true` | Whether to disable service mesh integration. |
 | workloads.imagePullSecretName | string | `""` | The image pull secret name to use to pull container images. |
+
+| rad.clusterName | The name of the cluster you want displayed in RAD Security. | `""` |
+| rad.accessKeySecretNameOverride | The name of the custom secret containing Access Key. | `""` |
+| rad.seccompProfile.enabled | Enable seccompProfile for all RAD Security pods | `true` |
+| rad.deployment.releaseNamespace | Deploy resources in the release namespace (the namespace where the chart is installed). If false, no resources will be deployed in the release namespace. | `true` |
+| rad.deployment.kubeSystem | Deploy resources in the kube-system namespace. If false, no resources will be deployed in the kube-system namespace. | `true` |
+| workloads.disableServiceMesh | Whether to disable service mesh integration. | `true` |

@@ -1,6 +1,7 @@
 {{- if and .Values.runtime .Values.runtime.enabled -}}
 {{- if .Values.runtime.httpTracingEnabled }}
 {{- if and .Values.runtime.piiAnalyzer .Values.runtime.piiAnalyzer.enabled -}}
+{{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -96,6 +97,7 @@ spec:
     name: rad-pii-analyzer
   selector:
     app: rad-pii-analyzer
+{{- end -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}

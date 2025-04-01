@@ -1,5 +1,5 @@
 {{- if .Values.sbom.enabled -}}
----
+{{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" -}}
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
@@ -34,4 +34,5 @@ webhooks:
     resources:
     - pods
   sideEffects: NoneOnDryRun
+{{- end -}}
 {{- end -}}

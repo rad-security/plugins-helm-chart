@@ -1,3 +1,4 @@
+{{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -39,6 +40,7 @@ rules:
     verbs:
       - create
       - patch
+{{- end }}
 
 ---
 
@@ -64,7 +66,7 @@ rules:
 
 ---
 
-{{ if ( eq .Values.eksAddon.enabled false ) -}}
+{{- if and ( eq .Values.eksAddon.enabled false ) ( eq (include "rad-plugins.deployInKubeSystem" .) "true" ) }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -77,6 +79,4 @@ rules:
     resources: [ "configmaps" ]
     resourceNames: [ "kube-root-ca.crt" ]
     verbs: ["get", "watch", "list"]
-
----
-{{ end -}}
+{{- end }}

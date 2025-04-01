@@ -1,4 +1,5 @@
 {{- if .Values.guard.enabled -}}
+{{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -126,4 +127,5 @@ spec:
       - name: api-token
         secret:
           secretName: rad-guard-api-token-secret
+{{- end -}}
 {{- end -}}
