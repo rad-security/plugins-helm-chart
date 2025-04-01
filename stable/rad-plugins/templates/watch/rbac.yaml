@@ -79,6 +79,8 @@ subjects:
     name: rad-watch
     namespace: {{ .Release.Namespace }}
 {{- end }}
+
+{{- if or (eq (include "rad-plugins.deployInReleaseNamespace" .) "true") (eq (include "rad-plugins.deployInKubeSystem" .) "true") }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -110,8 +112,10 @@ rules:
   - apiGroups: [ "apiextensions.k8s.io" ]
     resources: [ "customresourcedefinitions" ]
     verbs: [ "get", "list", "watch" ]
----
+{{- end }}
+
 {{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" }}
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -129,8 +133,9 @@ subjects:
     name: rad-watch
     namespace: {{ .Release.Namespace }}
 {{- end }}
----
+
 {{- if and ( eq .Values.eksAddon.enabled false ) ( eq (include "rad-plugins.deployInKubeSystem" .) "true" ) }}
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:

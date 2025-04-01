@@ -106,6 +106,32 @@ jobs:
 
           echo "✅ Kube-system namespace only configuration test passed"
 
+      - name: Test no namespace deployment
+        run: |
+          # Create test directory
+          mkdir -p test-output-no-namespaces
+
+          # Run template with both flags set to false
+          helm template stable/rad-plugins \
+            --set runtime.enabled=true \
+            --set rad.deployment.releaseNamespace=false \
+            --set rad.deployment.kubeSystem=false \
+            --output-dir test-output-no-namespaces
+
+          # Count rendered files
+          file_count=$(find test-output-no-namespaces -name "*.yaml" -type f -not -empty | wc -l)
+          echo "No namespaces configuration file count: $file_count"
+
+          # Check if any resources were rendered
+          if [ "$file_count" -gt 0 ]; then
+            echo "Rendered files:"
+            find test-output-no-namespaces -name "*.yaml" -type f -not -empty -exec ls -la {} \;
+            echo "❌ Resources were rendered when both namespace flags are disabled"
+            exit 1
+          fi
+
+          echo "✅ No namespace deployment test passed"
+
       - name: Test runtime PII analyzer
         run: |
           # Test with both namespaces (default)
@@ -136,6 +162,36 @@ jobs:
           fi
 
           echo "✅ PII analyzer test passed"
+
+      - name: Test backward compatibility
+        run: |
+          # Create a values file that doesn't include rad.deployment to simulate an upgrade scenario
+          cat > backward-compat-values.yaml << EOF
+          runtime:
+            enabled: true
+          EOF
+
+          # Create test directory
+          mkdir -p test-output-backward-compat
+
+          # Test with values file that doesn't specify rad.deployment
+          helm template stable/rad-plugins -f backward-compat-values.yaml \
+            --output-dir test-output-backward-compat
+
+          # Verify resources are deployed to both namespaces (default behavior)
+          # 1. Check release namespace resources
+          if ! grep -q "namespace:" test-output-backward-compat/rad-plugins/templates/guard/deployment.yaml; then
+            echo "❌ Backward compatibility test failed: missing deployments in release namespace"
+            exit 1
+          fi
+
+          # 2. Check kube-system namespace resources
+          if ! grep -q "namespace: kube-system" test-output-backward-compat/rad-plugins/templates/rbac.yaml; then
+            echo "❌ Backward compatibility test failed: missing resources in kube-system namespace"
+            exit 1
+          fi
+
+          echo "✅ Backward compatibility test passed"
 
       - name: Report success
         if: success()
