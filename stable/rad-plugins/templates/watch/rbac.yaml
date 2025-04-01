@@ -106,12 +106,15 @@ rules:
   - apiGroups: [ "networking.k8s.io", "extensions" ]
     resources: [ "networkpolicies", "ingresses" ]
     verbs: [ "get", "list", "watch" ]
+  - apiGroups: [ "discovery.k8s.io" ]
+    resources: [ "endpointslices" ]
+    verbs: [ "get", "list", "watch" ]
   - apiGroups: [ "ksoc.com" ]
     resources: [ "guardpolicies", "guardresults" ]
     verbs: [ "get", "list", "watch" ]
   - apiGroups: [ "apiextensions.k8s.io" ]
     resources: [ "customresourcedefinitions" ]
-    verbs: [ "get", "list", "watch" ]
+    verbs: [ "get", "list", "watch", "create", "update", "patch" ]
 {{- end }}
 
 {{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" }}
