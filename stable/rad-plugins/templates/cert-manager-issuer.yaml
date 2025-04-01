@@ -1,3 +1,4 @@
+{{- if ne (include "rad-plugins.deployInReleaseNamespace" .) "false" -}}
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
@@ -7,3 +8,4 @@ metadata:
     maintained_by: rad.security
 spec:
   selfSigned: {}
+{{- end -}}
