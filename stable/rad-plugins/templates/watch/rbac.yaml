@@ -1,4 +1,5 @@
 {{- if .Values.watch.enabled -}}
+{{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -13,9 +14,7 @@ metadata:
 {{ toYaml . | indent 4 }}
   {{- end }}
 automountServiceAccountToken: false
-
 ---
-
 apiVersion: v1
 kind: Secret
 metadata:
@@ -28,9 +27,7 @@ metadata:
   annotations:
     kubernetes.io/service-account.name: rad-watch
 type: kubernetes.io/service-account-token
-
 ---
-
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -43,61 +40,9 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: ["configmaps"]
-    resourceNames: [ "rad-watch-dynamic-configuration" ]
+    resourceNames: [ "rad-watch-dynamic-configuration", "rad-watch-custom-resource-rules" ]
     verbs: ["get", "list", "watch"]
-
 ---
-
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: rad-watch
-  labels:
-    app_name: rad-watch
-    app_version: {{ .Values.watch.image.tag | quote }}
-    maintained_by: rad.security
-rules:
-  - apiGroups: [""]
-    resources: ["configmaps", "namespaces", "nodes", "pods", "services", "serviceaccounts"]
-    verbs: ["get", "list", "watch"]
-
-  - apiGroups: [ "apps" ]
-    resources: [ "daemonsets", "deployments", "replicasets", "statefulsets"]
-    verbs: [ "get", "list", "watch" ]
-
-  - apiGroups: [ "batch" ]
-    resources: [ "cronjobs", "jobs"]
-    verbs: [ "get", "list", "watch" ]
-
-  - apiGroups: [ "discovery.k8s.io" ]
-    resources: [ "endpointslices" ]
-    verbs: [ "get", "list", "watch" ]
-
-  - apiGroups: [ "rbac.authorization.k8s.io" ]
-    resources: [ "clusterrolebindings", "clusterroles", "rolebindings", "roles" ]
-    verbs: [ "get", "list", "watch" ]
-
-  - apiGroups: [ "ksoc.com" ]
-    resources: [ "guardpolicies", "guardresults" ]
-    verbs: [ "get", "list", "watch" ]
-
-  - apiGroups: [ "networking.k8s.io" ]
-    resources: [ "ingresses", "networkpolicies" ]
-    verbs: [ "get", "list", "watch" ]
-
-  - apiGroups: [ "apiextensions.k8s.io" ]
-    resources: [ "customresourcedefinitions" ]
-    verbs: ["get", "list", "watch", "create", "update", "patch"]
-
-  {{- if .Values.watch.ingestCustomResources }}
-  {{ range .Values.watch.customResourceRules.allowlist }}
-  - apiGroups: {{ .apiGroups | toJson }}
-    resources: {{ .resources | toJson }}
-    verbs: [ "get", "list", "watch" ]
-  {{ end }}
-  {{- end }}
----
-
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -115,9 +60,58 @@ subjects:
   - kind: ServiceAccount
     name: rad-watch
     namespace: {{ .Release.Namespace }}
-
 ---
-
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rad-watch-leader-election
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-watch
+    app_version: {{ .Values.watch.image.tag | quote }}
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: rad-leader-election-role
+subjects:
+  - kind: ServiceAccount
+    name: rad-watch
+    namespace: {{ .Release.Namespace }}
+{{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: rad-watch
+  labels:
+    app_name: rad-watch
+    app_version: {{ .Values.watch.image.tag | quote }}
+    maintained_by: rad.security
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps", "namespaces", "nodes", "pods", "services", "serviceaccounts"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources: ["roles", "rolebindings", "clusterroles", "clusterrolebindings"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: [ "daemonsets", "deployments", "replicasets", "statefulsets" ]
+    verbs: [ "get", "list", "watch" ]
+  - apiGroups: [ "batch" ]
+    resources: [ "cronjobs", "jobs" ]
+    verbs: [ "get", "list", "watch" ]
+  - apiGroups: [ "networking.k8s.io", "extensions" ]
+    resources: [ "networkpolicies", "ingresses" ]
+    verbs: [ "get", "list", "watch" ]
+  - apiGroups: [ "ksoc.com" ]
+    resources: [ "guardpolicies", "guardresults" ]
+    verbs: [ "get", "list", "watch" ]
+  - apiGroups: [ "apiextensions.k8s.io" ]
+    resources: [ "customresourcedefinitions" ]
+    verbs: [ "get", "list", "watch" ]
+---
+{{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -134,10 +128,9 @@ subjects:
   - kind: ServiceAccount
     name: rad-watch
     namespace: {{ .Release.Namespace }}
-
+{{- end }}
 ---
-
-{{ if ( eq .Values.eksAddon.enabled false ) }}
+{{- if and ( eq .Values.eksAddon.enabled false ) ( eq (include "rad-plugins.deployInKubeSystem" .) "true" ) }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -154,8 +147,5 @@ subjects:
   - kind: ServiceAccount
     name: rad-watch
     namespace: {{ .Release.Namespace }}
-
----
-
 {{- end }}
 {{- end }}

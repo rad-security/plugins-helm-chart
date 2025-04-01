@@ -1,3 +1,5 @@
+{{- if .Values.guard.enabled -}}
+{{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,3 +12,6 @@ metadata:
 data:
 # Placeholder for dynamic configuration created via rad-sync
 # Main purpose of this ConfigMap is to delete it when rad-plugins helm chart is uninstalled
+  config: "{}"
+{{- end -}}
+{{- end -}}

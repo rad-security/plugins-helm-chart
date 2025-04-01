@@ -58,3 +58,87 @@ Charts should start at `1.0.0`. Any breaking (backwards incompatible) changes to
 1. Bump the MAJOR version
 2. In the README, under a section called "Upgrading", describe the manual steps necessary to upgrade to the new (specified) MAJOR version
 3. New issue should be started to discuss the changes and the need for a new MAJOR version
+
+## Contribution Guidelines
+
+The following guidelines are to be followed when making changes to the Helm charts:
+
+* All templates should use 2 spaces for indentation
+* New dependencies should be added to the Chart.yaml file, not requirements.yaml (deprecated)
+* All resources should have meaningful labels, including but not limited to recommended labels like app, version, component, etc.
+* Always update the Chart.yaml when making changes to the templates
+* Always make sure to run the tests locally before submitting a PR
+
+## Namespace-Based Deployment
+
+This Helm chart supports the ability to deploy resources to different namespaces separately. This allows users to:
+
+1. Deploy only in the release namespace (`rad.deployment.releaseNamespace=true`, `rad.deployment.kubeSystem=false`)
+2. Deploy only in the kube-system namespace (`rad.deployment.releaseNamespace=false`, `rad.deployment.kubeSystem=true`)
+3. Deploy in both namespaces (default behavior)
+
+When adding new resources to the chart, you must ensure they respect this namespace separation:
+
+* For resources in the release namespace:
+  ```yaml
+  {{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" -}}
+  apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    namespace: {{ .Release.Namespace }}
+  # ...
+  {{- end }}
+  ```
+
+* For resources in the kube-system namespace:
+  ```yaml
+  {{- if eq (include "rad-plugins.deployInKubeSystem" .) "true" -}}
+  apiVersion: rbac.authorization.k8s.io/v1
+  kind: Role
+  metadata:
+    namespace: kube-system
+  # ...
+  {{- end }}
+  ```
+
+* For cluster-wide resources (ClusterRoles, ClusterRoleBindings, etc.), determine if they should be conditionally rendered based on their purpose and associated namespaced resources.
+
+This separation allows users to deploy resources selectively by namespace, which is important for organizations with different teams managing different namespaces.
+
+### Testing Namespace-Based Deployment
+
+Changes should maintain the namespace-based deployment capability. You can test this locally:
+
+```bash
+# Test default (both namespaces)
+helm template stable/rad-plugins --set runtime.enabled=true
+
+# Test release namespace only
+helm template stable/rad-plugins --set runtime.enabled=true --set rad.deployment.kubeSystem=false
+
+# Test kube-system namespace only
+helm template stable/rad-plugins --set runtime.enabled=true --set rad.deployment.releaseNamespace=false
+```
+
+There are also automated tests in our CI pipeline that will verify this capability.
+
+## Pull Request Process
+
+1. Ensure all pre-commit hooks are passing by running `make pre-commit`.
+2. Update the README.md.gotmpl with details of changes to the chart, including new values, exposed ports, useful settings, and any other information that would be relevant to users.
+3. Update the Chart.yaml version following the [versioning](#versioning) guidelines.
+4. Add an entry to the `artifacthub.io/changes` section in Chart.yaml describing your changes.
+5. Run local tests to ensure your changes don't break existing functionality:
+   ```bash
+   # Lint the chart
+   helm lint stable/rad-plugins
+
+   # Test the rendered templates
+   helm template stable/rad-plugins
+
+   # If you've made namespace-based deployment changes, run the namespace tests
+   # as described in the previous section
+   ```
+6. Create a Pull Request explaining the changes you've made and why they're needed.
+7. Your PR will be reviewed by maintainers, who may request changes or ask for clarifications.
+8. Once approved, your changes will be merged, and a new chart release will be automatically created.

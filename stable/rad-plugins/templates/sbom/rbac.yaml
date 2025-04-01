@@ -1,4 +1,5 @@
 {{- if .Values.sbom.enabled -}}
+{{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -13,9 +14,7 @@ metadata:
 {{ toYaml . | indent 4 }}
   {{- end }}
 automountServiceAccountToken: false
-
 ---
-
 apiVersion: v1
 kind: Secret
 metadata:
@@ -28,9 +27,7 @@ metadata:
   annotations:
     kubernetes.io/service-account.name: rad-sbom
 type: kubernetes.io/service-account-token
-
 ---
-
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -45,46 +42,7 @@ rules:
     resources: ["configmaps"]
     resourceNames: [ "rad-sbom-dynamic-configuration" ]
     verbs: ["get", "list", "watch"]
-
 ---
-
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: rad-sbom
-  labels:
-    app_name: rad-sbom
-    app_version: {{ .Values.sbom.image.tag | quote }}
-    maintained_by: rad.security
-rules:
-  - apiGroups: [""]
-    resources: ["namespaces", "pods"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: [""]
-    resources: ["secrets"]
-    verbs: ["get"]
-
----
-
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: rad-sbom
-  labels:
-    app_name: rad-sbom
-    app_version: {{ .Values.sbom.image.tag | quote }}
-    maintained_by: rad.security
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: rad-sbom
-subjects:
-  - kind: ServiceAccount
-    name: rad-sbom
-    namespace: {{ .Release.Namespace }}
-
----
-
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -102,9 +60,7 @@ subjects:
   - kind: ServiceAccount
     name: rad-sbom
     namespace: {{ .Release.Namespace }}
-
 ---
-
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -122,6 +78,42 @@ subjects:
 - kind: ServiceAccount
   name: rad-sbom
   namespace: {{ .Release.Namespace }}
+{{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: rad-sbom
+  labels:
+    app_name: rad-sbom
+    app_version: {{ .Values.sbom.image.tag | quote }}
+    maintained_by: rad.security
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces", "pods"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+---
+{{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: rad-sbom
+  labels:
+    app_name: rad-sbom
+    app_version: {{ .Values.sbom.image.tag | quote }}
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: rad-sbom
+subjects:
+  - kind: ServiceAccount
+    name: rad-sbom
+    namespace: {{ .Release.Namespace }}
+{{- end }}
 
 ---
 
@@ -140,11 +132,10 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: rad-sbom
-  namespace: system
+  namespace: {{ .Release.Namespace }}
 
 ---
-
-{{ if ( eq .Values.eksAddon.enabled false ) }}
+{{- if and ( eq .Values.eksAddon.enabled false ) ( eq (include "rad-plugins.deployInKubeSystem" .) "true" ) }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -161,8 +152,5 @@ subjects:
   - kind: ServiceAccount
     name: rad-sbom
     namespace: {{ .Release.Namespace }}
-
----
-
 {{- end }}
 {{- end }}

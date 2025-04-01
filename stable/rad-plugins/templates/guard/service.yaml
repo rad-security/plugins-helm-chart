@@ -1,4 +1,5 @@
 {{- if .Values.guard.enabled -}}
+{{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -17,4 +18,5 @@ spec:
     app_name: rad-guard
     app_version: {{ .Values.guard.image.tag | quote }}
     maintained_by: rad.security
+{{- end -}}
 {{- end -}}

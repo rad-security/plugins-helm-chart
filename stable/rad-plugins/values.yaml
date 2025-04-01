@@ -18,6 +18,14 @@ rad:
   # -- Enable seccompProfile for all RAD Security pods
   seccompProfile:
     enabled: true
+  # -- Control which namespaces to deploy resources to
+  deployment:
+    # -- Deploy resources in the release namespace (the namespace where the chart is installed).
+    # If false, no resources will be deployed in the release namespace.
+    releaseNamespace: true
+    # -- Deploy resources in the kube-system namespace.
+    # If false, no resources will be deployed in the kube-system namespace.
+    kubeSystem: true
 
 workloads:
   # -- Whether to disable service mesh integration.

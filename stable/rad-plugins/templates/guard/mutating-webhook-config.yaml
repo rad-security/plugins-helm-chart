@@ -1,4 +1,5 @@
 {{- if .Values.guard.enabled -}}
+{{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" -}}
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
@@ -12,7 +13,7 @@ metadata:
     maintained_by: rad.security
 webhooks:
   - admissionReviewVersions:
-      - v1
+    - v1
     clientConfig:
       service:
         name: rad-guard
@@ -43,4 +44,5 @@ webhooks:
         operations: [ "CREATE", "UPDATE" ]
         resources: [ "pods", "namespaces" ]
     sideEffects: NoneOnDryRun
+{{- end -}}
 {{- end -}}

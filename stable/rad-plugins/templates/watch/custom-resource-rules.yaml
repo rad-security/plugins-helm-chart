@@ -1,4 +1,5 @@
 {{- if and .Values.watch.enabled .Values.watch.ingestCustomResources -}}
+{{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,5 +11,6 @@ metadata:
     maintained_by: rad.security
 data:
   rules.yaml: |
-  {{- .Values.watch.customResourceRules | toYaml | nindent 4 }}
+    {{- .Values.watch.customResourceRules | toYaml | nindent 4 }}
+{{- end -}}
 {{- end -}}

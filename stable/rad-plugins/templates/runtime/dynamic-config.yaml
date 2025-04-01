@@ -1,3 +1,5 @@
+{{- if .Values.runtime.enabled -}}
+{{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -8,10 +10,11 @@ metadata:
     app_version: {{ .Values.runtime.agent.image.tag | quote }}
     maintained_by: rad.security
 data:
-# Placeholder for dynamic configuration
+  config: "{}"
+{{- end -}}
 
+{{- if and .Values.runtime.exporter.enabled (eq (include "rad-plugins.deployInReleaseNamespace" .) "true") -}}
 ---
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -22,4 +25,6 @@ metadata:
     app_version: {{ .Values.runtime.agent.image.tag | quote }}
     maintained_by: rad.security
 data:
-# Placeholder for dynamic configuration
+  config: "{}"
+{{- end -}}
+{{- end -}}

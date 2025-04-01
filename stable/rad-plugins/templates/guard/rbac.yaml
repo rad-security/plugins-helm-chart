@@ -1,4 +1,6 @@
 {{- if .Values.guard.enabled -}}
+
+{{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -49,49 +51,6 @@ rules:
 ---
 
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: rad-guard
-  labels:
-    app_name: rad-guard
-    app_version: {{ .Values.guard.image.tag | quote }}
-    maintained_by: rad.security
-rules:
-  - apiGroups: [ "apiextensions.k8s.io" ]
-    resources: [ "customresourcedefinitions" ]
-    verbs: ["get", "list", "watch", "create", "update", "patch"]
-  - apiGroups: [ "ksoc.com" ]
-    resources: [ "guardpolicies" ]
-    verbs: [ "get", "list", "watch", "update" ]
-  - apiGroups: [ "ksoc.com" ]
-    resources: [ "guardresults" ]
-    verbs: [ "create", "delete", "list", "watch" ]
-  - apiGroups: [ "ksoc.com" ]
-    resources: [ "guardpolicies/status", "guardresults/status" ]
-    verbs: [ "get" ]
-
----
-
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: rad-guard
-  labels:
-    app_name: rad-guard
-    app_version: {{ .Values.guard.image.tag | quote }}
-    maintained_by: rad.security
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: rad-guard
-subjects:
-- kind: ServiceAccount
-  name: rad-guard
-  namespace: {{ .Release.Namespace }}
-
----
-
-apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: rad-guard-configmap-reader
@@ -128,6 +87,52 @@ subjects:
   - kind: ServiceAccount
     name: rad-guard
     namespace: {{ .Release.Namespace }}
+{{- end }}
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: rad-guard
+  labels:
+    app_name: rad-guard
+    app_version: {{ .Values.guard.image.tag | quote }}
+    maintained_by: rad.security
+rules:
+  - apiGroups: [ "apiextensions.k8s.io" ]
+    resources: [ "customresourcedefinitions" ]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: [ "ksoc.com" ]
+    resources: [ "guardpolicies" ]
+    verbs: [ "get", "list", "watch", "update" ]
+  - apiGroups: [ "ksoc.com" ]
+    resources: [ "guardresults" ]
+    verbs: [ "create", "delete", "list", "watch" ]
+  - apiGroups: [ "ksoc.com" ]
+    resources: [ "guardpolicies/status", "guardresults/status" ]
+    verbs: [ "get" ]
+
+---
+
+{{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: rad-guard
+  labels:
+    app_name: rad-guard
+    app_version: {{ .Values.guard.image.tag | quote }}
+    maintained_by: rad.security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: rad-guard
+subjects:
+- kind: ServiceAccount
+  name: rad-guard
+  namespace: {{ .Release.Namespace }}
+{{- end }}
 
 ---
 
@@ -146,11 +151,11 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: rad-guard
-    namespace: system
+    namespace: {{ .Release.Namespace }}
 
 ---
 
-{{- if ( eq .Values.eksAddon.enabled false ) }}
+{{- if and ( eq .Values.eksAddon.enabled false ) ( eq (include "rad-plugins.deployInKubeSystem" .) "true" ) }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -167,7 +172,5 @@ subjects:
   - kind: ServiceAccount
     name: rad-guard
     namespace: {{ .Release.Namespace }}
-
----
 {{- end }}
 {{- end }}
