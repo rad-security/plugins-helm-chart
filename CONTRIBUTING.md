@@ -103,6 +103,21 @@ When adding new resources to the chart, you must ensure they respect this namesp
 
 * For cluster-wide resources (ClusterRoles, ClusterRoleBindings, etc.), determine if they should be conditionally rendered based on their purpose and associated namespaced resources.
 
+### RBAC Permissions for CustomResourceDefinitions
+
+Multiple components in this chart (guard, watch, sync) require permissions to manage CustomResourceDefinitions (CRDs):
+
+* Components that need to create, update, or patch CRDs must have appropriate ClusterRole permissions:
+  ```yaml
+  - apiGroups: ["apiextensions.k8s.io"]
+    resources: ["customresourcedefinitions"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  ```
+
+* These permissions are required even when using namespace-based deployment, as CRDs are cluster-scoped resources.
+
+* Always ensure these permissions exist in the ClusterRoles for components that interact with CRDs.
+
 This separation allows users to deploy resources selectively by namespace, which is important for organizations with different teams managing different namespaces.
 
 ### Testing Namespace-Based Deployment
