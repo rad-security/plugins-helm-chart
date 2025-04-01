@@ -499,8 +499,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | rad.base64SecretKey | string | `""` | The secret key part of the Access Key used in this cluster (base64). |
 | rad.clusterName | string | `""` | The name of the cluster you want displayed in RAD Security. |
 | rad.deployment | object | `{"kubeSystem":true,"releaseNamespace":true}` | Control which namespaces to deploy resources to |
-| rad.deployment.kubeSystem | bool | `true` | Deploy resources in the kube-system namespace If false, no resources will be deployed in the kube-system namespace |
-| rad.deployment.releaseNamespace | bool | `true` | Deploy resources in the release namespace (the namespace where the chart is installed) If false, no resources will be deployed in the release namespace |
+| rad.deployment.kubeSystem | bool | `true` | Deploy resources in the kube-system namespace. If false, no resources will be deployed in the kube-system namespace. |
+| rad.deployment.releaseNamespace | bool | `true` | Deploy resources in the release namespace (the namespace where the chart is installed). If false, no resources will be deployed in the release namespace. |
 | rad.seccompProfile | object | `{"enabled":true}` | Enable seccompProfile for all RAD Security pods |
 | runtime.agent.collectors.containerd.enabled | string | `nil` |  |
 | runtime.agent.collectors.containerd.socket | string | `"/run/containerd/containerd.sock"` |  |
