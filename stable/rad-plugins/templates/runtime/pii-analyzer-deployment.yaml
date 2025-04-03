@@ -38,10 +38,10 @@ spec:
       serviceAccountName: rad-pii-analyzer
       automountServiceAccountToken: false
       securityContext:
-      {{- if .Values.rad.seccompProfile.enabled }}
+{{- if .Values.rad.seccompProfile.enabled }}
         seccompProfile:
           type: RuntimeDefault
-      {{- end }}
+{{- end }}
       containers:
       - name: rad-pii-analyzer
         image: {{ .Values.runtime.piiAnalyzer.image.repository }}:{{ .Values.runtime.piiAnalyzer.image.tag }}
@@ -50,21 +50,21 @@ spec:
         - containerPort: 8080
         resources:
           requests:
-            memory: {{ .Values.runtime.piiAnalyzer.resources.requests.memory }}
-            cpu: {{ .Values.runtime.piiAnalyzer.resources.requests.cpu }}
+            memory: {{ default "128Mi" .Values.runtime.piiAnalyzer.resources.requests.memory }}
+            cpu: {{ default "100m" .Values.runtime.piiAnalyzer.resources.requests.cpu }}
           limits:
-            memory: {{ .Values.runtime.piiAnalyzer.resources.limits.memory }}
-            cpu: {{ .Values.runtime.piiAnalyzer.resources.limits.cpu }}
+            memory: {{ default "2Gi" .Values.runtime.piiAnalyzer.resources.limits.memory }}
+            cpu: {{ default "1000m" .Values.runtime.piiAnalyzer.resources.limits.cpu }}
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
             drop:
               - ALL
           privileged: false
-      {{- if .Values.rad.seccompProfile.enabled }}
-        seccompProfile:
-          type: RuntimeDefault
-      {{- end }}
+{{- if .Values.rad.seccompProfile.enabled }}
+          seccompProfile:
+            type: RuntimeDefault
+{{- end }}
         env:
           - name: PORT
             value: "8080"
