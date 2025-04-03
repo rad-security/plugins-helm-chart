@@ -167,7 +167,7 @@ watch:
   image:
     # -- The image to use for the rad-watch deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-watch
-    tag: v1.1.30
+    tag: v1.1.31
   env:
     # -- Whether to trigger reconciliation at startup.
     RECONCILIATION_AT_START: false
@@ -214,7 +214,7 @@ runtime:
         kube-system
     image:
       repository: public.ecr.aws/n8h5y2v5/rad-security/rad-runtime
-      tag: v0.1.21
+      tag: v0.1.22
     resources:
       limits:
         cpu: 200m
@@ -253,7 +253,7 @@ runtime:
 
     image:
       repository: public.ecr.aws/n8h5y2v5/rad-security/rad-runtime-exporter
-      tag: v0.1.21
+      tag: v0.1.22
 
     # -- Allows to specify wildcard rules for filtering command arguments.
     execFilters: []
