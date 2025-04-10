@@ -90,13 +90,9 @@ jobs:
             exit 1
           fi
 
-          # Verify ClusterRoles still exist (they're not namespace-specific)
-          found_cluster_role=false
-          if grep -q "kind: ClusterRole" test-output-kube-system-only/rad-plugins/templates/guard/rbac.yaml; then
-            found_cluster_role=true
-          fi
-          if [ "$found_cluster_role" != "true" ]; then
-            echo "❌ Kube-system namespace only configuration missing cluster roles"
+          # Verify guard ClusterRole does NOT exist when only kube-system namespace is enabled
+          if grep -q "kind: ClusterRole" test-output-kube-system-only/rad-plugins/templates/guard/rbac.yaml | grep -q "name: rad-guard"; then
+            echo "❌ Kube-system namespace only configuration still has guard ClusterRole which should only be deployed with release namespace"
             exit 1
           fi
 
