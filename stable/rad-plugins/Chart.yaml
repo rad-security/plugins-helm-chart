@@ -17,8 +17,6 @@ annotations:
   artifacthub.io/category: security
   # Possible kind options are added, changed, deprecated, removed, fixed and security.
   artifacthub.io/changes: |
-    - kind: fixed
-      description: Fixed indentation for seccomp profile
     - kind: changed
       description: ClusterRole for guard now only deploys when release namespace is enabled
   artifacthub.io/containsSecurityUpdates: "false"
