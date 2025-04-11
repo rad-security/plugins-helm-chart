@@ -1,4 +1,5 @@
 {{- if .Values.priorityClass.enabled -}}
+{{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" }}
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
@@ -7,4 +8,5 @@ value: {{ .Values.priorityClass.value | int }}
 preemptionPolicy: {{ .Values.priorityClass.preemptionPolicy }}
 globalDefault: {{ .Values.priorityClass.globalDefault }}
 description: {{ .Values.priorityClass.description }}
+{{- end }}
 {{- end }}

@@ -42,7 +42,7 @@ rules:
       - patch
 {{- end }}
 
-{{- if or (eq (include "rad-plugins.deployInReleaseNamespace" .) "true") (eq (include "rad-plugins.deployInKubeSystem" .) "true") }}
+{{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" }}
 ---
 
 apiVersion: rbac.authorization.k8s.io/v1
