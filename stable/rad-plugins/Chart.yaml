@@ -18,7 +18,7 @@ annotations:
   # Possible kind options are added, changed, deprecated, removed, fixed and security.
   artifacthub.io/changes: |
     - kind: changed
-      description: Improved Runtime exec event argumets filtering for secrets in Runtime
+      description: Improved Runtime exec event arguments filtering for secrets in Runtime
   artifacthub.io/containsSecurityUpdates: "false"
   artifacthub.io/links: |
     - name: source
