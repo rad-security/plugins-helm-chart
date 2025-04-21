@@ -45,7 +45,7 @@ bootstrapper:
   image:
     # -- The image to use for the rad-bootstrapper deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-bootstrapper
-    tag: v1.1.17
+    tag: v1.1.18
   env: {}
   resources:
     limits:
@@ -65,7 +65,7 @@ guard:
   image:
     # -- The image to use for the rad-guard deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-guard
-    tag: v1.1.23
+    tag: v1.1.24
   config:
     # -- Whether to block on error.
     BLOCK_ON_ERROR: false
@@ -100,7 +100,7 @@ sbom:
   image:
     # -- The image to use for the rad-sbom deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-sbom
-    tag: v1.1.43
+    tag: v1.1.44
   env:
     # -- Whether to mutate the image in pod spec by adding digest at the end. By default, digests are added to images to ensure
     # that the image that runs in the cluster matches the digest of the build.  Disable this if your continuous deployment
@@ -146,7 +146,7 @@ sync:
   image:
     # -- The image to use for the rad-sync deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-sync
-    tag: v1.1.21
+    tag: v1.1.22
   env: {}
   resources:
     limits:
@@ -167,7 +167,7 @@ watch:
   image:
     # -- The image to use for the rad-watch deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-watch
-    tag: v1.1.34
+    tag: v1.1.35
   env:
     # -- Whether to trigger reconciliation at startup.
     RECONCILIATION_AT_START: false
@@ -214,7 +214,7 @@ runtime:
         kube-system
     image:
       repository: public.ecr.aws/n8h5y2v5/rad-security/rad-runtime
-      tag: v0.1.23
+      tag: v0.1.25
     resources:
       limits:
         cpu: 200m
