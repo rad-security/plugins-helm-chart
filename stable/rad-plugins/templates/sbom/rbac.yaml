@@ -11,6 +11,9 @@ metadata:
     maintained_by: rad.security
   {{- with .Values.sbom.serviceAccountAnnotations }}
   annotations:
+    {{- if .Values.azureWorkloadIdentityClientId }}
+    azure.workload.identity/client-id: {{ .Values.azureWorkloadIdentityClientId | quote }}
+    {{- end }}
 {{ toYaml . | indent 4 }}
   {{- end }}
 automountServiceAccountToken: false
