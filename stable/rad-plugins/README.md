@@ -34,6 +34,16 @@ sbom:
     MUTATE_ANNOTATIONS: false
 ```
 
+Currently, the plugin supports most of the popular container registries, via the `IMAGE_PULL_SECRETS` environment variable. Additionally we have native support for Azure Container Registries and ECR. See below for more details.
+
+#### Private Azure Container Registry
+
+To use a private Azure Container Registry, you need to set the `azureWorkloadIdentityClientId` in the `values.yaml` file. This will allow the plugin to use the Azure Workload Identity to authenticate to the registry. For more details see: [Scanning images from Azure ACR](https://docs.rad.security/docs/scanning-images-from-azure-acr).
+
+#### Private ECR Registry
+
+To use a private ECR Registry, you need add and configure proper AWS IAM role with the necessary permissions. For more details see: [Scanning images from ECR](https://docs.rad.security/docs/scanning-images-from-ecr).
+
 ### rad-guard plugin
 
 `rad-guard` is the plugin responsible for executing `GuardPolicy` (in the form of Rego) against a specific set of Kubernetes resources during their admission to the cluster, either allowing the admission or denying it.
