@@ -2,6 +2,7 @@
 {{- if eq (include "rad-plugins.deployInReleaseNamespace" .) "true" }}
 apiVersion: v1
 kind: ServiceAccount
+automountServiceAccountToken: false
 metadata:
   name: rad-sbom
   namespace: {{ .Release.Namespace }}
@@ -9,11 +10,13 @@ metadata:
     app_name: rad-sbom
     app_version: {{ .Values.sbom.image.tag | quote }}
     maintained_by: rad.security
-  {{- with .Values.sbom.serviceAccountAnnotations }}
   annotations:
+    {{- if .Values.rad.azureWorkloadIdentityClientId }}
+    azure.workload.identity/client-id: {{ .Values.rad.azureWorkloadIdentityClientId | quote }}
+    {{- end }}
+    {{- with .Values.sbom.serviceAccountAnnotations }}
 {{ toYaml . | indent 4 }}
-  {{- end }}
-automountServiceAccountToken: false
+    {{- end }}
 ---
 apiVersion: v1
 kind: Secret

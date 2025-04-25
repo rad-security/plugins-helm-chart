@@ -11,6 +11,10 @@ rad:
   # Plugins expect following keys in the secret: `access-key-id` and `secret-key`. If the secret is not found, the plugin falls back to the `base64AccessKeyId` and `base64SecretKey` values.
   # If `awsSecretId` is provided service accounts needs to have access to the secret in AWS, via IRSA or EKS Pod Identity.
   awsSecretId: ""
+  # -- The client ID of the Azure Workload Identity.
+  # If `azureWorkloadIdentityClientId` is provided, the plugin will assume that 'rad-sbom' identity is the Azure Workload Identity
+  # and will use it to authenticate private Azure Container Registries.
+  azureWorkloadIdentityClientId: ""
   # -- The name of the cluster you want displayed in RAD Security.
   clusterName: ""
   # -- The name of the custom secret containing Access Key.
@@ -100,7 +104,7 @@ sbom:
   image:
     # -- The image to use for the rad-sbom deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-sbom
-    tag: v1.1.44
+    tag: v1.1.46
   env:
     # -- Whether to mutate the image in pod spec by adding digest at the end. By default, digests are added to images to ensure
     # that the image that runs in the cluster matches the digest of the build.  Disable this if your continuous deployment
@@ -135,6 +139,7 @@ sbom:
       # -- The ephemeral storage limit is set to 25Gi to cache and reuse image layers for the sbom generation.
       ephemeral-storage: 25Gi
   podAnnotations: {}
+  labels: {}
   webhook:
     timeoutSeconds: 10
   nodeSelector: {}

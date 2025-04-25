@@ -26,6 +26,9 @@ spec:
         app_name: rad-sbom
         app_version: {{ .Values.sbom.image.tag | quote }}
         maintained_by: rad.security
+        {{- if .Values.rad.azureWorkloadIdentityClientId }}
+        azure.workload.identity/use: "true"
+        {{- end }}
       annotations:
         {{- if .Values.workloads.disableServiceMesh }}
         linkerd.io/inject: disabled

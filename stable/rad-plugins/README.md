@@ -34,6 +34,16 @@ sbom:
     MUTATE_ANNOTATIONS: false
 ```
 
+Currently, the plugin supports most of the popular container registries, via the `IMAGE_PULL_SECRETS` environment variable. Additionally we have native support for Azure Container Registries and ECR. See below for more details.
+
+#### Private Azure Container Registry
+
+To use a private Azure Container Registry, you need to set the `azureWorkloadIdentityClientId` in the `values.yaml` file. This will allow the plugin to use the Azure Workload Identity to authenticate to the registry. For more details see: [Scanning images from Azure ACR](https://docs.rad.security/docs/scanning-images-from-azure-acr).
+
+#### Private ECR Registry
+
+To use a private ECR Registry, you need add and configure proper AWS IAM role with the necessary permissions. For more details see: [Scanning images from ECR](https://docs.rad.security/docs/scanning-images-from-ecr).
+
 ### rad-guard plugin
 
 `rad-guard` is the plugin responsible for executing `GuardPolicy` (in the form of Rego) against a specific set of Kubernetes resources during their admission to the cluster, either allowing the admission or denying it.
@@ -495,6 +505,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | rad.apiKey | string | `""` | The combined API key to authenticate with RAD Security |
 | rad.apiUrl | string | `"https://api.rad.security"` | The base URL for the RAD Security API. |
 | rad.awsSecretId | string | `""` | The Secret Name or Secret ARN containing the Access Key. If provided, plugins try to read the Access Key from the AWS Secret Manager. Plugins expect following keys in the secret: `access-key-id` and `secret-key`. If the secret is not found, the plugin falls back to the `base64AccessKeyId` and `base64SecretKey` values. If `awsSecretId` is provided service accounts needs to have access to the secret in AWS, via IRSA or EKS Pod Identity. |
+| rad.azureWorkloadIdentityClientId | string | `""` | The client ID of the Azure Workload Identity. If `azureWorkloadIdentityClientId` is provided, the plugin will assume that 'rad-sbom' identity is the Azure Workload Identity and will use it to authenticate private Azure Container Registries. |
 | rad.base64AccessKeyId | string | `""` | The ID of the Access Key used in this cluster (base64). |
 | rad.base64SecretKey | string | `""` | The secret key part of the Access Key used in this cluster (base64). |
 | rad.clusterName | string | `""` | The name of the cluster you want displayed in RAD Security. |
@@ -563,7 +574,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | sbom.env.SBOM_CHECK_LATEST | bool | `false` | Experimental: Whether to check for the latest image in the container registry and generate SBOM for it. If deployed image has tag with semver format, rad-sbom tries to get the newest image, newest minor version, or newest patch version. If the tag is not in semver format, rad-sbom tries to get the newest image from the container registry based on the tag time. Please be aware that time-based algorithm requires many requests to the container registry and may be slow. It works only if credentials are provided. Please note that this feature is experimental and may not work with all container registries. |
 | sbom.env.SBOM_FORMAT | string | `"cyclonedx-json"` | The format of the generated SBOM. Currently we support: syft-json,cyclonedx-json,spdx-json |
 | sbom.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-sbom"` | The image to use for the rad-sbom deployment |
-| sbom.image.tag | string | `"v1.1.44"` |  |
+| sbom.image.tag | string | `"v1.1.46"` |  |
+| sbom.labels | object | `{}` |  |
 | sbom.nodeSelector | object | `{}` |  |
 | sbom.podAnnotations | object | `{}` |  |
 | sbom.resources.limits.cpu | string | `"1000m"` |  |
