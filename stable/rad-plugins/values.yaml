@@ -172,7 +172,7 @@ watch:
   image:
     # -- The image to use for the rad-watch deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-watch
-    tag: v1.1.35
+    tag: v1.1.36
   env:
     # -- Whether to trigger reconciliation at startup.
     RECONCILIATION_AT_START: false
