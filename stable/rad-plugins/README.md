@@ -42,7 +42,7 @@ To use a private Azure Container Registry, you need to set the `azureWorkloadIde
 
 #### Private ECR Registry
 
-To use a private ECR Registry, you need add and configure proper AWS IAM role with the necessary permissions. For more details see: [Scanning images from ECR](https://docs.rad.security/docs/scanning-images-from-ecr).
+To use a private ECR Registry, you need to add and configure an AWS IAM role with the necessary permissions. For more details see: [Scanning images from ECR](https://docs.rad.security/docs/scanning-images-from-ecr).
 
 ### rad-guard plugin
 
@@ -605,7 +605,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | watch.enabled | bool | `true` |  |
 | watch.env.RECONCILIATION_AT_START | bool | `false` | Whether to trigger reconciliation at startup. |
 | watch.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-watch"` | The image to use for the rad-watch deployment |
-| watch.image.tag | string | `"v1.1.35"` |  |
+| watch.image.tag | string | `"v1.1.36"` |  |
 | watch.ingestCustomResources | bool | `false` | If set will allow ingesting Custom Resources specified in `customResourceRules` |
 | watch.nodeSelector | object | `{}` |  |
 | watch.podAnnotations | object | `{}` |  |
