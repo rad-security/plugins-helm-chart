@@ -1,6 +1,6 @@
 apiVersion: v2
 name: rad-plugins
-version: 2.3.14
+version: 2.3.15
 description: A Helm chart to run the RAD Security plugins
 home: https://rad.security
 icon: https://app.rad.security/favicon.ico
@@ -17,8 +17,8 @@ annotations:
   artifacthub.io/category: security
   # Possible kind options are added, changed, deprecated, removed, fixed and security.
   artifacthub.io/changes: |
-    - kind: changed
-      description: Improved memory and network usage of the rad-watch plugin. Added minor grammar fix to README.
+    - kind: security
+      description: Security updates for the guard plugin
   artifacthub.io/containsSecurityUpdates: "false"
   artifacthub.io/links: |
     - name: source
