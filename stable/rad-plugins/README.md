@@ -480,7 +480,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | guard.config.LOG_LEVEL | string | `"info"` | The log level to use. |
 | guard.enabled | bool | `true` |  |
 | guard.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-guard"` | The image to use for the rad-guard deployment |
-| guard.image.tag | string | `"v1.1.26"` |  |
+| guard.image.tag | string | `"v1.1.27"` |  |
 | guard.nodeSelector | object | `{}` |  |
 | guard.podAnnotations | object | `{}` |  |
 | guard.replicas | int | `1` |  |
@@ -526,7 +526,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.agent.grpcServerBatchSize | int | `2000` |  |
 | runtime.agent.hostPID | string | `nil` |  |
 | runtime.agent.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-runtime"` |  |
-| runtime.agent.image.tag | string | `"v0.1.25"` |  |
+| runtime.agent.image.tag | string | `"v0.1.27"` |  |
 | runtime.agent.mounts.volumeMounts | list | `[]` |  |
 | runtime.agent.mounts.volumes | list | `[]` |  |
 | runtime.agent.resources.limits.cpu | string | `"200m"` |  |
@@ -539,7 +539,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.exporter.env.LOG_LEVEL | string | `"INFO"` |  |
 | runtime.exporter.execFilters | list | `[]` | Allows to specify wildcard rules for filtering command arguments. |
 | runtime.exporter.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-runtime-exporter"` |  |
-| runtime.exporter.image.tag | string | `"v0.1.23"` |  |
+| runtime.exporter.image.tag | string | `"v0.1.27"` |  |
 | runtime.exporter.resources.limits.cpu | string | `"500m"` |  |
 | runtime.exporter.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | runtime.exporter.resources.limits.memory | string | `"1Gi"` |  |

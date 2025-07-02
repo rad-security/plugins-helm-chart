@@ -13,34 +13,21 @@ jobs:
     permissions:
       contents: read
     runs-on: ubuntu-latest
-    container: us.gcr.io/ksoc-public/kubernetes-toolkit:1.29.4
     steps:
-      - name: clone repo
+      - name: checkout
         uses: actions/checkout@v4
+      - name: set up python
+        uses: actions/setup-python@v5
+      - name: install pre-commit
+        run: |
+          python -m pip install --upgrade pip
+          pip install pre-commit
+      - name: pre-commit-install
+        run: pre-commit install
+      - name: pre-commit install hooks
+        run: pre-commit install-hooks
       - name: pre-commit checks
-        run: pre-commit-checks
-
-  deprecation-checks:
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    container: us.gcr.io/ksoc-public/kubernetes-toolkit:1.29.4
-    steps:
-      - name: clone repo
-        uses: actions/checkout@v4
-      - name: deprecation-checks
-        run: make deprecation-checks
-
-  kubeval-checks:
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    container: us.gcr.io/ksoc-public/kubernetes-toolkit:1.29.4
-    steps:
-      - name: clone repo
-        uses: actions/checkout@v4
-      - name: kubeval-checks
-        run: make kubeval-checks
+        run: pre-commit run --all-files
 
   lint:
     permissions:
