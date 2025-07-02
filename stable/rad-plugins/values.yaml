@@ -69,7 +69,7 @@ guard:
   image:
     # -- The image to use for the rad-guard deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-guard
-    tag: v1.1.26
+    tag: v1.1.27
   config:
     # -- Whether to block on error.
     BLOCK_ON_ERROR: false
@@ -219,7 +219,7 @@ runtime:
         kube-system
     image:
       repository: public.ecr.aws/n8h5y2v5/rad-security/rad-runtime
-      tag: v0.1.25
+      tag: v0.1.27
     resources:
       limits:
         cpu: 200m
@@ -258,7 +258,7 @@ runtime:
 
     image:
       repository: public.ecr.aws/n8h5y2v5/rad-security/rad-runtime-exporter
-      tag: v0.1.23
+      tag: v0.1.27
 
     # -- Allows to specify wildcard rules for filtering command arguments.
     execFilters: []
