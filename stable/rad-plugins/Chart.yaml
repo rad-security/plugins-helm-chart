@@ -3,7 +3,7 @@ name: rad-plugins
 version: 2.3.18
 description: A Helm chart to run the RAD Security plugins
 home: https://rad.security
-icon: https://app.rad.security/favicon-48x48.png
+icon: https://app.rad.security/apple-touch-icon-180x180.png
 keywords:
   - security
   - rad
