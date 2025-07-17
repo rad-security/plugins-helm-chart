@@ -1,0 +1,183 @@
+{{- if and .Values.k9 .Values.k9.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rad-k9
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app_name: rad-k9
+    maintained_by: rad.security
+spec:
+  minReadySeconds: 90
+  replicas: {{ .Values.k9.replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: rad-k9
+  template:
+    metadata:
+      labels:
+        app: rad-k9
+        maintained_by: rad.security
+      annotations:
+        {{- if .Values.workloads.disableServiceMesh }}
+        linkerd.io/inject: disabled
+        sidecar.istio.io/inject: "false"
+        {{- end }}
+    spec:
+      serviceAccountName: agent-rad-k9
+      {{- if .Values.workloads.imagePullSecretName }}
+      imagePullSecrets:
+        - name: {{ .Values.workloads.imagePullSecretName }}
+      {{- end }}
+      initContainers:
+{{ include "rad-plugins.bootstrap-initcontainer" . | indent 8 }}
+      containers:
+      - name: agent-be
+        image: "{{.Values.k9.backend.image.repository}}:{{.Values.k9.backend.image.tag}}"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 65534
+          runAsGroup: 65534
+          capabilities:
+            drop:
+              - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+        resources:
+{{ toYaml .Values.k9.resources | indent 10 }}
+        env:
+          - name: AGENT_DEPLOYMENT_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: AGENT_DEPLOYMENT_NAMESPACE
+            value: {{ .Release.Namespace }}
+          {{- if .Values.k9.capabilities.enableTerminatePod }}
+          - name: ENABLE_TERMINATE_POD
+            value: "true"
+          {{- end }}
+          {{- if .Values.k9.capabilities.enableTerminateNamespace }}
+          - name: ENABLE_TERMINATE_NAMESPACE
+            value: "true"
+          {{- end }}
+          {{- if .Values.k9.capabilities.enableQuarantine }}
+          - name: ENABLE_QUARANTINE
+            value: "true"
+          {{- end }}
+          {{- if .Values.k9.capabilities.enableGetLogs }}
+          - name: ENABLE_GET_LOGS
+            value: "true"
+          {{- end }}
+          {{- if .Values.k9.capabilities.enableLabelPod }}
+          - name: ENABLE_LABEL_POD
+            value: "true"
+          {{- end }}
+        volumeMounts:
+          - name: shared
+            mountPath: /shared
+          - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+            name: api-token
+            readOnly: true
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      - name: agent-fe
+        image: "{{.Values.k9.frontend.image.repository}}:{{.Values.k9.frontend.image.tag}}"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 65534
+          runAsGroup: 65534
+          capabilities:
+            drop:
+              - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+        resources:
+{{ toYaml .Values.k9.resources | indent 10 }}
+        env:
+          - name: rad_API_URL
+            value: {{ .Values.rad.apiUrl }}
+          - name: rad_NAMESPACE
+            value: {{ .Release.Namespace }}
+          {{- if .Values.rad.awsSecretId }}
+          - name: RAD_AWS_SECRET_ID
+            value: {{ .Values.rad.awsSecretId }}
+          {{- else }}
+{{ include "rad-plugins.access-key-env-secret" . | indent 10 }}
+          {{- end }}
+          - name: AGENT_ACTION_POLL_INTERVAL
+            value: {{ .Values.k9.frontend.agentActionPollInterval }}
+          - name: AGENT_DEPLOYMENT_NAMESPACE
+            value: {{ .Release.Namespace }}
+          {{- if .Values.k9.capabilities.enableTerminatePod }}
+          - name: ENABLE_TERMINATE_POD
+            value: "true"
+          {{- end }}
+          {{- if .Values.k9.capabilities.enableTerminateNamespace }}
+          - name: ENABLE_TERMINATE_NAMESPACE
+            value: "true"
+          {{- end }}
+          {{- if .Values.k9.capabilities.enableQuarantine }}
+          - name: ENABLE_QUARANTINE
+            value: "true"
+          {{- end }}
+          {{- if .Values.k9.capabilities.enableGetLogs }}
+          - name: ENABLE_GET_LOGS
+            value: "true"
+          {{- end }}
+          {{- if .Values.k9.capabilities.enableLabelPod }}
+          - name: ENABLE_LABEL_POD
+            value: "true"
+          {{- end }}
+        volumeMounts:
+          - name: shared
+            mountPath: /shared
+          - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+            name: api-token
+            readOnly: true
+        livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8082
+            initialDelaySeconds: 15
+            periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8082
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      volumes:
+      - name: shared
+        emptyDir:
+          sizeLimit: 10Mi
+      - name: api-token
+        secret:
+          secretName: rad-k9-api-token-secret
+      {{- with .Values.k9.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.k9.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+{{- end -}}
