@@ -494,6 +494,27 @@ The command removes all the Kubernetes components associated with the chart and 
 | guard.tolerations | list | `[]` |  |
 | guard.webhook.objectSelector | object | `{}` |  |
 | guard.webhook.timeoutSeconds | int | `10` |  |
+| k9.backend.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-k9-backend-agent"` |  |
+| k9.backend.image.tag | string | `"v0.0.37"` |  |
+| k9.capabilities.enableGetLogs | bool | `false` |  |
+| k9.capabilities.enableLabelPod | bool | `false` |  |
+| k9.capabilities.enableQuarantine | bool | `false` |  |
+| k9.capabilities.enableTerminateNamespace | bool | `false` |  |
+| k9.capabilities.enableTerminatePod | bool | `false` |  |
+| k9.enabled | bool | `false` |  |
+| k9.frontend.agentActionPollInterval | string | `"5s"` | The interval in which the agent polls the backend for new actions. |
+| k9.frontend.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-k9-frontend-agent"` |  |
+| k9.frontend.image.tag | string | `"v0.0.37"` |  |
+| k9.nodeSelector | object | `{}` |  |
+| k9.replicas | int | `1` |  |
+| k9.resources.limits.cpu | string | `"250m"` |  |
+| k9.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
+| k9.resources.limits.memory | string | `"512Mi"` |  |
+| k9.resources.requests.cpu | string | `"100m"` |  |
+| k9.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
+| k9.resources.requests.memory | string | `"128Mi"` |  |
+| k9.serviceAccountAnnotations | object | `{}` |  |
+| k9.tolerations | list | `[]` |  |
 | openshift.enabled | bool | `false` |  |
 | priorityClass.description | string | `"The priority class for RAD Security components"` |  |
 | priorityClass.enabled | bool | `false` |  |
