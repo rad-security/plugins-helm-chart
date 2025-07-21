@@ -49,7 +49,7 @@ bootstrapper:
   image:
     # -- The image to use for the rad-bootstrapper deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-bootstrapper
-    tag: v1.1.19
+    tag: v1.1.20
   env: {}
   resources:
     limits:
@@ -69,7 +69,7 @@ guard:
   image:
     # -- The image to use for the rad-guard deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-guard
-    tag: v1.1.27
+    tag: v1.1.28
   config:
     # -- Whether to block on error.
     BLOCK_ON_ERROR: false
@@ -104,7 +104,7 @@ sbom:
   image:
     # -- The image to use for the rad-sbom deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-sbom
-    tag: v1.1.49
+    tag: v1.1.50
   env:
     # -- Whether to mutate the image in pod spec by adding digest at the end. By default, digests are added to images to ensure
     # that the image that runs in the cluster matches the digest of the build.  Disable this if your continuous deployment
@@ -151,7 +151,7 @@ sync:
   image:
     # -- The image to use for the rad-sync deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-sync
-    tag: v1.1.23
+    tag: v1.1.24
   env: {}
   resources:
     limits:
