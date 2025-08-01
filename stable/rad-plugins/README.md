@@ -572,8 +572,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.nodeSelector | object | `{}` |  |
 | runtime.piiAnalyzer.enabled | bool | `false` |  |
 | runtime.piiAnalyzer.env.LOG_LEVEL | string | `"WARNING"` |  |
-| runtime.piiAnalyzer.image.repository | string | `"mcr.microsoft.com/presidio-analyzer"` |  |
-| runtime.piiAnalyzer.image.tag | string | `"2.2.357"` |  |
+| runtime.piiAnalyzer.image.repository | string | `"public.ecr.aws/n8h5y2v5/presidio-analyzer"` |  |
+| runtime.piiAnalyzer.image.tag | string | `"v0.1.0"` |  |
 | runtime.piiAnalyzer.nodeSelector | object | `{}` |  |
 | runtime.piiAnalyzer.replicas | int | `3` |  |
 | runtime.piiAnalyzer.resources.limits.cpu | string | `"1000m"` |  |
