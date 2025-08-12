@@ -95,27 +95,25 @@ Each plugin pod contains `agent` and `exporter` containers. The `agent` containe
 
 The information collected is sent to the RAD Security platform for further processing. For more information on the `rad-runtime` plugin, see the [RAD Security documentation](https://docs.rad.security/).
 
-## Persistent Storage
+## Ephemeral Storage
 
-RAD Security plugins support optional persistent storage for enhanced performance and data persistence. When enabled, components use PersistentVolumeClaims (PVCs) as their `/tmp` filesystem instead of ephemeral storage.
-
+RAD Security plugins support optional ephemeral storage for enhanced performance and data persistence. When enabled, components use Generic ephemeral volumes as their `/tmp` filesystem instead of standard ephemeral storage.
 
 ### Basic Configuration
 
-Enable persistent storage for any component by setting `PLUGIN_NAME.storage.enabled: true`. If `storageClass` is not set, the default StorageClass will be used.
+Enable ephemeral storage for any component by setting `PLUGIN_NAME.storage.enabled: true`. If `storageClassName` is not set, the default StorageClass will be used.
 
 ```yaml
 sbom:
   storage:
     enabled: true
     size: 25Gi
-    storageClass: "gp3" # Define custom storage class
+    storageClassName: "gp3" # Define custom storage class
 
 guard:
   storage:
     enabled: true
-    size: 1Gi
-    storageClass: ""  # Use default storage class
+    size: 1Gi # Use default storage class
 ```
 
 ## Prerequisites

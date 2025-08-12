@@ -100,26 +100,22 @@ guard:
   serviceAccountAnnotations: {}
   # -- Storage configuration for rad-guard
   storage:
-    # -- Enable persistent storage for rad-guard (used as /tmp filesystem when enabled)
+    # -- Enable ephemeral storage for rad-guard (used as /tmp filesystem when enabled)
     enabled: false
     # -- Storage class to use. Use "" for default storage class, "-" for no storage class
     # -- Common classes: gp2/gp3 (AWS), standard-ssd (GKE), managed-premium (AKS)
-    storageClass: ""
-    # -- Storage size for guard persistent volume
+    storageClassName: ""
+    # -- Storage size for guard ephemeral volume
     size: 1Gi
-    # -- Access modes for the PVC
+    # -- Access modes for the ephemeral volume
     accessModes:
       - ReadWriteOnce
-    # -- Mount path for the persistent volume in the guard container (used as /tmp when enabled)
+    # -- Mount path for the ephemeral volume in the guard container (used as /tmp when enabled)
     mountPath: "/tmp"
-    # -- Use existing PVC instead of creating a new one
-    existingClaim: ""
-    # -- Additional labels for the PVC
+    # -- Additional labels for the ephemeral volume
     labels: {}
-    # -- Additional annotations for the PVC
+    # -- Additional annotations for the ephemeral volume
     annotations: {}
-    # -- Selector for the PV (optional)
-    selector: {}
 
 sbom:
   enabled: true
@@ -169,25 +165,21 @@ sbom:
   serviceAccountAnnotations: {}
   # -- Storage configuration for rad-sbom
   storage:
-    # -- Enable persistent storage for rad-sbom (used as /tmp for image processing and layer caching)
+    # -- Enable ephemeral storage for rad-sbom (used as /tmp for image processing and layer caching)
     enabled: false
     # -- Storage class to use. Use "" for default storage class, "-" for no storage class
-    storageClass: ""
-    # -- Storage size for SBOM persistent volume (larger size recommended for image processing)
+    storageClassName: ""
+    # -- Storage size for SBOM ephemeral volume (larger size recommended for image processing)
     size: 25Gi
-    # -- Access modes for the PVC
+    # -- Access modes for the ephemeral volume
     accessModes:
       - ReadWriteOnce
-    # -- Mount path for the persistent volume in the SBOM container (also used as /tmp when enabled)
+    # -- Mount path for the ephemeral volume in the SBOM container (also used as /tmp when enabled)
     mountPath: "/tmp"
-    # -- Use existing PVC instead of creating a new one
-    existingClaim: ""
-    # -- Additional labels for the PVC
+    # -- Additional labels for the ephemeral volume
     labels: {}
-    # -- Additional annotations for the PVC
+    # -- Additional annotations for the ephemeral volume
     annotations: {}
-    # -- Selector for the PV (optional)
-    selector: {}
 
 sync:
   enabled: true
@@ -211,25 +203,21 @@ sync:
   serviceAccountAnnotations: {}
   # -- Storage configuration for rad-sync
   storage:
-    # -- Enable persistent storage for rad-sync (used as /tmp filesystem when enabled)
+    # -- Enable ephemeral storage for rad-sync (used as /tmp filesystem when enabled)
     enabled: false
     # -- Storage class to use. Use "" for default storage class, "-" for no storage class
-    storageClass: ""
-    # -- Storage size for sync persistent volume
+    storageClassName: ""
+    # -- Storage size for sync ephemeral volume
     size: 1Gi
-    # -- Access modes for the PVC
+    # -- Access modes for the ephemeral volume
     accessModes:
       - ReadWriteOnce
-    # -- Mount path for the persistent volume in the sync container (used as /tmp when enabled)
+    # -- Mount path for the ephemeral volume in the sync container (used as /tmp when enabled)
     mountPath: "/tmp"
-    # -- Use existing PVC instead of creating a new one
-    existingClaim: ""
-    # -- Additional labels for the PVC
+    # -- Additional labels for the ephemeral volume
     labels: {}
-    # -- Additional annotations for the PVC
+    # -- Additional annotations for the ephemeral volume
     annotations: {}
-    # -- Selector for the PV (optional)
-    selector: {}
 
 watch:
   enabled: true
@@ -268,25 +256,21 @@ watch:
   serviceAccountAnnotations: {}
   # -- Storage configuration for rad-watch
   storage:
-    # -- Enable persistent storage for rad-watch (used as /tmp filesystem when enabled)
+    # -- Enable ephemeral storage for rad-watch (used as /tmp filesystem when enabled)
     enabled: false
     # -- Storage class to use. Use "" for default storage class, "-" for no storage class
-    storageClass: ""
-    # -- Storage size for watch persistent volume
+    storageClassName: ""
+    # -- Storage size for watch ephemeral volume
     size: 1Gi
-    # -- Access modes for the PVC
+    # -- Access modes for the ephemeral volume
     accessModes:
       - ReadWriteOnce
-    # -- Mount path for the persistent volume in the watch container (used as /tmp when enabled)
+    # -- Mount path for the ephemeral volume in the watch container (used as /tmp when enabled)
     mountPath: "/tmp"
-    # -- Use existing PVC instead of creating a new one
-    existingClaim: ""
-    # -- Additional labels for the PVC
+    # -- Additional labels for the ephemeral volume
     labels: {}
-    # -- Additional annotations for the PVC
+    # -- Additional annotations for the ephemeral volume
     annotations: {}
-    # -- Selector for the PV (optional)
-    selector: {}
 
 runtime:
   enabled: false
@@ -387,6 +371,23 @@ runtime:
       # -- The maximum number of pods that can be scheduled above the desired number of pods. Can be an absolute number or percent, e.g. `5` or `"10%"`
       maxSurge: 0
   serviceAccountAnnotations: {}
+  # -- Storage configuration for rad-runtime
+  storage:
+    # -- Enable ephemeral storage for rad-runtime (used as /tmp filesystem when enabled)
+    enabled: false
+    # -- Storage class to use. Use "" for default storage class, "-" for no storage class
+    storageClassName: ""
+    # -- Storage size for runtime ephemeral volume
+    size: 1Gi
+    # -- Access modes for the ephemeral volume
+    accessModes:
+      - ReadWriteOnce
+    # -- Mount path for the ephemeral volume in the runtime containers (used as /tmp when enabled)
+    mountPath: "/tmp"
+    # -- Additional labels for the ephemeral volume
+    labels: {}
+    # -- Additional annotations for the ephemeral volume
+    annotations: {}
 
 k9:
   enabled: false
@@ -421,25 +422,21 @@ k9:
   serviceAccountAnnotations: {}
   # -- Storage configuration for rad-k9
   storage:
-    # -- Enable persistent storage for rad-k9 (used as /tmp filesystem when enabled)
+    # -- Enable ephemeral storage for rad-k9 (used as /tmp filesystem when enabled)
     enabled: false
     # -- Storage class to use. Use "" for default storage class, "-" for no storage class
-    storageClass: ""
-    # -- Storage size for k9 persistent volume
+    storageClassName: ""
+    # -- Storage size for k9 ephemeral volume
     size: 1Gi
-    # -- Access modes for the PVC
+    # -- Access modes for the ephemeral volume
     accessModes:
       - ReadWriteOnce
-    # -- Mount path for the persistent volume in the k9 containers (used as /tmp when enabled)
+    # -- Mount path for the ephemeral volume in the k9 containers (used as /tmp when enabled)
     mountPath: "/tmp"
-    # -- Use existing PVC instead of creating a new one
-    existingClaim: ""
-    # -- Additional labels for the PVC
+    # -- Additional labels for the ephemeral volume
     labels: {}
-    # -- Additional annotations for the PVC
+    # -- Additional annotations for the ephemeral volume
     annotations: {}
-    # -- Selector for the PV (optional)
-    selector: {}
 
 # Enables support for OpenShift.
 openshift:

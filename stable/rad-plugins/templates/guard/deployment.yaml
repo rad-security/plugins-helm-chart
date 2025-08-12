@@ -104,7 +104,7 @@ spec:
             periodSeconds: 10
           volumeMounts:
           {{- if .Values.guard.storage.enabled }}
-          - mountPath: /tmp
+          - mountPath: {{ .Values.guard.storage.mountPath }}
             name: guard-storage
           {{- end }}
           - mountPath: /tmp/k8s-webhook-server/serving-certs
@@ -133,8 +133,30 @@ spec:
           secretName: rad-guard-api-token-secret
       {{- if .Values.guard.storage.enabled }}
       - name: guard-storage
-        persistentVolumeClaim:
-          claimName: guard
+        ephemeral:
+          volumeClaimTemplate:
+            metadata:
+              {{- with .Values.guard.storage.labels }}
+              labels:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with .Values.guard.storage.annotations }}
+              annotations:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+            spec:
+              accessModes:
+                {{- range .Values.guard.storage.accessModes }}
+                - {{ . }}
+                {{- end }}
+              {{- if .Values.guard.storage.storageClassName }}
+              {{- if ne .Values.guard.storage.storageClassName "-" }}
+              storageClassName: {{ .Values.guard.storage.storageClassName }}
+              {{- end }}
+              {{- end }}
+              resources:
+                requests:
+                  storage: {{ .Values.guard.storage.size }}
       {{- end }}
 {{- end -}}
 {{- end -}}

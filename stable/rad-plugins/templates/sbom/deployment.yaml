@@ -105,7 +105,7 @@ spec:
             periodSeconds: 10
           volumeMounts:
           {{- if .Values.sbom.storage.enabled }}
-          - mountPath: /tmp
+          - mountPath: {{ .Values.sbom.storage.mountPath }}
             name: sbom-storage
             readOnly: false
           {{- else }}
@@ -143,8 +143,30 @@ spec:
           secretName: rad-sbom-api-token-secret
       {{- if .Values.sbom.storage.enabled }}
       - name: sbom-storage
-        persistentVolumeClaim:
-          claimName: sbom
+        ephemeral:
+          volumeClaimTemplate:
+            metadata:
+              {{- with .Values.sbom.storage.labels }}
+              labels:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with .Values.sbom.storage.annotations }}
+              annotations:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+            spec:
+              accessModes:
+                {{- range .Values.sbom.storage.accessModes }}
+                - {{ . }}
+                {{- end }}
+              {{- if .Values.sbom.storage.storageClassName }}
+              {{- if ne .Values.sbom.storage.storageClassName "-" }}
+              storageClassName: {{ .Values.sbom.storage.storageClassName }}
+              {{- end }}
+              {{- end }}
+              resources:
+                requests:
+                  storage: {{ .Values.sbom.storage.size }}
       {{- end }}
 {{- end -}}
 {{- end -}}

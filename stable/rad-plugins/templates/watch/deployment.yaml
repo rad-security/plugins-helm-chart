@@ -96,7 +96,7 @@ spec:
             {{- end }}
           volumeMounts:
           {{- if .Values.watch.storage.enabled }}
-          - mountPath: /tmp
+          - mountPath: {{ .Values.watch.storage.mountPath }}
             name: watch-storage
           {{- end }}
           - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
@@ -128,8 +128,30 @@ spec:
       {{- end }}
       {{- if .Values.watch.storage.enabled }}
       - name: watch-storage
-        persistentVolumeClaim:
-          claimName: watch
+        ephemeral:
+          volumeClaimTemplate:
+            metadata:
+              {{- with .Values.watch.storage.labels }}
+              labels:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with .Values.watch.storage.annotations }}
+              annotations:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+            spec:
+              accessModes:
+                {{- range .Values.watch.storage.accessModes }}
+                - {{ . }}
+                {{- end }}
+              {{- if .Values.watch.storage.storageClassName }}
+              {{- if ne .Values.watch.storage.storageClassName "-" }}
+              storageClassName: {{ .Values.watch.storage.storageClassName }}
+              {{- end }}
+              {{- end }}
+              resources:
+                requests:
+                  storage: {{ .Values.watch.storage.size }}
       {{- end }}
 {{- end -}}
 {{- end -}}

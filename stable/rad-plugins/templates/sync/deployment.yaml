@@ -90,8 +90,8 @@ spec:
             {{- end }}
           volumeMounts:
           {{- if .Values.sync.storage.enabled }}
-          - mountPath: /tmp
-            name: sync
+          - mountPath: {{ .Values.sync.storage.mountPath }}
+            name: sync-storage
           {{- end }}
           - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
             name: api-token
@@ -111,9 +111,31 @@ spec:
         secret:
           secretName: rad-sync-api-token-secret
       {{- if .Values.sync.storage.enabled }}
-      - name: sync
-        persistentVolumeClaim:
-          claimName: sync
+      - name: sync-storage
+        ephemeral:
+          volumeClaimTemplate:
+            metadata:
+              {{- with .Values.sync.storage.labels }}
+              labels:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with .Values.sync.storage.annotations }}
+              annotations:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+            spec:
+              accessModes:
+                {{- range .Values.sync.storage.accessModes }}
+                - {{ . }}
+                {{- end }}
+              {{- if .Values.sync.storage.storageClassName }}
+              {{- if ne .Values.sync.storage.storageClassName "-" }}
+              storageClassName: {{ .Values.sync.storage.storageClassName }}
+              {{- end }}
+              {{- end }}
+              resources:
+                requests:
+                  storage: {{ .Values.sync.storage.size }}
       {{- end }}
 {{- end -}}
 {{- end -}}

@@ -86,8 +86,8 @@ spec:
             name: api-token
             readOnly: true
           {{- if .Values.k9.storage.enabled }}
-          - mountPath: /tmp
-            name: k9
+          - mountPath: {{ .Values.k9.storage.mountPath }}
+            name: k9-storage
           {{- end }}
         livenessProbe:
           httpGet:
@@ -158,7 +158,7 @@ spec:
             name: api-token
             readOnly: true
           {{- if .Values.k9.storage.enabled }}
-          - mountPath: /tmp
+          - mountPath: {{ .Values.k9.storage.mountPath }}
             name: k9-storage
           {{- end }}
         livenessProbe:
@@ -181,9 +181,31 @@ spec:
         secret:
           secretName: rad-k9-api-token-secret
       {{- if .Values.k9.storage.enabled }}
-      - name: k9
-        persistentVolumeClaim:
-          claimName: k9
+      - name: k9-storage
+        ephemeral:
+          volumeClaimTemplate:
+            metadata:
+              {{- with .Values.k9.storage.labels }}
+              labels:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with .Values.k9.storage.annotations }}
+              annotations:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+            spec:
+              accessModes:
+                {{- range .Values.k9.storage.accessModes }}
+                - {{ . }}
+                {{- end }}
+              {{- if .Values.k9.storage.storageClassName }}
+              {{- if ne .Values.k9.storage.storageClassName "-" }}
+              storageClassName: {{ .Values.k9.storage.storageClassName }}
+              {{- end }}
+              {{- end }}
+              resources:
+                requests:
+                  storage: {{ .Values.k9.storage.size }}
       {{- end }}
       {{- with .Values.k9.nodeSelector }}
       nodeSelector:
