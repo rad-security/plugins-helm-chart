@@ -138,59 +138,13 @@ guard:
   ephemeralVolumes:
     enabled: true
     size: 2Gi # Use default storage class
-```
-
-### Mount Path Requirements
-
-Different plugins require different mount paths based on their specific needs:
-
-**`/tmp` mount (default for most plugins):**
-- **rad-guard, rad-sbom, rad-sync, rad-watch, rad-runtime**: Use `/tmp` for general temporary file processing
-- These plugins process data that needs temporary storage during webhook operations, image analysis, or data synchronization
-- `/tmp` is the standard location for temporary files in containerized applications
-
-**Multiple mounts (pii-analyzer specific):**
-- **pii-analyzer**: Uses multiple ephemeral volumes for Microsoft Presidio requirements
-  - `/root` (2Gi): Model caching and application data storage
-  - `/usr` (1Gi): Application binaries and libraries
-  - `/tmp` (1Gi): Temporary processing files
-
-**Why multiple volumes are required:**
-
-Microsoft Presidio has specific storage requirements that necessitate separate volumes:
-
-1. **Model Storage (`/root`)**: Presidio downloads large ML models (transformers, spaCy models) at startup and caches them in the user's home directory. These models can be several hundred MB to over 1GB total and need persistent storage during the container lifecycle for performance.
-
-2. **Runtime Dependencies (`/usr`)**: Presidio installs additional Python packages, ML libraries, and native dependencies at runtime. These are stored in `/usr/local` and require dedicated space separate from the base image.
-
-3. **Processing Workspace (`/tmp`)**: PII detection involves creating temporary files for text analysis, tokenization, and model inference. This requires fast, isolated temporary storage that doesn't interfere with model caching.
-
-**Performance Benefits:**
-- **Model reuse**: Cached models in `/root` prevent repeated 200-500MB downloads on every request
-- **Storage isolation**: Separating temp files from models prevents cache eviction due to processing spikes
-- **Resource management**: Independent sizing allows optimization (large model cache, smaller temp space)
-- **I/O separation**: Different access patterns (read-heavy models vs write-heavy temp files) benefit from separate volumes
-
-```yaml
-# Example: Different mount configurations for different use cases
-sbom:
-  ephemeralVolumes:
-    enabled: true
-    mountPath: "/tmp"        # For temporary image processing
 
 runtime:
   piiAnalyzer:
     ephemeralVolumes:
       enabled: true
-      root:
-        size: "2Gi"          # Model caching storage
-        mountPath: "/root"
-      usr:
-        size: "1Gi"          # Application binaries
-        mountPath: "/usr"
-      tmp:
-        size: "1Gi"          # Temporary processing
-        mountPath: "/tmp"
+      size: "1Gi"
+      mountPath: "/tmp"
 ```
 
 **Note**: Ephemeral volumes are deleted when pods are terminated. They provide temporary, high-performance storage but do not persist data across pod restarts.
@@ -699,28 +653,23 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.nodeSelector | object | `{}` |  |
 | runtime.piiAnalyzer.enabled | bool | `false` |  |
 | runtime.piiAnalyzer.env.LOG_LEVEL | string | `"WARNING"` |  |
-| runtime.piiAnalyzer.ephemeralVolumes | object | `{"accessModes":["ReadWriteOnce"],"annotations":{},"enabled":true,"labels":{},"root":{"mountPath":"/root","size":"2Gi"},"storageClassName":"gp3-delete","tmp":{"mountPath":"/tmp","size":"1Gi"},"usr":{"mountPath":"/usr","size":"1Gi"}}` | Ephemeral volume configuration for pii-analyzer |
-| runtime.piiAnalyzer.ephemeralVolumes.accessModes | list | `["ReadWriteOnce"]` | Access modes for the ephemeral volumes |
-| runtime.piiAnalyzer.ephemeralVolumes.annotations | object | `{}` | Additional annotations for the ephemeral volumes |
-| runtime.piiAnalyzer.ephemeralVolumes.enabled | bool | `true` | Enable ephemeral storage for pii-analyzer (used for model data and temporary processing) |
-| runtime.piiAnalyzer.ephemeralVolumes.labels | object | `{}` | Additional labels for the ephemeral volumes |
-| runtime.piiAnalyzer.ephemeralVolumes.root | object | `{"mountPath":"/root","size":"2Gi"}` | Root volume configuration for model caching and data |
-| runtime.piiAnalyzer.ephemeralVolumes.root.mountPath | string | `"/root"` | Mount path for the root ephemeral volume |
-| runtime.piiAnalyzer.ephemeralVolumes.root.size | string | `"2Gi"` | Storage size for /root ephemeral volume |
-| runtime.piiAnalyzer.ephemeralVolumes.storageClassName | string | `"gp3-delete"` | Storage class to use. Use "" for default storage class, "-" for no storage class |
-| runtime.piiAnalyzer.ephemeralVolumes.tmp | object | `{"mountPath":"/tmp","size":"1Gi"}` | Tmp volume configuration for temporary processing |
-| runtime.piiAnalyzer.ephemeralVolumes.tmp.mountPath | string | `"/tmp"` | Mount path for the tmp ephemeral volume |
-| runtime.piiAnalyzer.ephemeralVolumes.tmp.size | string | `"1Gi"` | Storage size for /tmp ephemeral volume |
-| runtime.piiAnalyzer.ephemeralVolumes.usr | object | `{"mountPath":"/usr","size":"1Gi"}` | Usr volume configuration for application binaries and libraries |
-| runtime.piiAnalyzer.ephemeralVolumes.usr.mountPath | string | `"/usr"` | Mount path for the usr ephemeral volume |
-| runtime.piiAnalyzer.ephemeralVolumes.usr.size | string | `"1Gi"` | Storage size for /usr ephemeral volume |
+| runtime.piiAnalyzer.ephemeralVolumes | object | `{"accessModes":["ReadWriteOnce"],"annotations":{},"enabled":true,"labels":{},"mountPath":"/tmp","size":"1Gi","storageClassName":""}` | Ephemeral volume configuration for pii-analyzer |
+| runtime.piiAnalyzer.ephemeralVolumes.accessModes | list | `["ReadWriteOnce"]` | Access modes for the ephemeral volume |
+| runtime.piiAnalyzer.ephemeralVolumes.annotations | object | `{}` | Additional annotations for the ephemeral volume |
+| runtime.piiAnalyzer.ephemeralVolumes.enabled | bool | `true` | Enable ephemeral storage for pii-analyzer (used for temporary processing) |
+| runtime.piiAnalyzer.ephemeralVolumes.labels | object | `{}` | Additional labels for the ephemeral volume |
+| runtime.piiAnalyzer.ephemeralVolumes.mountPath | string | `"/tmp"` | Mount path for the ephemeral volume |
+| runtime.piiAnalyzer.ephemeralVolumes.size | string | `"1Gi"` | Storage size for ephemeral volume |
+| runtime.piiAnalyzer.ephemeralVolumes.storageClassName | string | `""` | Storage class to use. Use "" for default storage class, "-" for no storage class |
 | runtime.piiAnalyzer.image.repository | string | `"mcr.microsoft.com/presidio-analyzer"` |  |
 | runtime.piiAnalyzer.image.tag | string | `"2.2.359"` |  |
 | runtime.piiAnalyzer.nodeSelector | object | `{}` |  |
 | runtime.piiAnalyzer.replicas | int | `3` |  |
 | runtime.piiAnalyzer.resources.limits.cpu | string | `"2000m"` |  |
+| runtime.piiAnalyzer.resources.limits.ephemeral-storage | string | `"4Gi"` |  |
 | runtime.piiAnalyzer.resources.limits.memory | string | `"2Gi"` |  |
 | runtime.piiAnalyzer.resources.requests.cpu | string | `"500m"` |  |
+| runtime.piiAnalyzer.resources.requests.ephemeral-storage | string | `"2Gi"` |  |
 | runtime.piiAnalyzer.resources.requests.memory | string | `"128Mi"` |  |
 | runtime.piiAnalyzer.tolerations | list | `[]` |  |
 | runtime.reachableVulnerabilitiesEnabled | bool | `true` |  |

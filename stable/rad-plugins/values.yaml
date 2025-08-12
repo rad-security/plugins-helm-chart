@@ -355,41 +355,29 @@ runtime:
       limits:
         cpu: 2000m
         memory: 2Gi
+        ephemeral-storage: 4Gi
       requests:
         cpu: 500m
         memory: 128Mi
+        ephemeral-storage: 2Gi
     tolerations: []
     # -- Ephemeral volume configuration for pii-analyzer
     ephemeralVolumes:
-      # -- Enable ephemeral storage for pii-analyzer (used for model data and temporary processing)
+      # -- Enable ephemeral storage for pii-analyzer (used for temporary processing)
       enabled: true
       # -- Storage class to use. Use "" for default storage class, "-" for no storage class
-      storageClassName: "gp3-delete"
-      # -- Access modes for the ephemeral volumes
+      storageClassName: ""
+      # -- Access modes for the ephemeral volume
       accessModes:
         - ReadWriteOnce
-      # -- Additional labels for the ephemeral volumes
+      # -- Additional labels for the ephemeral volume
       labels: {}
-      # -- Additional annotations for the ephemeral volumes
+      # -- Additional annotations for the ephemeral volume
       annotations: {}
-      # -- Root volume configuration for model caching and data
-      root:
-        # -- Storage size for /root ephemeral volume
-        size: 2Gi
-        # -- Mount path for the root ephemeral volume
-        mountPath: "/root"
-      # -- Usr volume configuration for application binaries and libraries
-      usr:
-        # -- Storage size for /usr ephemeral volume
-        size: 1Gi
-        # -- Mount path for the usr ephemeral volume
-        mountPath: "/usr"
-      # -- Tmp volume configuration for temporary processing
-      tmp:
-        # -- Storage size for /tmp ephemeral volume
-        size: 1Gi
-        # -- Mount path for the tmp ephemeral volume
-        mountPath: "/tmp"
+      # -- Storage size for ephemeral volume
+      size: 1Gi
+      # -- Mount path for the ephemeral volume
+      mountPath: "/tmp"
 
   nodeSelector: {}
   nodeName: ""
