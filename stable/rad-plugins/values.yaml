@@ -272,12 +272,13 @@ watch:
     annotations: {}
 
 runtime:
-  enabled: true
+  enabled: false
   reachableVulnerabilitiesEnabled: true
   httpTracingEnabled: false
   agent:
     env:
       LOG_LEVEL: INFO
+      TRACER_PII_DETECTOR_PRESIDIO_MAX_REQUESTS_PER_SECOND: "10"
       TRACER_IGNORE_NAMESPACES: |
         cert-manager,
         rad,
@@ -352,12 +353,43 @@ runtime:
     replicas: 3
     resources:
       limits:
-        cpu: 1000m
+        cpu: 2000m
         memory: 2Gi
       requests:
-        cpu: 100m
+        cpu: 500m
         memory: 128Mi
     tolerations: []
+    # -- Ephemeral volume configuration for pii-analyzer
+    ephemeralVolumes:
+      # -- Enable ephemeral storage for pii-analyzer (used for model data and temporary processing)
+      enabled: true
+      # -- Storage class to use. Use "" for default storage class, "-" for no storage class
+      storageClassName: "gp3-delete"
+      # -- Access modes for the ephemeral volumes
+      accessModes:
+        - ReadWriteOnce
+      # -- Additional labels for the ephemeral volumes
+      labels: {}
+      # -- Additional annotations for the ephemeral volumes
+      annotations: {}
+      # -- Root volume configuration for model caching and data
+      root:
+        # -- Storage size for /root ephemeral volume
+        size: 2Gi
+        # -- Mount path for the root ephemeral volume
+        mountPath: "/root"
+      # -- Usr volume configuration for application binaries and libraries
+      usr:
+        # -- Storage size for /usr ephemeral volume
+        size: 1Gi
+        # -- Mount path for the usr ephemeral volume
+        mountPath: "/usr"
+      # -- Tmp volume configuration for temporary processing
+      tmp:
+        # -- Storage size for /tmp ephemeral volume
+        size: 1Gi
+        # -- Mount path for the tmp ephemeral volume
+        mountPath: "/tmp"
 
   nodeSelector: {}
   nodeName: ""
