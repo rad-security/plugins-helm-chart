@@ -98,6 +98,28 @@ guard:
   nodeSelector: {}
   tolerations: []
   serviceAccountAnnotations: {}
+  # -- Storage configuration for rad-guard
+  storage:
+    # -- Enable persistent storage for rad-guard (used as /tmp filesystem when enabled)
+    enabled: false
+    # -- Storage class to use. Use "" for default storage class, "-" for no storage class
+    # -- Common classes: gp2/gp3 (AWS), standard-ssd (GKE), managed-premium (AKS)
+    storageClass: ""
+    # -- Storage size for guard persistent volume
+    size: 1Gi
+    # -- Access modes for the PVC
+    accessModes:
+      - ReadWriteOnce
+    # -- Mount path for the persistent volume in the guard container (used as /tmp when enabled)
+    mountPath: "/tmp"
+    # -- Use existing PVC instead of creating a new one
+    existingClaim: ""
+    # -- Additional labels for the PVC
+    labels: {}
+    # -- Additional annotations for the PVC
+    annotations: {}
+    # -- Selector for the PV (optional)
+    selector: {}
 
 sbom:
   enabled: true
@@ -145,6 +167,27 @@ sbom:
   nodeSelector: {}
   tolerations: []
   serviceAccountAnnotations: {}
+  # -- Storage configuration for rad-sbom
+  storage:
+    # -- Enable persistent storage for rad-sbom (used as /tmp for image processing and layer caching)
+    enabled: false
+    # -- Storage class to use. Use "" for default storage class, "-" for no storage class
+    storageClass: ""
+    # -- Storage size for SBOM persistent volume (larger size recommended for image processing)
+    size: 25Gi
+    # -- Access modes for the PVC
+    accessModes:
+      - ReadWriteOnce
+    # -- Mount path for the persistent volume in the SBOM container (also used as /tmp when enabled)
+    mountPath: "/tmp"
+    # -- Use existing PVC instead of creating a new one
+    existingClaim: ""
+    # -- Additional labels for the PVC
+    labels: {}
+    # -- Additional annotations for the PVC
+    annotations: {}
+    # -- Selector for the PV (optional)
+    selector: {}
 
 sync:
   enabled: true
@@ -166,6 +209,27 @@ sync:
   nodeSelector: {}
   tolerations: []
   serviceAccountAnnotations: {}
+  # -- Storage configuration for rad-sync
+  storage:
+    # -- Enable persistent storage for rad-sync (used as /tmp filesystem when enabled)
+    enabled: false
+    # -- Storage class to use. Use "" for default storage class, "-" for no storage class
+    storageClass: ""
+    # -- Storage size for sync persistent volume
+    size: 1Gi
+    # -- Access modes for the PVC
+    accessModes:
+      - ReadWriteOnce
+    # -- Mount path for the persistent volume in the sync container (used as /tmp when enabled)
+    mountPath: "/tmp"
+    # -- Use existing PVC instead of creating a new one
+    existingClaim: ""
+    # -- Additional labels for the PVC
+    labels: {}
+    # -- Additional annotations for the PVC
+    annotations: {}
+    # -- Selector for the PV (optional)
+    selector: {}
 
 watch:
   enabled: true
@@ -202,9 +266,30 @@ watch:
     allowlist: []
     denylist: []
   serviceAccountAnnotations: {}
+  # -- Storage configuration for rad-watch
+  storage:
+    # -- Enable persistent storage for rad-watch (used as /tmp filesystem when enabled)
+    enabled: false
+    # -- Storage class to use. Use "" for default storage class, "-" for no storage class
+    storageClass: ""
+    # -- Storage size for watch persistent volume
+    size: 1Gi
+    # -- Access modes for the PVC
+    accessModes:
+      - ReadWriteOnce
+    # -- Mount path for the persistent volume in the watch container (used as /tmp when enabled)
+    mountPath: "/tmp"
+    # -- Use existing PVC instead of creating a new one
+    existingClaim: ""
+    # -- Additional labels for the PVC
+    labels: {}
+    # -- Additional annotations for the PVC
+    annotations: {}
+    # -- Selector for the PV (optional)
+    selector: {}
 
 runtime:
-  enabled: false
+  enabled: true
   reachableVulnerabilitiesEnabled: true
   httpTracingEnabled: false
   agent:
@@ -334,6 +419,27 @@ k9:
   tolerations: []
   nodeSelector: {}
   serviceAccountAnnotations: {}
+  # -- Storage configuration for rad-k9
+  storage:
+    # -- Enable persistent storage for rad-k9 (used as /tmp filesystem when enabled)
+    enabled: false
+    # -- Storage class to use. Use "" for default storage class, "-" for no storage class
+    storageClass: ""
+    # -- Storage size for k9 persistent volume
+    size: 1Gi
+    # -- Access modes for the PVC
+    accessModes:
+      - ReadWriteOnce
+    # -- Mount path for the persistent volume in the k9 containers (used as /tmp when enabled)
+    mountPath: "/tmp"
+    # -- Use existing PVC instead of creating a new one
+    existingClaim: ""
+    # -- Additional labels for the PVC
+    labels: {}
+    # -- Additional annotations for the PVC
+    annotations: {}
+    # -- Selector for the PV (optional)
+    selector: {}
 
 # Enables support for OpenShift.
 openshift:

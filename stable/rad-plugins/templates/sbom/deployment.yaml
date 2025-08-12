@@ -104,9 +104,15 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 10
           volumeMounts:
+          {{- if .Values.sbom.storage.enabled }}
+          - mountPath: /tmp
+            name: sbom-storage
+            readOnly: false
+          {{- else }}
           - mountPath: /tmp
             name: temp-image-dir
             readOnly: false
+          {{- end }}
           - mountPath: /tmp/k8s-webhook-server/serving-certs
             name: cert
             readOnly: true
@@ -124,8 +130,10 @@ spec:
 {{ toYaml . | indent 8 }}
   {{- end }}
       volumes:
+      {{- if not .Values.sbom.storage.enabled }}
       - name: temp-image-dir
         emptyDir: {}
+      {{- end }}
       - name: cert
         secret:
           defaultMode: 420
@@ -133,5 +141,10 @@ spec:
       - name: api-token
         secret:
           secretName: rad-sbom-api-token-secret
+      {{- if .Values.sbom.storage.enabled }}
+      - name: sbom-storage
+        persistentVolumeClaim:
+          claimName: sbom
+      {{- end }}
 {{- end -}}
 {{- end -}}

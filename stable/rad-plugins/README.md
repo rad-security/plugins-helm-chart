@@ -93,7 +93,29 @@ runtime:
 
 Each plugin pod contains `agent` and `exporter` containers. The `agent` container is responsible for collecting runtime information from the nodes in the cluster. The `exporter` container is responsible for exporting the collected information to the RAD Security platform.
 
-The information collected is sent to the RAD Security platform for further processing. For more information on the `rad-runtime
+The information collected is sent to the RAD Security platform for further processing. For more information on the `rad-runtime` plugin, see the [RAD Security documentation](https://docs.rad.security/).
+
+## Persistent Storage
+
+RAD Security plugins support optional persistent storage for enhanced performance and data persistence. When enabled, components use PersistentVolumeClaims (PVCs) as their `/tmp` filesystem instead of ephemeral storage.
+
+### Basic Configuration
+
+Enable persistent storage for any component by setting `PLUGIN_NAME.storage.enabled: true`. If `storageClass` is not set, the default StorageClass will be used.
+
+```yaml
+sbom:
+  storage:
+    enabled: true
+    size: 25Gi
+    storageClass: "gp3" # Define custom storage class
+
+guard:
+  storage:
+    enabled: true
+    size: 1Gi
+    storageClass: ""  # Use default storage class
+```
 
 ## Prerequisites
 
@@ -491,6 +513,16 @@ The command removes all the Kubernetes components associated with the chart and 
 | guard.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
 | guard.resources.requests.memory | string | `"100Mi"` |  |
 | guard.serviceAccountAnnotations | object | `{}` |  |
+| guard.storage | object | `{"accessModes":["ReadWriteOnce"],"annotations":{},"enabled":false,"existingClaim":"","labels":{},"mountPath":"/tmp","selector":{},"size":"1Gi","storageClass":""}` | Storage configuration for rad-guard |
+| guard.storage.accessModes | list | `["ReadWriteOnce"]` | Access modes for the PVC |
+| guard.storage.annotations | object | `{}` | Additional annotations for the PVC |
+| guard.storage.enabled | bool | `false` | Enable persistent storage for rad-guard (used as /tmp filesystem when enabled) |
+| guard.storage.existingClaim | string | `""` | Use existing PVC instead of creating a new one |
+| guard.storage.labels | object | `{}` | Additional labels for the PVC |
+| guard.storage.mountPath | string | `"/tmp"` | Mount path for the persistent volume in the guard container (used as /tmp when enabled) |
+| guard.storage.selector | object | `{}` | Selector for the PV (optional) |
+| guard.storage.size | string | `"1Gi"` | Storage size for guard persistent volume |
+| guard.storage.storageClass | string | `""` | Common classes: gp2/gp3 (AWS), standard-ssd (GKE), managed-premium (AKS) |
 | guard.tolerations | list | `[]` |  |
 | guard.webhook.objectSelector | object | `{}` |  |
 | guard.webhook.timeoutSeconds | int | `10` |  |
@@ -514,6 +546,16 @@ The command removes all the Kubernetes components associated with the chart and 
 | k9.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
 | k9.resources.requests.memory | string | `"128Mi"` |  |
 | k9.serviceAccountAnnotations | object | `{}` |  |
+| k9.storage | object | `{"accessModes":["ReadWriteOnce"],"annotations":{},"enabled":false,"existingClaim":"","labels":{},"mountPath":"/tmp","selector":{},"size":"1Gi","storageClass":""}` | Storage configuration for rad-k9 |
+| k9.storage.accessModes | list | `["ReadWriteOnce"]` | Access modes for the PVC |
+| k9.storage.annotations | object | `{}` | Additional annotations for the PVC |
+| k9.storage.enabled | bool | `false` | Enable persistent storage for rad-k9 (used as /tmp filesystem when enabled) |
+| k9.storage.existingClaim | string | `""` | Use existing PVC instead of creating a new one |
+| k9.storage.labels | object | `{}` | Additional labels for the PVC |
+| k9.storage.mountPath | string | `"/tmp"` | Mount path for the persistent volume in the k9 containers (used as /tmp when enabled) |
+| k9.storage.selector | object | `{}` | Selector for the PV (optional) |
+| k9.storage.size | string | `"1Gi"` | Storage size for k9 persistent volume |
+| k9.storage.storageClass | string | `""` | Storage class to use. Use "" for default storage class, "-" for no storage class |
 | k9.tolerations | list | `[]` |  |
 | openshift.enabled | bool | `false` |  |
 | priorityClass.description | string | `"The priority class for RAD Security components"` |  |
@@ -556,7 +598,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.agent.resources.requests.cpu | string | `"100m"` |  |
 | runtime.agent.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
 | runtime.agent.resources.requests.memory | string | `"128Mi"` |  |
-| runtime.enabled | bool | `false` |  |
+| runtime.enabled | bool | `true` |  |
 | runtime.exporter.env.LOG_LEVEL | string | `"INFO"` |  |
 | runtime.exporter.execFilters | list | `[]` | Allows to specify wildcard rules for filtering command arguments. |
 | runtime.exporter.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-runtime-exporter"` |  |
@@ -606,6 +648,16 @@ The command removes all the Kubernetes components associated with the chart and 
 | sbom.resources.requests.ephemeral-storage | string | `"1Gi"` |  |
 | sbom.resources.requests.memory | string | `"1Gi"` |  |
 | sbom.serviceAccountAnnotations | object | `{}` |  |
+| sbom.storage | object | `{"accessModes":["ReadWriteOnce"],"annotations":{},"enabled":false,"existingClaim":"","labels":{},"mountPath":"/tmp","selector":{},"size":"25Gi","storageClass":""}` | Storage configuration for rad-sbom |
+| sbom.storage.accessModes | list | `["ReadWriteOnce"]` | Access modes for the PVC |
+| sbom.storage.annotations | object | `{}` | Additional annotations for the PVC |
+| sbom.storage.enabled | bool | `false` | Enable persistent storage for rad-sbom (used as /tmp for image processing and layer caching) |
+| sbom.storage.existingClaim | string | `""` | Use existing PVC instead of creating a new one |
+| sbom.storage.labels | object | `{}` | Additional labels for the PVC |
+| sbom.storage.mountPath | string | `"/tmp"` | Mount path for the persistent volume in the SBOM container (also used as /tmp when enabled) |
+| sbom.storage.selector | object | `{}` | Selector for the PV (optional) |
+| sbom.storage.size | string | `"25Gi"` | Storage size for SBOM persistent volume (larger size recommended for image processing) |
+| sbom.storage.storageClass | string | `""` | Storage class to use. Use "" for default storage class, "-" for no storage class |
 | sbom.tolerations | list | `[]` |  |
 | sbom.webhook.timeoutSeconds | int | `10` |  |
 | sync.enabled | bool | `true` |  |
@@ -621,6 +673,16 @@ The command removes all the Kubernetes components associated with the chart and 
 | sync.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
 | sync.resources.requests.memory | string | `"128Mi"` |  |
 | sync.serviceAccountAnnotations | object | `{}` |  |
+| sync.storage | object | `{"accessModes":["ReadWriteOnce"],"annotations":{},"enabled":false,"existingClaim":"","labels":{},"mountPath":"/tmp","selector":{},"size":"1Gi","storageClass":""}` | Storage configuration for rad-sync |
+| sync.storage.accessModes | list | `["ReadWriteOnce"]` | Access modes for the PVC |
+| sync.storage.annotations | object | `{}` | Additional annotations for the PVC |
+| sync.storage.enabled | bool | `false` | Enable persistent storage for rad-sync (used as /tmp filesystem when enabled) |
+| sync.storage.existingClaim | string | `""` | Use existing PVC instead of creating a new one |
+| sync.storage.labels | object | `{}` | Additional labels for the PVC |
+| sync.storage.mountPath | string | `"/tmp"` | Mount path for the persistent volume in the sync container (used as /tmp when enabled) |
+| sync.storage.selector | object | `{}` | Selector for the PV (optional) |
+| sync.storage.size | string | `"1Gi"` | Storage size for sync persistent volume |
+| sync.storage.storageClass | string | `""` | Storage class to use. Use "" for default storage class, "-" for no storage class |
 | sync.tolerations | list | `[]` |  |
 | watch.customResourceRules | object | `{"allowlist":[],"denylist":[]}` | Rules for Custom Resource ingestion containing allow- and denylists of rules specifying `apiGroups` and `resources`. E.g. `allowlist: apiGroups: ["custom.com"], resources: ["someResource", "otherResoure"]` Wildcards (`*`) can be used to match all. `customResourceRules.denylist` sets resources that should not be ingested. It has a priority over `customResourceRules.allowlist` to  deny resources allowed using a wildcard (`*`) match.  E.g. you can use `allowlist: apiGroups: ["custom.com"], resources: ["*"], denylist: apiGroups: ["custom.com"], resources: "excluded"` to ingest all resources within `custom.com` group but `excluded`. |
 | watch.enabled | bool | `true` |  |
@@ -637,6 +699,16 @@ The command removes all the Kubernetes components associated with the chart and 
 | watch.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
 | watch.resources.requests.memory | string | `"128Mi"` |  |
 | watch.serviceAccountAnnotations | object | `{}` |  |
+| watch.storage | object | `{"accessModes":["ReadWriteOnce"],"annotations":{},"enabled":false,"existingClaim":"","labels":{},"mountPath":"/tmp","selector":{},"size":"1Gi","storageClass":""}` | Storage configuration for rad-watch |
+| watch.storage.accessModes | list | `["ReadWriteOnce"]` | Access modes for the PVC |
+| watch.storage.annotations | object | `{}` | Additional annotations for the PVC |
+| watch.storage.enabled | bool | `false` | Enable persistent storage for rad-watch (used as /tmp filesystem when enabled) |
+| watch.storage.existingClaim | string | `""` | Use existing PVC instead of creating a new one |
+| watch.storage.labels | object | `{}` | Additional labels for the PVC |
+| watch.storage.mountPath | string | `"/tmp"` | Mount path for the persistent volume in the watch container (used as /tmp when enabled) |
+| watch.storage.selector | object | `{}` | Selector for the PV (optional) |
+| watch.storage.size | string | `"1Gi"` | Storage size for watch persistent volume |
+| watch.storage.storageClass | string | `""` | Storage class to use. Use "" for default storage class, "-" for no storage class |
 | watch.tolerations | list | `[]` |  |
 | workloads.disableServiceMesh | bool | `true` | Whether to disable service mesh integration. |
 | workloads.imagePullSecretName | string | `""` | The image pull secret name to use to pull container images. |

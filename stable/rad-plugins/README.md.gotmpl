@@ -93,7 +93,30 @@ runtime:
 
 Each plugin pod contains `agent` and `exporter` containers. The `agent` container is responsible for collecting runtime information from the nodes in the cluster. The `exporter` container is responsible for exporting the collected information to the RAD Security platform.
 
-The information collected is sent to the RAD Security platform for further processing. For more information on the `rad-runtime
+The information collected is sent to the RAD Security platform for further processing. For more information on the `rad-runtime` plugin, see the [RAD Security documentation](https://docs.rad.security/).
+
+## Persistent Storage
+
+RAD Security plugins support optional persistent storage for enhanced performance and data persistence. When enabled, components use PersistentVolumeClaims (PVCs) as their `/tmp` filesystem instead of ephemeral storage.
+
+
+### Basic Configuration
+
+Enable persistent storage for any component by setting `PLUGIN_NAME.storage.enabled: true`. If `storageClass` is not set, the default StorageClass will be used.
+
+```yaml
+sbom:
+  storage:
+    enabled: true
+    size: 25Gi
+    storageClass: "gp3" # Define custom storage class
+
+guard:
+  storage:
+    enabled: true
+    size: 1Gi
+    storageClass: ""  # Use default storage class
+```
 
 ## Prerequisites
 

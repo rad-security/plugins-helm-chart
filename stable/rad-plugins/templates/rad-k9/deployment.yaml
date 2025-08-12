@@ -85,6 +85,10 @@ spec:
           - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
             name: api-token
             readOnly: true
+          {{- if .Values.k9.storage.enabled }}
+          - mountPath: /tmp
+            name: k9
+          {{- end }}
         livenessProbe:
           httpGet:
             path: /healthz
@@ -153,6 +157,10 @@ spec:
           - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
             name: api-token
             readOnly: true
+          {{- if .Values.k9.storage.enabled }}
+          - mountPath: /tmp
+            name: k9-storage
+          {{- end }}
         livenessProbe:
             httpGet:
               path: /healthz
@@ -172,6 +180,11 @@ spec:
       - name: api-token
         secret:
           secretName: rad-k9-api-token-secret
+      {{- if .Values.k9.storage.enabled }}
+      - name: k9
+        persistentVolumeClaim:
+          claimName: k9
+      {{- end }}
       {{- with .Values.k9.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

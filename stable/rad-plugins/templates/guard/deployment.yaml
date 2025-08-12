@@ -103,6 +103,10 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 10
           volumeMounts:
+          {{- if .Values.guard.storage.enabled }}
+          - mountPath: /tmp
+            name: guard-storage
+          {{- end }}
           - mountPath: /tmp/k8s-webhook-server/serving-certs
             name: cert
             readOnly: true
@@ -127,5 +131,10 @@ spec:
       - name: api-token
         secret:
           secretName: rad-guard-api-token-secret
+      {{- if .Values.guard.storage.enabled }}
+      - name: guard-storage
+        persistentVolumeClaim:
+          claimName: guard
+      {{- end }}
 {{- end -}}
 {{- end -}}

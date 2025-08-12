@@ -95,6 +95,10 @@ spec:
               value: "{{ $value }}"
             {{- end }}
           volumeMounts:
+          {{- if .Values.watch.storage.enabled }}
+          - mountPath: /tmp
+            name: watch-storage
+          {{- end }}
           - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
             name: api-token
             readOnly: true
@@ -121,6 +125,11 @@ spec:
       - name: custom-resource-rules
         configMap:
           name: rad-watch-custom-resource-rules
+      {{- end }}
+      {{- if .Values.watch.storage.enabled }}
+      - name: watch-storage
+        persistentVolumeClaim:
+          claimName: watch
       {{- end }}
 {{- end -}}
 {{- end -}}
