@@ -74,65 +74,11 @@ spec:
           {{- end }}
         {{- if .Values.runtime.piiAnalyzer.ephemeralVolumes.enabled }}
         volumeMounts:
-        - mountPath: {{ .Values.runtime.piiAnalyzer.ephemeralVolumes.root.mountPath }}
-          name: pii-analyzer-root-storage
-        - mountPath: {{ .Values.runtime.piiAnalyzer.ephemeralVolumes.usr.mountPath }}
-          name: pii-analyzer-usr-storage
-        - mountPath: {{ .Values.runtime.piiAnalyzer.ephemeralVolumes.tmp.mountPath }}
+        - mountPath: {{ .Values.runtime.piiAnalyzer.ephemeralVolumes.mountPath }}
           name: pii-analyzer-tmp-storage
         {{- end }}
       {{- if .Values.runtime.piiAnalyzer.ephemeralVolumes.enabled }}
       volumes:
-      - name: pii-analyzer-root-storage
-        ephemeral:
-          volumeClaimTemplate:
-            metadata:
-              {{- with .Values.runtime.piiAnalyzer.ephemeralVolumes.labels }}
-              labels:
-                {{- toYaml . | nindent 16 }}
-              {{- end }}
-              {{- with .Values.runtime.piiAnalyzer.ephemeralVolumes.annotations }}
-              annotations:
-                {{- toYaml . | nindent 16 }}
-              {{- end }}
-            spec:
-              accessModes:
-                {{- range .Values.runtime.piiAnalyzer.ephemeralVolumes.accessModes }}
-                - {{ . }}
-                {{- end }}
-              {{- if .Values.runtime.piiAnalyzer.ephemeralVolumes.storageClassName }}
-              {{- if ne .Values.runtime.piiAnalyzer.ephemeralVolumes.storageClassName "-" }}
-              storageClassName: {{ .Values.runtime.piiAnalyzer.ephemeralVolumes.storageClassName }}
-              {{- end }}
-              {{- end }}
-              resources:
-                requests:
-                  storage: {{ .Values.runtime.piiAnalyzer.ephemeralVolumes.root.size }}
-      - name: pii-analyzer-usr-storage
-        ephemeral:
-          volumeClaimTemplate:
-            metadata:
-              {{- with .Values.runtime.piiAnalyzer.ephemeralVolumes.labels }}
-              labels:
-                {{- toYaml . | nindent 16 }}
-              {{- end }}
-              {{- with .Values.runtime.piiAnalyzer.ephemeralVolumes.annotations }}
-              annotations:
-                {{- toYaml . | nindent 16 }}
-              {{- end }}
-            spec:
-              accessModes:
-                {{- range .Values.runtime.piiAnalyzer.ephemeralVolumes.accessModes }}
-                - {{ . }}
-                {{- end }}
-              {{- if .Values.runtime.piiAnalyzer.ephemeralVolumes.storageClassName }}
-              {{- if ne .Values.runtime.piiAnalyzer.ephemeralVolumes.storageClassName "-" }}
-              storageClassName: {{ .Values.runtime.piiAnalyzer.ephemeralVolumes.storageClassName }}
-              {{- end }}
-              {{- end }}
-              resources:
-                requests:
-                  storage: {{ .Values.runtime.piiAnalyzer.ephemeralVolumes.usr.size }}
       - name: pii-analyzer-tmp-storage
         ephemeral:
           volumeClaimTemplate:
@@ -157,7 +103,7 @@ spec:
               {{- end }}
               resources:
                 requests:
-                  storage: {{ .Values.runtime.piiAnalyzer.ephemeralVolumes.tmp.size }}
+                  storage: {{ .Values.runtime.piiAnalyzer.ephemeralVolumes.size }}
       {{- end }}
 {{- with .Values.runtime.piiAnalyzer.nodeSelector }}
       nodeSelector:
