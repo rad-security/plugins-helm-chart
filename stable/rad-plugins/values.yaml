@@ -103,7 +103,6 @@ guard:
     # -- Enable ephemeral storage for rad-guard (used as /tmp filesystem when enabled)
     enabled: false
     # -- Storage class to use. Use "" for default storage class, "-" for no storage class
-    # -- Common classes: gp2/gp3 (AWS), standard-ssd (GKE), managed-premium (AKS)
     storageClassName: ""
     # -- Storage size for guard ephemeral volume
     size: 1Gi

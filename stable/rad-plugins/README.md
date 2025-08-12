@@ -519,7 +519,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | guard.storage.labels | object | `{}` | Additional labels for the ephemeral volume |
 | guard.storage.mountPath | string | `"/tmp"` | Mount path for the ephemeral volume in the guard container (used as /tmp when enabled) |
 | guard.storage.size | string | `"1Gi"` | Storage size for guard ephemeral volume |
-| guard.storage.storageClassName | string | `""` | Common classes: gp2/gp3 (AWS), standard-ssd (GKE), managed-premium (AKS) |
+| guard.storage.storageClassName | string | `""` | Storage class to use. Use "" for default storage class, "-" for no storage class |
 | guard.tolerations | list | `[]` |  |
 | guard.webhook.objectSelector | object | `{}` |  |
 | guard.webhook.timeoutSeconds | int | `10` |  |
@@ -698,10 +698,10 @@ The command removes all the Kubernetes components associated with the chart and 
 | watch.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
 | watch.resources.requests.memory | string | `"128Mi"` |  |
 | watch.serviceAccountAnnotations | object | `{}` |  |
-| watch.storage | object | `{"accessModes":["ReadWriteOnce"],"annotations":{},"enabled":true,"labels":{},"mountPath":"/tmp","size":"1Gi","storageClassName":""}` | Storage configuration for rad-watch |
+| watch.storage | object | `{"accessModes":["ReadWriteOnce"],"annotations":{},"enabled":false,"labels":{},"mountPath":"/tmp","size":"1Gi","storageClassName":""}` | Storage configuration for rad-watch |
 | watch.storage.accessModes | list | `["ReadWriteOnce"]` | Access modes for the ephemeral volume |
 | watch.storage.annotations | object | `{}` | Additional annotations for the ephemeral volume |
-| watch.storage.enabled | bool | `true` | Enable ephemeral storage for rad-watch (used as /tmp filesystem when enabled) |
+| watch.storage.enabled | bool | `false` | Enable ephemeral storage for rad-watch (used as /tmp filesystem when enabled) |
 | watch.storage.labels | object | `{}` | Additional labels for the ephemeral volume |
 | watch.storage.mountPath | string | `"/tmp"` | Mount path for the ephemeral volume in the watch container (used as /tmp when enabled) |
 | watch.storage.size | string | `"1Gi"` | Storage size for watch ephemeral volume |
