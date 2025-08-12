@@ -98,8 +98,8 @@ guard:
   nodeSelector: {}
   tolerations: []
   serviceAccountAnnotations: {}
-  # -- Storage configuration for rad-guard
-  storage:
+  # -- Ephemeral volume configuration for rad-guard
+  ephemeralVolumes:
     # -- Enable ephemeral storage for rad-guard (used as /tmp filesystem when enabled)
     enabled: false
     # -- Storage class to use. Use "" for default storage class, "-" for no storage class
@@ -162,8 +162,8 @@ sbom:
   nodeSelector: {}
   tolerations: []
   serviceAccountAnnotations: {}
-  # -- Storage configuration for rad-sbom
-  storage:
+  # -- Ephemeral volume configuration for rad-sbom
+  ephemeralVolumes:
     # -- Enable ephemeral storage for rad-sbom (used as /tmp for image processing and layer caching)
     enabled: false
     # -- Storage class to use. Use "" for default storage class, "-" for no storage class
@@ -200,8 +200,8 @@ sync:
   nodeSelector: {}
   tolerations: []
   serviceAccountAnnotations: {}
-  # -- Storage configuration for rad-sync
-  storage:
+  # -- Ephemeral volume configuration for rad-sync
+  ephemeralVolumes:
     # -- Enable ephemeral storage for rad-sync (used as /tmp filesystem when enabled)
     enabled: false
     # -- Storage class to use. Use "" for default storage class, "-" for no storage class
@@ -253,8 +253,8 @@ watch:
     allowlist: []
     denylist: []
   serviceAccountAnnotations: {}
-  # -- Storage configuration for rad-watch
-  storage:
+  # -- Ephemeral volume configuration for rad-watch
+  ephemeralVolumes:
     # -- Enable ephemeral storage for rad-watch (used as /tmp filesystem when enabled)
     enabled: false
     # -- Storage class to use. Use "" for default storage class, "-" for no storage class
@@ -347,7 +347,7 @@ runtime:
       LOG_LEVEL: WARNING
     image:
       repository: mcr.microsoft.com/presidio-analyzer
-      tag: 2.2.357
+      tag: 2.2.359
     nodeSelector: {}
     replicas: 3
     resources:
@@ -370,8 +370,8 @@ runtime:
       # -- The maximum number of pods that can be scheduled above the desired number of pods. Can be an absolute number or percent, e.g. `5` or `"10%"`
       maxSurge: 0
   serviceAccountAnnotations: {}
-  # -- Storage configuration for rad-runtime
-  storage:
+  # -- Ephemeral volume configuration for rad-runtime
+  ephemeralVolumes:
     # -- Enable ephemeral storage for rad-runtime (used as /tmp filesystem when enabled)
     enabled: false
     # -- Storage class to use. Use "" for default storage class, "-" for no storage class
@@ -419,8 +419,8 @@ k9:
   tolerations: []
   nodeSelector: {}
   serviceAccountAnnotations: {}
-  # -- Storage configuration for rad-k9
-  storage:
+  # -- Ephemeral volume configuration for rad-k9
+  ephemeralVolumes:
     # -- Enable ephemeral storage for rad-k9 (used as /tmp filesystem when enabled)
     enabled: false
     # -- Storage class to use. Use "" for default storage class, "-" for no storage class

@@ -153,8 +153,8 @@ spec:
             - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
               name: api-token
               readOnly: true
-            {{- if .Values.runtime.storage.enabled }}
-            - mountPath: {{ .Values.runtime.storage.mountPath }}
+            {{- if .Values.runtime.ephemeralVolumes.enabled }}
+            - mountPath: {{ .Values.runtime.ephemeralVolumes.mountPath }}
               name: runtime-storage
             {{- else }}
             - mountPath: /tmp
@@ -225,8 +225,8 @@ spec:
           resources:
 {{ toYaml .Values.runtime.exporter.resources | indent 12 }}
           volumeMounts:
-            {{- if .Values.runtime.storage.enabled }}
-            - mountPath: {{ .Values.runtime.storage.mountPath }}
+            {{- if .Values.runtime.ephemeralVolumes.enabled }}
+            - mountPath: {{ .Values.runtime.ephemeralVolumes.mountPath }}
               name: runtime-storage
             {{- else }}
             - mountPath: /tmp
@@ -262,32 +262,32 @@ spec:
         - name: api-token
           secret:
             secretName: rad-runtime-api-token-secret
-        {{- if .Values.runtime.storage.enabled }}
+        {{- if .Values.runtime.ephemeralVolumes.enabled }}
         - name: runtime-storage
           ephemeral:
             volumeClaimTemplate:
               metadata:
-                {{- with .Values.runtime.storage.labels }}
+                {{- with .Values.runtime.ephemeralVolumes.labels }}
                 labels:
                   {{- toYaml . | nindent 18 }}
                 {{- end }}
-                {{- with .Values.runtime.storage.annotations }}
+                {{- with .Values.runtime.ephemeralVolumes.annotations }}
                 annotations:
                   {{- toYaml . | nindent 18 }}
                 {{- end }}
               spec:
                 accessModes:
-                  {{- range .Values.runtime.storage.accessModes }}
+                  {{- range .Values.runtime.ephemeralVolumes.accessModes }}
                   - {{ . }}
                   {{- end }}
-                {{- if .Values.runtime.storage.storageClassName }}
-                {{- if ne .Values.runtime.storage.storageClassName "-" }}
-                storageClassName: {{ .Values.runtime.storage.storageClassName }}
+                {{- if .Values.runtime.ephemeralVolumes.storageClassName }}
+                {{- if ne .Values.runtime.ephemeralVolumes.storageClassName "-" }}
+                storageClassName: {{ .Values.runtime.ephemeralVolumes.storageClassName }}
                 {{- end }}
                 {{- end }}
                 resources:
                   requests:
-                    storage: {{ .Values.runtime.storage.size }}
+                    storage: {{ .Values.runtime.ephemeralVolumes.size }}
         {{- else }}
         - name: unix-socket
           emptyDir: {}

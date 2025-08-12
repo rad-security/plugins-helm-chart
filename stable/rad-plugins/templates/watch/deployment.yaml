@@ -95,8 +95,8 @@ spec:
               value: "{{ $value }}"
             {{- end }}
           volumeMounts:
-          {{- if .Values.watch.storage.enabled }}
-          - mountPath: {{ .Values.watch.storage.mountPath }}
+          {{- if .Values.watch.ephemeralVolumes.enabled }}
+          - mountPath: {{ .Values.watch.ephemeralVolumes.mountPath }}
             name: watch-storage
           {{- end }}
           - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
@@ -126,32 +126,32 @@ spec:
         configMap:
           name: rad-watch-custom-resource-rules
       {{- end }}
-      {{- if .Values.watch.storage.enabled }}
+      {{- if .Values.watch.ephemeralVolumes.enabled }}
       - name: watch-storage
         ephemeral:
           volumeClaimTemplate:
             metadata:
-              {{- with .Values.watch.storage.labels }}
+              {{- with .Values.watch.ephemeralVolumes.labels }}
               labels:
                 {{- toYaml . | nindent 16 }}
               {{- end }}
-              {{- with .Values.watch.storage.annotations }}
+              {{- with .Values.watch.ephemeralVolumes.annotations }}
               annotations:
                 {{- toYaml . | nindent 16 }}
               {{- end }}
             spec:
               accessModes:
-                {{- range .Values.watch.storage.accessModes }}
+                {{- range .Values.watch.ephemeralVolumes.accessModes }}
                 - {{ . }}
                 {{- end }}
-              {{- if .Values.watch.storage.storageClassName }}
-              {{- if ne .Values.watch.storage.storageClassName "-" }}
-              storageClassName: {{ .Values.watch.storage.storageClassName }}
+              {{- if .Values.watch.ephemeralVolumes.storageClassName }}
+              {{- if ne .Values.watch.ephemeralVolumes.storageClassName "-" }}
+              storageClassName: {{ .Values.watch.ephemeralVolumes.storageClassName }}
               {{- end }}
               {{- end }}
               resources:
                 requests:
-                  storage: {{ .Values.watch.storage.size }}
+                  storage: {{ .Values.watch.ephemeralVolumes.size }}
       {{- end }}
 {{- end -}}
 {{- end -}}
