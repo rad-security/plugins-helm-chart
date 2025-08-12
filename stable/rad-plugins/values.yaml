@@ -289,7 +289,7 @@ watch:
     selector: {}
 
 runtime:
-  enabled: true
+  enabled: false
   reachableVulnerabilitiesEnabled: true
   httpTracingEnabled: false
   agent:

@@ -598,7 +598,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.agent.resources.requests.cpu | string | `"100m"` |  |
 | runtime.agent.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
 | runtime.agent.resources.requests.memory | string | `"128Mi"` |  |
-| runtime.enabled | bool | `true` |  |
+| runtime.enabled | bool | `false` |  |
 | runtime.exporter.env.LOG_LEVEL | string | `"INFO"` |  |
 | runtime.exporter.execFilters | list | `[]` | Allows to specify wildcard rules for filtering command arguments. |
 | runtime.exporter.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-runtime-exporter"` |  |
