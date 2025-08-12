@@ -272,7 +272,7 @@ watch:
     annotations: {}
 
 runtime:
-  enabled: false
+  enabled: true
   reachableVulnerabilitiesEnabled: true
   httpTracingEnabled: false
   agent:
@@ -346,8 +346,8 @@ runtime:
     env:
       LOG_LEVEL: WARNING
     image:
-      repository: public.ecr.aws/n8h5y2v5/presidio-analyzer
-      tag: v0.1.0
+      repository: mcr.microsoft.com/presidio-analyzer
+      tag: 2.2.357
     nodeSelector: {}
     replicas: 3
     resources:
