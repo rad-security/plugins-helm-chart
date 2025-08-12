@@ -287,7 +287,7 @@ runtime:
         kube-system
     image:
       repository: public.ecr.aws/n8h5y2v5/rad-security/rad-runtime
-      tag: v0.1.27
+      tag: v0.1.28
     resources:
       limits:
         cpu: 200m
@@ -326,7 +326,7 @@ runtime:
 
     image:
       repository: public.ecr.aws/n8h5y2v5/rad-security/rad-runtime-exporter
-      tag: v0.1.27
+      tag: v0.1.28
 
     # -- Allows to specify wildcard rules for filtering command arguments.
     execFilters: []
