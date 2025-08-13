@@ -49,14 +49,7 @@ spec:
         ports:
         - containerPort: 8080
         resources:
-          requests:
-            memory: {{ .Values.runtime.piiAnalyzer.resources.requests.memory }}
-            cpu: {{ .Values.runtime.piiAnalyzer.resources.requests.cpu }}
-            ephemeral-storage: {{ .Values.runtime.piiAnalyzer.resources.requests.ephemeral-storage }}
-          limits:
-            memory: {{ .Values.runtime.piiAnalyzer.resources.limits.memory }}
-            cpu: {{ .Values.runtime.piiAnalyzer.resources.limits.cpu }}
-            ephemeral-storage: {{ .Values.runtime.piiAnalyzer.resources.limits.ephemeral-storage }}
+{{ toYaml .Values.runtime.piiAnalyzer.resources | indent 10 }}
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:

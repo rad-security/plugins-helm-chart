@@ -130,17 +130,6 @@ spec:
 {{ toYaml . | indent 8 }}
   {{- end }}
       volumes:
-      {{- if not .Values.sbom.ephemeralVolumes.enabled }}
-      - name: temp-image-dir
-        emptyDir: {}
-      {{- end }}
-      - name: cert
-        secret:
-          defaultMode: 420
-          secretName: rad-sbom-self-signed-cert
-      - name: api-token
-        secret:
-          secretName: rad-sbom-api-token-secret
       {{- if .Values.sbom.ephemeralVolumes.enabled }}
       - name: sbom-storage
         ephemeral:
@@ -167,6 +156,17 @@ spec:
               resources:
                 requests:
                   storage: {{ .Values.sbom.ephemeralVolumes.size }}
+      {{- else }}
+      - name: temp-image-dir
+        emptyDir: {}
       {{- end }}
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: rad-sbom-self-signed-cert
+      - name: api-token
+        secret:
+          secretName: rad-sbom-api-token-secret
+      
 {{- end -}}
 {{- end -}}
