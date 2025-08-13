@@ -95,15 +95,6 @@ Each plugin pod contains `agent` and `exporter` containers. The `agent` containe
 
 The information collected is sent to the RAD Security platform for further processing. For more information on the `rad-runtime` plugin, see the [RAD Security documentation](https://docs.rad.security/).
 
-### Runtime Performance Improvements
-
-Recent improvements to the runtime plugin enhance performance and reliability:
-
-- **Event Sampling**: Open events are now sampled to reduce noise, as they're primarily used for library path detection
-- **Rate Limiting**: Added rate limiting for Presidio PII detection to prevent overwhelming the service
-- **Enhanced Metrics**: Multiple new metrics added for easier debugging and monitoring of the agent
-- **Separate Event Queues**: Event handler queues are now separated by event type to prevent stalling. For example, if 50 concurrent PII detection requests are running, other event types can still be processed without blocking
-
 ## Ephemeral Storage
 
 RAD Security plugins support optional ephemeral storage using Generic ephemeral volumes. By default, plugins use standard container ephemeral storage, but you can enable dedicated ephemeral volumes for improved performance and resource control.
