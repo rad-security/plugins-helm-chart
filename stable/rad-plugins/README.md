@@ -637,10 +637,10 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.nodeSelector | object | `{}` |  |
 | runtime.piiAnalyzer.enabled | bool | `false` |  |
 | runtime.piiAnalyzer.env.LOG_LEVEL | string | `"WARNING"` |  |
-| runtime.piiAnalyzer.ephemeralVolumes | object | `{"accessModes":["ReadWriteOnce"],"annotations":{},"enabled":true,"labels":{},"mountPath":"/tmp","size":"1Gi","storageClassName":""}` | Ephemeral volume configuration for pii-analyzer |
+| runtime.piiAnalyzer.ephemeralVolumes | object | `{"accessModes":["ReadWriteOnce"],"annotations":{},"enabled":false,"labels":{},"mountPath":"/tmp","size":"1Gi","storageClassName":""}` | Ephemeral volume configuration for pii-analyzer |
 | runtime.piiAnalyzer.ephemeralVolumes.accessModes | list | `["ReadWriteOnce"]` | Access modes for the ephemeral volume |
 | runtime.piiAnalyzer.ephemeralVolumes.annotations | object | `{}` | Additional annotations for the ephemeral volume |
-| runtime.piiAnalyzer.ephemeralVolumes.enabled | bool | `true` | Enable ephemeral storage for pii-analyzer (used for temporary processing) |
+| runtime.piiAnalyzer.ephemeralVolumes.enabled | bool | `false` | Enable ephemeral storage for pii-analyzer (used for temporary processing) |
 | runtime.piiAnalyzer.ephemeralVolumes.labels | object | `{}` | Additional labels for the ephemeral volume |
 | runtime.piiAnalyzer.ephemeralVolumes.mountPath | string | `"/tmp"` | Mount path for the ephemeral volume |
 | runtime.piiAnalyzer.ephemeralVolumes.size | string | `"1Gi"` | Storage size for ephemeral volume |

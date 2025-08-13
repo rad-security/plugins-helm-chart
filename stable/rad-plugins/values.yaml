@@ -364,7 +364,7 @@ runtime:
     # -- Ephemeral volume configuration for pii-analyzer
     ephemeralVolumes:
       # -- Enable ephemeral storage for pii-analyzer (used for temporary processing)
-      enabled: true
+      enabled: false
       # -- Storage class to use. Use "" for default storage class, "-" for no storage class
       storageClassName: ""
       # -- Access modes for the ephemeral volume
