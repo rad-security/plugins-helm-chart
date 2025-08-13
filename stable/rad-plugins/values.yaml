@@ -348,7 +348,7 @@ runtime:
       LOG_LEVEL: WARNING
     image:
       repository: mcr.microsoft.com/presidio-analyzer
-      tag: 2.2.359
+      tag: 2.2.357
     nodeSelector: {}
     replicas: 3
     resources:

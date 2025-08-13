@@ -662,7 +662,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.piiAnalyzer.ephemeralVolumes.size | string | `"1Gi"` | Storage size for ephemeral volume |
 | runtime.piiAnalyzer.ephemeralVolumes.storageClassName | string | `""` | Storage class to use. Use "" for default storage class, "-" for no storage class |
 | runtime.piiAnalyzer.image.repository | string | `"mcr.microsoft.com/presidio-analyzer"` |  |
-| runtime.piiAnalyzer.image.tag | string | `"2.2.359"` |  |
+| runtime.piiAnalyzer.image.tag | string | `"2.2.357"` |  |
 | runtime.piiAnalyzer.nodeSelector | object | `{}` |  |
 | runtime.piiAnalyzer.replicas | int | `3` |  |
 | runtime.piiAnalyzer.resources.limits.cpu | string | `"2000m"` |  |
