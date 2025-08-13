@@ -167,6 +167,6 @@ spec:
       - name: api-token
         secret:
           secretName: rad-sbom-api-token-secret
-      
+
 {{- end -}}
 {{- end -}}
