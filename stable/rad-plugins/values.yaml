@@ -98,6 +98,23 @@ guard:
   nodeSelector: {}
   tolerations: []
   serviceAccountAnnotations: {}
+  # -- Ephemeral volume configuration for rad-guard
+  ephemeralVolumes:
+    # -- Enable ephemeral storage for rad-guard (used as /tmp filesystem when enabled)
+    enabled: false
+    # -- Storage class to use. Use "" for default storage class, "-" for no storage class
+    storageClassName: ""
+    # -- Storage size for guard ephemeral volume
+    size: 1Gi
+    # -- Access modes for the ephemeral volume
+    accessModes:
+      - ReadWriteOnce
+    # -- Mount path for the ephemeral volume in the guard container (used as /tmp when enabled)
+    mountPath: "/tmp"
+    # -- Additional labels for the ephemeral volume
+    labels: {}
+    # -- Additional annotations for the ephemeral volume
+    annotations: {}
 
 sbom:
   enabled: true
@@ -145,6 +162,23 @@ sbom:
   nodeSelector: {}
   tolerations: []
   serviceAccountAnnotations: {}
+  # -- Ephemeral volume configuration for rad-sbom
+  ephemeralVolumes:
+    # -- Enable ephemeral storage for rad-sbom (used as /tmp for image processing and layer caching)
+    enabled: false
+    # -- Storage class to use. Use "" for default storage class, "-" for no storage class
+    storageClassName: ""
+    # -- Storage size for SBOM ephemeral volume (larger size recommended for image processing)
+    size: 25Gi
+    # -- Access modes for the ephemeral volume
+    accessModes:
+      - ReadWriteOnce
+    # -- Mount path for the ephemeral volume in the SBOM container (also used as /tmp when enabled)
+    mountPath: "/tmp"
+    # -- Additional labels for the ephemeral volume
+    labels: {}
+    # -- Additional annotations for the ephemeral volume
+    annotations: {}
 
 sync:
   enabled: true
@@ -166,6 +200,23 @@ sync:
   nodeSelector: {}
   tolerations: []
   serviceAccountAnnotations: {}
+  # -- Ephemeral volume configuration for rad-sync
+  ephemeralVolumes:
+    # -- Enable ephemeral storage for rad-sync (used as /tmp filesystem when enabled)
+    enabled: false
+    # -- Storage class to use. Use "" for default storage class, "-" for no storage class
+    storageClassName: ""
+    # -- Storage size for sync ephemeral volume
+    size: 1Gi
+    # -- Access modes for the ephemeral volume
+    accessModes:
+      - ReadWriteOnce
+    # -- Mount path for the ephemeral volume in the sync container (used as /tmp when enabled)
+    mountPath: "/tmp"
+    # -- Additional labels for the ephemeral volume
+    labels: {}
+    # -- Additional annotations for the ephemeral volume
+    annotations: {}
 
 watch:
   enabled: true
@@ -202,6 +253,23 @@ watch:
     allowlist: []
     denylist: []
   serviceAccountAnnotations: {}
+  # -- Ephemeral volume configuration for rad-watch
+  ephemeralVolumes:
+    # -- Enable ephemeral storage for rad-watch (used as /tmp filesystem when enabled)
+    enabled: false
+    # -- Storage class to use. Use "" for default storage class, "-" for no storage class
+    storageClassName: ""
+    # -- Storage size for watch ephemeral volume
+    size: 1Gi
+    # -- Access modes for the ephemeral volume
+    accessModes:
+      - ReadWriteOnce
+    # -- Mount path for the ephemeral volume in the watch container (used as /tmp when enabled)
+    mountPath: "/tmp"
+    # -- Additional labels for the ephemeral volume
+    labels: {}
+    # -- Additional annotations for the ephemeral volume
+    annotations: {}
 
 runtime:
   enabled: false
@@ -210,6 +278,7 @@ runtime:
   agent:
     env:
       LOG_LEVEL: INFO
+      TRACER_PII_DETECTOR_PRESIDIO_MAX_REQUESTS_PER_SECOND: "10"
       TRACER_IGNORE_NAMESPACES: |
         cert-manager,
         rad,
@@ -219,7 +288,7 @@ runtime:
         kube-system
     image:
       repository: public.ecr.aws/n8h5y2v5/rad-security/rad-runtime
-      tag: v0.1.27
+      tag: v0.1.28
     resources:
       limits:
         cpu: 200m
@@ -258,7 +327,7 @@ runtime:
 
     image:
       repository: public.ecr.aws/n8h5y2v5/rad-security/rad-runtime-exporter
-      tag: v0.1.27
+      tag: v0.1.28
 
     # -- Allows to specify wildcard rules for filtering command arguments.
     execFilters: []
@@ -278,18 +347,37 @@ runtime:
     env:
       LOG_LEVEL: WARNING
     image:
-      repository: public.ecr.aws/n8h5y2v5/presidio-analyzer
-      tag: v0.1.0
+      repository: mcr.microsoft.com/presidio-analyzer
+      tag: 2.2.357
     nodeSelector: {}
     replicas: 3
     resources:
       limits:
-        cpu: 1000m
+        cpu: 2000m
         memory: 2Gi
+        ephemeral-storage: 4Gi
       requests:
-        cpu: 100m
+        cpu: 500m
         memory: 128Mi
+        ephemeral-storage: 2Gi
     tolerations: []
+    # -- Ephemeral volume configuration for pii-analyzer
+    ephemeralVolumes:
+      # -- Enable ephemeral storage for pii-analyzer (used for temporary processing)
+      enabled: true
+      # -- Storage class to use. Use "" for default storage class, "-" for no storage class
+      storageClassName: ""
+      # -- Access modes for the ephemeral volume
+      accessModes:
+        - ReadWriteOnce
+      # -- Additional labels for the ephemeral volume
+      labels: {}
+      # -- Additional annotations for the ephemeral volume
+      annotations: {}
+      # -- Storage size for ephemeral volume
+      size: 1Gi
+      # -- Mount path for the ephemeral volume
+      mountPath: "/tmp"
 
   nodeSelector: {}
   nodeName: ""
@@ -302,6 +390,23 @@ runtime:
       # -- The maximum number of pods that can be scheduled above the desired number of pods. Can be an absolute number or percent, e.g. `5` or `"10%"`
       maxSurge: 0
   serviceAccountAnnotations: {}
+  # -- Ephemeral volume configuration for rad-runtime
+  ephemeralVolumes:
+    # -- Enable ephemeral storage for rad-runtime (used as /tmp filesystem when enabled)
+    enabled: false
+    # -- Storage class to use. Use "" for default storage class, "-" for no storage class
+    storageClassName: ""
+    # -- Storage size for runtime ephemeral volume
+    size: 1Gi
+    # -- Access modes for the ephemeral volume
+    accessModes:
+      - ReadWriteOnce
+    # -- Mount path for the ephemeral volume in the runtime containers (used as /tmp when enabled)
+    mountPath: "/tmp"
+    # -- Additional labels for the ephemeral volume
+    labels: {}
+    # -- Additional annotations for the ephemeral volume
+    annotations: {}
 
 k9:
   enabled: false
@@ -334,6 +439,23 @@ k9:
   tolerations: []
   nodeSelector: {}
   serviceAccountAnnotations: {}
+  # -- Ephemeral volume configuration for rad-k9
+  ephemeralVolumes:
+    # -- Enable ephemeral storage for rad-k9 (used as /tmp filesystem when enabled)
+    enabled: false
+    # -- Storage class to use. Use "" for default storage class, "-" for no storage class
+    storageClassName: ""
+    # -- Storage size for k9 ephemeral volume
+    size: 1Gi
+    # -- Access modes for the ephemeral volume
+    accessModes:
+      - ReadWriteOnce
+    # -- Mount path for the ephemeral volume in the k9 containers (used as /tmp when enabled)
+    mountPath: "/tmp"
+    # -- Additional labels for the ephemeral volume
+    labels: {}
+    # -- Additional annotations for the ephemeral volume
+    annotations: {}
 
 # Enables support for OpenShift.
 openshift:

@@ -89,6 +89,10 @@ spec:
               value: "{{ $value }}"
             {{- end }}
           volumeMounts:
+          {{- if .Values.sync.ephemeralVolumes.enabled }}
+          - mountPath: {{ .Values.sync.ephemeralVolumes.mountPath }}
+            name: sync-storage
+          {{- end }}
           - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
             name: api-token
             readOnly: true
@@ -106,5 +110,32 @@ spec:
       - name: api-token
         secret:
           secretName: rad-sync-api-token-secret
+      {{- if .Values.sync.ephemeralVolumes.enabled }}
+      - name: sync-storage
+        ephemeral:
+          volumeClaimTemplate:
+            metadata:
+              {{- with .Values.sync.ephemeralVolumes.labels }}
+              labels:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with .Values.sync.ephemeralVolumes.annotations }}
+              annotations:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+            spec:
+              accessModes:
+                {{- range .Values.sync.ephemeralVolumes.accessModes }}
+                - {{ . }}
+                {{- end }}
+              {{- if .Values.sync.ephemeralVolumes.storageClassName }}
+              {{- if ne .Values.sync.ephemeralVolumes.storageClassName "-" }}
+              storageClassName: {{ .Values.sync.ephemeralVolumes.storageClassName }}
+              {{- end }}
+              {{- end }}
+              resources:
+                requests:
+                  storage: {{ .Values.sync.ephemeralVolumes.size }}
+      {{- end }}
 {{- end -}}
 {{- end -}}

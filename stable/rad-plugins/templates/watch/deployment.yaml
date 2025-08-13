@@ -95,6 +95,10 @@ spec:
               value: "{{ $value }}"
             {{- end }}
           volumeMounts:
+          {{- if .Values.watch.ephemeralVolumes.enabled }}
+          - mountPath: {{ .Values.watch.ephemeralVolumes.mountPath }}
+            name: watch-storage
+          {{- end }}
           - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
             name: api-token
             readOnly: true
@@ -121,6 +125,33 @@ spec:
       - name: custom-resource-rules
         configMap:
           name: rad-watch-custom-resource-rules
+      {{- end }}
+      {{- if .Values.watch.ephemeralVolumes.enabled }}
+      - name: watch-storage
+        ephemeral:
+          volumeClaimTemplate:
+            metadata:
+              {{- with .Values.watch.ephemeralVolumes.labels }}
+              labels:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with .Values.watch.ephemeralVolumes.annotations }}
+              annotations:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+            spec:
+              accessModes:
+                {{- range .Values.watch.ephemeralVolumes.accessModes }}
+                - {{ . }}
+                {{- end }}
+              {{- if .Values.watch.ephemeralVolumes.storageClassName }}
+              {{- if ne .Values.watch.ephemeralVolumes.storageClassName "-" }}
+              storageClassName: {{ .Values.watch.ephemeralVolumes.storageClassName }}
+              {{- end }}
+              {{- end }}
+              resources:
+                requests:
+                  storage: {{ .Values.watch.ephemeralVolumes.size }}
       {{- end }}
 {{- end -}}
 {{- end -}}

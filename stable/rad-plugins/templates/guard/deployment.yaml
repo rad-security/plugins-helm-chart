@@ -103,6 +103,10 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 10
           volumeMounts:
+          {{- if .Values.guard.ephemeralVolumes.enabled }}
+          - mountPath: {{ .Values.guard.ephemeralVolumes.mountPath }}
+            name: guard-storage
+          {{- end }}
           - mountPath: /tmp/k8s-webhook-server/serving-certs
             name: cert
             readOnly: true
@@ -127,5 +131,32 @@ spec:
       - name: api-token
         secret:
           secretName: rad-guard-api-token-secret
+      {{- if .Values.guard.ephemeralVolumes.enabled }}
+      - name: guard-storage
+        ephemeral:
+          volumeClaimTemplate:
+            metadata:
+              {{- with .Values.guard.ephemeralVolumes.labels }}
+              labels:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with .Values.guard.ephemeralVolumes.annotations }}
+              annotations:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+            spec:
+              accessModes:
+                {{- range .Values.guard.ephemeralVolumes.accessModes }}
+                - {{ . }}
+                {{- end }}
+              {{- if .Values.guard.ephemeralVolumes.storageClassName }}
+              {{- if ne .Values.guard.ephemeralVolumes.storageClassName "-" }}
+              storageClassName: {{ .Values.guard.ephemeralVolumes.storageClassName }}
+              {{- end }}
+              {{- end }}
+              resources:
+                requests:
+                  storage: {{ .Values.guard.ephemeralVolumes.size }}
+      {{- end }}
 {{- end -}}
 {{- end -}}

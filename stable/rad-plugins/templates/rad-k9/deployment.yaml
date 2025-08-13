@@ -85,6 +85,10 @@ spec:
           - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
             name: api-token
             readOnly: true
+          {{- if .Values.k9.ephemeralVolumes.enabled }}
+          - mountPath: {{ .Values.k9.ephemeralVolumes.mountPath }}
+            name: k9-storage
+          {{- end }}
         livenessProbe:
           httpGet:
             path: /healthz
@@ -153,6 +157,10 @@ spec:
           - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
             name: api-token
             readOnly: true
+          {{- if .Values.k9.ephemeralVolumes.enabled }}
+          - mountPath: {{ .Values.k9.ephemeralVolumes.mountPath }}
+            name: k9-storage
+          {{- end }}
         livenessProbe:
             httpGet:
               path: /healthz
@@ -172,6 +180,33 @@ spec:
       - name: api-token
         secret:
           secretName: rad-k9-api-token-secret
+      {{- if .Values.k9.ephemeralVolumes.enabled }}
+      - name: k9-storage
+        ephemeral:
+          volumeClaimTemplate:
+            metadata:
+              {{- with .Values.k9.ephemeralVolumes.labels }}
+              labels:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with .Values.k9.ephemeralVolumes.annotations }}
+              annotations:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+            spec:
+              accessModes:
+                {{- range .Values.k9.ephemeralVolumes.accessModes }}
+                - {{ . }}
+                {{- end }}
+              {{- if .Values.k9.ephemeralVolumes.storageClassName }}
+              {{- if ne .Values.k9.ephemeralVolumes.storageClassName "-" }}
+              storageClassName: {{ .Values.k9.ephemeralVolumes.storageClassName }}
+              {{- end }}
+              {{- end }}
+              resources:
+                requests:
+                  storage: {{ .Values.k9.ephemeralVolumes.size }}
+      {{- end }}
       {{- with .Values.k9.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

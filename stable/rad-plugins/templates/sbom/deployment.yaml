@@ -104,9 +104,15 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 10
           volumeMounts:
+          {{- if .Values.sbom.ephemeralVolumes.enabled }}
+          - mountPath: {{ .Values.sbom.ephemeralVolumes.mountPath }}
+            name: sbom-storage
+            readOnly: false
+          {{- else }}
           - mountPath: /tmp
             name: temp-image-dir
             readOnly: false
+          {{- end }}
           - mountPath: /tmp/k8s-webhook-server/serving-certs
             name: cert
             readOnly: true
@@ -124,8 +130,36 @@ spec:
 {{ toYaml . | indent 8 }}
   {{- end }}
       volumes:
+      {{- if .Values.sbom.ephemeralVolumes.enabled }}
+      - name: sbom-storage
+        ephemeral:
+          volumeClaimTemplate:
+            metadata:
+              {{- with .Values.sbom.ephemeralVolumes.labels }}
+              labels:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with .Values.sbom.ephemeralVolumes.annotations }}
+              annotations:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+            spec:
+              accessModes:
+                {{- range .Values.sbom.ephemeralVolumes.accessModes }}
+                - {{ . }}
+                {{- end }}
+              {{- if .Values.sbom.ephemeralVolumes.storageClassName }}
+              {{- if ne .Values.sbom.ephemeralVolumes.storageClassName "-" }}
+              storageClassName: {{ .Values.sbom.ephemeralVolumes.storageClassName }}
+              {{- end }}
+              {{- end }}
+              resources:
+                requests:
+                  storage: {{ .Values.sbom.ephemeralVolumes.size }}
+      {{- else }}
       - name: temp-image-dir
         emptyDir: {}
+      {{- end }}
       - name: cert
         secret:
           defaultMode: 420
@@ -133,5 +167,6 @@ spec:
       - name: api-token
         secret:
           secretName: rad-sbom-api-token-secret
+
 {{- end -}}
 {{- end -}}

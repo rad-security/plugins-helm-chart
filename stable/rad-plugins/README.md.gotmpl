@@ -93,7 +93,45 @@ runtime:
 
 Each plugin pod contains `agent` and `exporter` containers. The `agent` container is responsible for collecting runtime information from the nodes in the cluster. The `exporter` container is responsible for exporting the collected information to the RAD Security platform.
 
-The information collected is sent to the RAD Security platform for further processing. For more information on the `rad-runtime
+The information collected is sent to the RAD Security platform for further processing. For more information on the `rad-runtime` plugin, see the [RAD Security documentation](https://docs.rad.security/).
+
+## Ephemeral Storage
+
+RAD Security plugins support optional ephemeral storage using Generic ephemeral volumes. By default, plugins use standard container ephemeral storage, but you can enable dedicated ephemeral volumes for improved performance and resource control.
+
+### Why Use Ephemeral Volumes?
+
+**Performance Benefits:**
+- **High-performance storage classes**: Use faster storage (NVMe, SSD) for improved I/O performance
+- **Dedicated storage**: Avoid contention with other container processes sharing node storage
+- **Larger capacity**: Allocate more space than default ephemeral storage limits
+
+**Resource Control:**
+- **Predictable space**: Guarantee specific storage capacity for each plugin
+- **Storage isolation**: Prevent one plugin from affecting others' storage availability
+- **Node resource management**: Better control over node storage usage
+
+### Basic Configuration
+
+Enable ephemeral storage for any component by setting `PLUGIN_NAME.ephemeralVolumes.enabled: true`. If `storageClassName` is not set, the default StorageClass will be used.
+
+```yaml
+sbom:
+  ephemeralVolumes:
+    enabled: true
+    size: 25Gi
+    storageClassName: "gp3"
+    accessModes:
+      - ReadWriteOnce
+
+# Example: Basic setup for other plugins
+# with default storage class and size
+guard:
+  ephemeralVolumes:
+    enabled: true
+```
+
+**Note**: Ephemeral volumes are deleted when pods are terminated. They provide temporary, high-performance storage but do not persist data across pod restarts.
 
 ## Prerequisites
 
@@ -409,6 +447,8 @@ runtime:
   piiAnalyzer:
     enabled: true
 ```
+
+**Note**: The PII analyzer component uses Microsoft Presidio, which only supports AMD64 architecture. This feature will not work on ARM64 nodes (including Apple Silicon Macs, ARM-based cloud instances, etc.). Ensure your cluster has AMD64 nodes available if you plan to use PII detection.
 
 ## Upgrading the Chart
 
