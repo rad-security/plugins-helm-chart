@@ -134,17 +134,10 @@ sbom:
       - ReadWriteOnce
 
 # Example: Basic setup for other plugins
+# with default storage class and size
 guard:
   ephemeralVolumes:
     enabled: true
-    size: 2Gi # Use default storage class
-
-runtime:
-  piiAnalyzer:
-    ephemeralVolumes:
-      enabled: true
-      size: "1Gi"
-      mountPath: "/tmp"
 ```
 
 **Note**: Ephemeral volumes are deleted when pods are terminated. They provide temporary, high-performance storage but do not persist data across pod restarts.
