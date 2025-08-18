@@ -40,7 +40,7 @@ workloads:
 priorityClass:
   enabled: false
   name: rad-priority
-  value: 1000000000
+  value: 10
   globalDefault: false
   description: "The priority class for RAD Security components"
   preemptionPolicy: PreemptLowerPriority
