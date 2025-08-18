@@ -503,7 +503,7 @@ The command removes all the Kubernetes components associated with the chart and 
 |-----|------|---------|-------------|
 | bootstrapper.env | object | `{}` |  |
 | bootstrapper.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-bootstrapper"` | The image to use for the rad-bootstrapper deployment |
-| bootstrapper.image.tag | string | `"v1.1.20"` |  |
+| bootstrapper.image.tag | string | `"v1.1.21"` |  |
 | bootstrapper.nodeSelector | object | `{}` |  |
 | bootstrapper.podAnnotations | object | `{}` |  |
 | bootstrapper.resources.limits.cpu | string | `"100m"` |  |
@@ -528,7 +528,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | guard.ephemeralVolumes.size | string | `"1Gi"` | Storage size for guard ephemeral volume |
 | guard.ephemeralVolumes.storageClassName | string | `""` | Storage class to use. Use "" for default storage class, "-" for no storage class |
 | guard.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-guard"` | The image to use for the rad-guard deployment |
-| guard.image.tag | string | `"v1.1.28"` |  |
+| guard.image.tag | string | `"v1.1.29"` |  |
 | guard.nodeSelector | object | `{}` |  |
 | guard.podAnnotations | object | `{}` |  |
 | guard.replicas | int | `1` |  |
@@ -543,7 +543,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | guard.webhook.objectSelector | object | `{}` |  |
 | guard.webhook.timeoutSeconds | int | `10` |  |
 | k9.backend.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-k9-backend-agent"` |  |
-| k9.backend.image.tag | string | `"v0.0.40"` |  |
+| k9.backend.image.tag | string | `"v0.0.41"` |  |
 | k9.capabilities.enableGetLogs | bool | `false` |  |
 | k9.capabilities.enableLabelPod | bool | `false` |  |
 | k9.capabilities.enableQuarantine | bool | `false` |  |
@@ -560,7 +560,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | k9.ephemeralVolumes.storageClassName | string | `""` | Storage class to use. Use "" for default storage class, "-" for no storage class |
 | k9.frontend.agentActionPollInterval | string | `"5s"` | The interval in which the agent polls the backend for new actions. |
 | k9.frontend.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-k9-frontend-agent"` |  |
-| k9.frontend.image.tag | string | `"v0.0.40"` |  |
+| k9.frontend.image.tag | string | `"v0.0.41"` |  |
 | k9.nodeSelector | object | `{}` |  |
 | k9.replicas | int | `1` |  |
 | k9.resources.limits.cpu | string | `"250m"` |  |
@@ -604,7 +604,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.agent.grpcServerBatchSize | int | `2000` |  |
 | runtime.agent.hostPID | string | `nil` |  |
 | runtime.agent.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-runtime"` |  |
-| runtime.agent.image.tag | string | `"v0.1.28"` |  |
+| runtime.agent.image.tag | string | `"v0.1.29"` |  |
 | runtime.agent.mounts.volumeMounts | list | `[]` |  |
 | runtime.agent.mounts.volumes | list | `[]` |  |
 | runtime.agent.resources.limits.cpu | string | `"200m"` |  |
@@ -625,7 +625,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.exporter.env.LOG_LEVEL | string | `"INFO"` |  |
 | runtime.exporter.execFilters | list | `[]` | Allows to specify wildcard rules for filtering command arguments. |
 | runtime.exporter.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-runtime-exporter"` |  |
-| runtime.exporter.image.tag | string | `"v0.1.28"` |  |
+| runtime.exporter.image.tag | string | `"v0.1.29"` |  |
 | runtime.exporter.resources.limits.cpu | string | `"500m"` |  |
 | runtime.exporter.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | runtime.exporter.resources.limits.memory | string | `"1Gi"` |  |
@@ -678,7 +678,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | sbom.ephemeralVolumes.size | string | `"25Gi"` | Storage size for SBOM ephemeral volume (larger size recommended for image processing) |
 | sbom.ephemeralVolumes.storageClassName | string | `""` | Storage class to use. Use "" for default storage class, "-" for no storage class |
 | sbom.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-sbom"` | The image to use for the rad-sbom deployment |
-| sbom.image.tag | string | `"v1.1.50"` |  |
+| sbom.image.tag | string | `"v1.1.51"` |  |
 | sbom.labels | object | `{}` |  |
 | sbom.nodeSelector | object | `{}` |  |
 | sbom.podAnnotations | object | `{}` |  |
@@ -702,7 +702,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | sync.ephemeralVolumes.size | string | `"1Gi"` | Storage size for sync ephemeral volume |
 | sync.ephemeralVolumes.storageClassName | string | `""` | Storage class to use. Use "" for default storage class, "-" for no storage class |
 | sync.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-sync"` | The image to use for the rad-sync deployment |
-| sync.image.tag | string | `"v1.1.24"` |  |
+| sync.image.tag | string | `"v1.1.25"` |  |
 | sync.nodeSelector | object | `{}` |  |
 | sync.podAnnotations | object | `{}` |  |
 | sync.resources.limits.cpu | string | `"200m"` |  |
@@ -725,7 +725,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | watch.ephemeralVolumes.size | string | `"1Gi"` | Storage size for watch ephemeral volume |
 | watch.ephemeralVolumes.storageClassName | string | `""` | Storage class to use. Use "" for default storage class, "-" for no storage class |
 | watch.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-watch"` | The image to use for the rad-watch deployment |
-| watch.image.tag | string | `"v1.1.37"` |  |
+| watch.image.tag | string | `"v1.1.38"` |  |
 | watch.ingestCustomResources | bool | `false` | If set will allow ingesting Custom Resources specified in `customResourceRules` |
 | watch.nodeSelector | object | `{}` |  |
 | watch.podAnnotations | object | `{}` |  |
