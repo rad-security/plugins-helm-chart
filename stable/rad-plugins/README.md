@@ -577,7 +577,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | priorityClass.globalDefault | bool | `false` |  |
 | priorityClass.name | string | `"rad-priority"` |  |
 | priorityClass.preemptionPolicy | string | `"PreemptLowerPriority"` |  |
-| priorityClass.value | int | `1000000000` |  |
+| priorityClass.value | int | `10` |  |
 | rad.accessKeySecretNameOverride | string | `""` | The name of the custom secret containing Access Key. |
 | rad.apiKey | string | `""` | The combined API key to authenticate with RAD Security |
 | rad.apiUrl | string | `"https://api.rad.security"` | The base URL for the RAD Security API. |
