@@ -278,7 +278,6 @@ runtime:
   agent:
     env:
       LOG_LEVEL: INFO
-      TRACER_PII_DETECTOR_PRESIDIO_MAX_REQUESTS_PER_SECOND: "10"
       TRACER_IGNORE_NAMESPACES: |
         cert-manager,
         rad,
@@ -321,6 +320,17 @@ runtime:
       volumeMounts: []
     eventQueueSize: 20000
     grpcServerBatchSize: 2000
+    sampling:
+      # Enable sampling of high frequency Runtime events (HTTP and Open File).
+      enabled: true
+      # Minimum number of samples to be collected per event deduplication key (container id and file path or HTTP url).
+      minSamples: 10
+      # Maxiumum number of samples to be collected per event deduplication key (container id and file path or HTTP url).
+      maxSamples: 100
+      # Percentage of all events to be sampled after the minimum and before the maximum number of events is collected.
+      ratio: 5
+      # TTL to expire the minimum and maximum counters.
+      ttl: "5m"
   exporter:
     env:
       LOG_LEVEL: INFO
@@ -344,6 +354,8 @@ runtime:
 
   piiAnalyzer:
     enabled: false
+    # The maximum number of requests per second per rad-runtime pod sent to the PII analyzer.
+    maxRequestsPerSecond: 10
     env:
       LOG_LEVEL: WARNING
     image:
