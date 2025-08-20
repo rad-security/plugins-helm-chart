@@ -108,9 +108,9 @@ spec:
               value: "true"
             - name: TRACER_PII_DETECTOR_PRESIDIO_URL
               value: "http://rad-pii-analyzer.{{ .Release.Namespace }}.svc.cluster.local"
-            {{- if .Values.runtime.piiAnalyzer.maxRequestsPerSecond }}
+            {{- if and .Values.runtime.piiAnalyzer .Values.runtime.piiAnalyzer.maxRequestsPerSecond }}
             - name: TRACER_PII_DETECTOR_PRESIDIO_MAX_REQUESTS_PER_SECOND
-              value: "{{ .Values.runtime.piiAnalyzer.MaxRequestsPerSecond | quote }}"
+              value: "{{ .Values.runtime.piiAnalyzer.maxRequestsPerSecond }}"
             {{- end }}
             {{- end }}
             {{- end }}
