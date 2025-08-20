@@ -133,6 +133,21 @@ guard:
 
 **Note**: Ephemeral volumes are deleted when pods are terminated. They provide temporary, high-performance storage but do not persist data across pod restarts.
 
+## Sampling configuration
+
+High frequency events are sampled by default. This applies to HTTP and Open File events. Use the configuration below to change the default values.
+
+```yaml
+runtime:
+  agent:
+    sampling:
+      enabled: true
+      minSamples: 10
+      maxSamples: 100
+      ratio: 5
+      ttl: "5m"
+```
+
 ## Prerequisites
 
 The remainder of this page assumes the following:

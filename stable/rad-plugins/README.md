@@ -133,6 +133,21 @@ guard:
 
 **Note**: Ephemeral volumes are deleted when pods are terminated. They provide temporary, high-performance storage but do not persist data across pod restarts.
 
+## Sampling configuration
+
+High frequency events are sampled by default. This applies to HTTP and Open File events. Use the configuration below to change the default values.
+
+```yaml
+runtime:
+  agent:
+    sampling:
+      enabled: true
+      minSamples: 10
+      maxSamples: 100
+      ratio: 5
+      ttl: "5m"
+```
+
 ## Prerequisites
 
 The remainder of this page assumes the following:
@@ -599,7 +614,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.agent.collectors.runtimePath | string | `""` |  |
 | runtime.agent.env.LOG_LEVEL | string | `"INFO"` |  |
 | runtime.agent.env.TRACER_IGNORE_NAMESPACES | string | `"cert-manager,\nrad,\nksoc,\nkube-node-lease,\nkube-public,\nkube-system\n"` |  |
-| runtime.agent.env.TRACER_PII_DETECTOR_PRESIDIO_MAX_REQUESTS_PER_SECOND | string | `"10"` |  |
 | runtime.agent.eventQueueSize | int | `20000` |  |
 | runtime.agent.grpcServerBatchSize | int | `2000` |  |
 | runtime.agent.hostPID | string | `nil` |  |
@@ -613,6 +627,11 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.agent.resources.requests.cpu | string | `"100m"` |  |
 | runtime.agent.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
 | runtime.agent.resources.requests.memory | string | `"128Mi"` |  |
+| runtime.agent.sampling.enabled | bool | `true` |  |
+| runtime.agent.sampling.maxSamples | int | `100` |  |
+| runtime.agent.sampling.minSamples | int | `10` |  |
+| runtime.agent.sampling.ratio | int | `5` |  |
+| runtime.agent.sampling.ttl | string | `"5m"` |  |
 | runtime.enabled | bool | `false` |  |
 | runtime.ephemeralVolumes | object | `{"accessModes":["ReadWriteOnce"],"annotations":{},"enabled":false,"labels":{},"mountPath":"/tmp","size":"1Gi","storageClassName":""}` | Ephemeral volume configuration for rad-runtime |
 | runtime.ephemeralVolumes.accessModes | list | `["ReadWriteOnce"]` | Access modes for the ephemeral volume |
@@ -647,6 +666,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.piiAnalyzer.ephemeralVolumes.storageClassName | string | `""` | Storage class to use. Use "" for default storage class, "-" for no storage class |
 | runtime.piiAnalyzer.image.repository | string | `"mcr.microsoft.com/presidio-analyzer"` |  |
 | runtime.piiAnalyzer.image.tag | string | `"2.2.357"` |  |
+| runtime.piiAnalyzer.maxRequestsPerSecond | int | `10` |  |
 | runtime.piiAnalyzer.nodeSelector | object | `{}` |  |
 | runtime.piiAnalyzer.replicas | int | `3` |  |
 | runtime.piiAnalyzer.resources.limits.cpu | string | `"2000m"` |  |

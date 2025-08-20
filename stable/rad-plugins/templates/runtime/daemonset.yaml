@@ -108,9 +108,23 @@ spec:
               value: "true"
             - name: TRACER_PII_DETECTOR_PRESIDIO_URL
               value: "http://rad-pii-analyzer.{{ .Release.Namespace }}.svc.cluster.local"
+            {{- if .Values.runtime.piiAnalyzer.maxRequestsPerSecond }}
+            - name: TRACER_PII_DETECTOR_PRESIDIO_MAX_REQUESTS_PER_SECOND
+              value: "{{ .Values.runtime.piiAnalyzer.MaxRequestsPerSecond | quote }}"
             {{- end }}
             {{- end }}
-            {{- if .Values.runtime.agent.httpTracingEnabled }}
+            {{- end }}
+            {{- with .Values.runtime.agent.sampling }}
+            - name: TRACER_SAMPLING_ENABLED
+              value: {{ .enabled | quote }}
+            - name : TRACER_SAMPLING_MIN_SAMPLES
+              value: {{ .minSamples | quote }}
+            - name : TRACER_SAMPLING_MAX_SAMPLES
+              value: {{ .maxSamples | quote }}
+            - name: TRACER_SAMPLING_RATIO
+              value: {{ .ratio | quote }}
+            - name: TRACER_SAMPLING_TTL
+              value: {{ .ttl | quote }}
             {{- end }}
             {{- if .Values.runtime.agent.eventQueueSize }}
             - name: EVENT_QUEUE_SIZE
