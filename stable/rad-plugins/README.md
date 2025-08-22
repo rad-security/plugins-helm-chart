@@ -93,6 +93,31 @@ runtime:
 
 Each plugin pod contains `agent` and `exporter` containers. The `agent` container is responsible for collecting runtime information from the nodes in the cluster. The `exporter` container is responsible for exporting the collected information to the RAD Security platform.
 
+#### Node Scheduling
+
+You can control where `rad-runtime` pods are scheduled using standard Kubernetes scheduling mechanisms:
+
+```yaml
+runtime:
+  enabled: true
+  nodeSelector:
+    kubernetes.io/os: linux
+  tolerations:
+    - key: "special-nodes"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/arch
+            operator: In
+            values:
+            - amd64
+```
+
 The information collected is sent to the RAD Security platform for further processing. For more information on the `rad-runtime` plugin, see the [RAD Security documentation](https://docs.rad.security/).
 
 ## Ephemeral Storage
@@ -605,6 +630,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | rad.deployment.kubeSystem | bool | `true` | Deploy resources in the kube-system namespace. If false, no resources will be deployed in the kube-system namespace. |
 | rad.deployment.releaseNamespace | bool | `true` | Deploy resources in the release namespace (the namespace where the chart is installed). If false, no resources will be deployed in the release namespace. |
 | rad.seccompProfile | object | `{"enabled":true}` | Enable seccompProfile for all RAD Security pods |
+| runtime.affinity | object | `{}` |  |
 | runtime.agent.collectors.containerd.enabled | string | `nil` |  |
 | runtime.agent.collectors.containerd.socket | string | `"/run/containerd/containerd.sock"` |  |
 | runtime.agent.collectors.crio.enabled | string | `nil` |  |

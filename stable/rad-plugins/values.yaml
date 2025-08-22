@@ -394,6 +394,7 @@ runtime:
   nodeSelector: {}
   nodeName: ""
   tolerations: []
+  affinity: {}
   updateStrategy:
     type: RollingUpdate
     rollingUpdate:
