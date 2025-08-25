@@ -93,6 +93,31 @@ runtime:
 
 Each plugin pod contains `agent` and `exporter` containers. The `agent` container is responsible for collecting runtime information from the nodes in the cluster. The `exporter` container is responsible for exporting the collected information to the RAD Security platform.
 
+#### Node Scheduling
+
+You can control where `rad-runtime` pods are scheduled using standard Kubernetes scheduling mechanisms:
+
+```yaml
+runtime:
+  enabled: true
+  nodeSelector:
+    kubernetes.io/os: linux
+  tolerations:
+    - key: "special-nodes"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/arch
+            operator: In
+            values:
+            - amd64
+```
+
 The information collected is sent to the RAD Security platform for further processing. For more information on the `rad-runtime` plugin, see the [RAD Security documentation](https://docs.rad.security/).
 
 ## Ephemeral Storage
@@ -132,6 +157,33 @@ guard:
 ```
 
 **Note**: Ephemeral volumes are deleted when pods are terminated. They provide temporary, high-performance storage but do not persist data across pod restarts.
+
+## Pod Scheduling
+
+All RAD Security plugins support standard Kubernetes scheduling mechanisms including `nodeSelector`, `tolerations`, and `affinity`. This allows you to control where pods are scheduled based on your cluster requirements.
+
+### Basic Example
+
+```yaml
+# Apply to any plugin (guard, sbom, sync, watch, runtime, piiAnalyzer, k9)
+guard:
+  nodeSelector:
+    kubernetes.io/os: linux
+  tolerations:
+    - key: "example-key"
+      operator: "Equal"
+      value: "example-value"
+      effect: "NoSchedule"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/arch
+            operator: In
+            values:
+            - amd64
+```
 
 ## Sampling configuration
 

@@ -123,6 +123,10 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
       {{- end }}
+      {{- with .Values.guard.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       volumes:
       - name: cert
         secret:

@@ -93,6 +93,31 @@ runtime:
 
 Each plugin pod contains `agent` and `exporter` containers. The `agent` container is responsible for collecting runtime information from the nodes in the cluster. The `exporter` container is responsible for exporting the collected information to the RAD Security platform.
 
+#### Node Scheduling
+
+You can control where `rad-runtime` pods are scheduled using standard Kubernetes scheduling mechanisms:
+
+```yaml
+runtime:
+  enabled: true
+  nodeSelector:
+    kubernetes.io/os: linux
+  tolerations:
+    - key: "special-nodes"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/arch
+            operator: In
+            values:
+            - amd64
+```
+
 The information collected is sent to the RAD Security platform for further processing. For more information on the `rad-runtime` plugin, see the [RAD Security documentation](https://docs.rad.security/).
 
 ## Ephemeral Storage
@@ -132,6 +157,33 @@ guard:
 ```
 
 **Note**: Ephemeral volumes are deleted when pods are terminated. They provide temporary, high-performance storage but do not persist data across pod restarts.
+
+## Pod Scheduling
+
+All RAD Security plugins support standard Kubernetes scheduling mechanisms including `nodeSelector`, `tolerations`, and `affinity`. This allows you to control where pods are scheduled based on your cluster requirements.
+
+### Basic Example
+
+```yaml
+# Apply to any plugin (guard, sbom, sync, watch, runtime, piiAnalyzer, k9)
+guard:
+  nodeSelector:
+    kubernetes.io/os: linux
+  tolerations:
+    - key: "example-key"
+      operator: "Equal"
+      value: "example-value"
+      effect: "NoSchedule"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/arch
+            operator: In
+            values:
+            - amd64
+```
 
 ## Sampling configuration
 
@@ -516,6 +568,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| bootstrapper.affinity | object | `{}` |  |
 | bootstrapper.env | object | `{}` |  |
 | bootstrapper.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-bootstrapper"` | The image to use for the rad-bootstrapper deployment |
 | bootstrapper.image.tag | string | `"v1.1.21"` |  |
@@ -528,6 +581,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | bootstrapper.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
 | bootstrapper.resources.requests.memory | string | `"32Mi"` |  |
 | bootstrapper.tolerations | list | `[]` |  |
+| guard.affinity | object | `{}` |  |
 | guard.config.BLOCK_ON_ERROR | bool | `false` | Whether to block on error. |
 | guard.config.BLOCK_ON_POLICY_VIOLATION | bool | `false` | Whether to block on policy violation. |
 | guard.config.BLOCK_ON_TIMEOUT | bool | `false` | Whether to block on timeout. |
@@ -557,6 +611,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | guard.tolerations | list | `[]` |  |
 | guard.webhook.objectSelector | object | `{}` |  |
 | guard.webhook.timeoutSeconds | int | `10` |  |
+| k9.affinity | object | `{}` |  |
 | k9.backend.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-k9-backend-agent"` |  |
 | k9.backend.image.tag | string | `"v0.0.41"` |  |
 | k9.capabilities.enableGetLogs | bool | `false` |  |
@@ -605,6 +660,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | rad.deployment.kubeSystem | bool | `true` | Deploy resources in the kube-system namespace. If false, no resources will be deployed in the kube-system namespace. |
 | rad.deployment.releaseNamespace | bool | `true` | Deploy resources in the release namespace (the namespace where the chart is installed). If false, no resources will be deployed in the release namespace. |
 | rad.seccompProfile | object | `{"enabled":true}` | Enable seccompProfile for all RAD Security pods |
+| runtime.affinity | object | `{}` |  |
 | runtime.agent.collectors.containerd.enabled | string | `nil` |  |
 | runtime.agent.collectors.containerd.socket | string | `"/run/containerd/containerd.sock"` |  |
 | runtime.agent.collectors.crio.enabled | string | `nil` |  |
@@ -654,6 +710,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.httpTracingEnabled | bool | `false` |  |
 | runtime.nodeName | string | `""` |  |
 | runtime.nodeSelector | object | `{}` |  |
+| runtime.piiAnalyzer.affinity | object | `{}` |  |
 | runtime.piiAnalyzer.enabled | bool | `false` |  |
 | runtime.piiAnalyzer.env.LOG_LEVEL | string | `"WARNING"` |  |
 | runtime.piiAnalyzer.ephemeralVolumes | object | `{"accessModes":["ReadWriteOnce"],"annotations":{},"enabled":false,"labels":{},"mountPath":"/tmp","size":"1Gi","storageClassName":""}` | Ephemeral volume configuration for pii-analyzer |
@@ -682,6 +739,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.updateStrategy.rollingUpdate.maxSurge | int | `0` | The maximum number of pods that can be scheduled above the desired number of pods. Can be an absolute number or percent, e.g. `5` or `"10%"` |
 | runtime.updateStrategy.rollingUpdate.maxUnavailable | string | `"25%"` | The maximum number of pods that can be unavailable during the update. Can be an absolute number or percent, e.g.  `5` or `"10%"` |
 | runtime.updateStrategy.type | string | `"RollingUpdate"` |  |
+| sbom.affinity | object | `{}` |  |
 | sbom.enabled | bool | `true` |  |
 | sbom.env.IMAGE_PULL_SECRETS | string | `""` | Comma separated list of image pull secrets to use to pull container images. Important: The secrets must be created in the same namespace as the rad-sbom deployment. By default 'rad-sbom' tries to read imagePullSecrets from the manifest spec, but additionally, you can specify the secrets here. If you use AWS ECR private registry, we recommend to use EKS Pod Identity or IRSA to add access to "rad-sbom" to the ECR registry. |
 | sbom.env.LOG_LEVEL | string | `"info"` | The log level to use. Options are trace, debug, info, warn, error |
@@ -711,6 +769,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | sbom.serviceAccountAnnotations | object | `{}` |  |
 | sbom.tolerations | list | `[]` |  |
 | sbom.webhook.timeoutSeconds | int | `10` |  |
+| sync.affinity | object | `{}` |  |
 | sync.enabled | bool | `true` |  |
 | sync.env | object | `{}` |  |
 | sync.ephemeralVolumes | object | `{"accessModes":["ReadWriteOnce"],"annotations":{},"enabled":false,"labels":{},"mountPath":"/tmp","size":"1Gi","storageClassName":""}` | Ephemeral volume configuration for rad-sync |
@@ -733,6 +792,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | sync.resources.requests.memory | string | `"128Mi"` |  |
 | sync.serviceAccountAnnotations | object | `{}` |  |
 | sync.tolerations | list | `[]` |  |
+| watch.affinity | object | `{}` |  |
 | watch.customResourceRules | object | `{"allowlist":[],"denylist":[]}` | Rules for Custom Resource ingestion containing allow- and denylists of rules specifying `apiGroups` and `resources`. E.g. `allowlist: apiGroups: ["custom.com"], resources: ["someResource", "otherResoure"]` Wildcards (`*`) can be used to match all. `customResourceRules.denylist` sets resources that should not be ingested. It has a priority over `customResourceRules.allowlist` to  deny resources allowed using a wildcard (`*`) match.  E.g. you can use `allowlist: apiGroups: ["custom.com"], resources: ["*"], denylist: apiGroups: ["custom.com"], resources: "excluded"` to ingest all resources within `custom.com` group but `excluded`. |
 | watch.enabled | bool | `true` |  |
 | watch.env.RECONCILIATION_AT_START | bool | `false` | Whether to trigger reconciliation at startup. |

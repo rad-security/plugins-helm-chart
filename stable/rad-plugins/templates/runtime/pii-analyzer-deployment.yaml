@@ -108,6 +108,10 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}
+{{- with .Values.runtime.piiAnalyzer.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
 ---
 apiVersion: v1
 kind: Service

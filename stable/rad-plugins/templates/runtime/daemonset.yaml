@@ -272,6 +272,10 @@ spec:
       {{- with .Values.runtime.tolerations }}
 {{ toYaml . | indent 8 }}
       {{- end }}
+      {{- with .Values.runtime.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       volumes:
         - name: api-token
           secret:
