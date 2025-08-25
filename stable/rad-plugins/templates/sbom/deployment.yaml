@@ -128,7 +128,11 @@ spec:
       {{- with .Values.sbom.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
-  {{- end }}
+      {{- end }}
+      {{- with .Values.sbom.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       volumes:
       {{- if .Values.sbom.ephemeralVolumes.enabled }}
       - name: sbom-storage

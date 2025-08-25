@@ -18,7 +18,7 @@ annotations:
   # Possible kind options are added, changed, deprecated, removed, fixed and security.
   artifacthub.io/changes: |
     - kind: added
-      description: Allows users to configure affinity for runtime
+      description: Allows users to configure affinity for rad plugins
   artifacthub.io/containsSecurityUpdates: "false"
   artifacthub.io/links: |
     - name: source

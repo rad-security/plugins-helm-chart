@@ -63,6 +63,7 @@ bootstrapper:
   podAnnotations: {}
   nodeSelector: {}
   tolerations: []
+  affinity: {}
 
 guard:
   enabled: true
@@ -97,6 +98,7 @@ guard:
     timeoutSeconds: 10
   nodeSelector: {}
   tolerations: []
+  affinity: {}
   serviceAccountAnnotations: {}
   # -- Ephemeral volume configuration for rad-guard
   ephemeralVolumes:
@@ -161,6 +163,7 @@ sbom:
     timeoutSeconds: 10
   nodeSelector: {}
   tolerations: []
+  affinity: {}
   serviceAccountAnnotations: {}
   # -- Ephemeral volume configuration for rad-sbom
   ephemeralVolumes:
@@ -199,6 +202,7 @@ sync:
   podAnnotations: {}
   nodeSelector: {}
   tolerations: []
+  affinity: {}
   serviceAccountAnnotations: {}
   # -- Ephemeral volume configuration for rad-sync
   ephemeralVolumes:
@@ -252,6 +256,7 @@ watch:
   customResourceRules:
     allowlist: []
     denylist: []
+  affinity: {}
   serviceAccountAnnotations: {}
   # -- Ephemeral volume configuration for rad-watch
   ephemeralVolumes:
@@ -373,6 +378,7 @@ runtime:
         memory: 128Mi
         ephemeral-storage: 2Gi
     tolerations: []
+    affinity: {}
     # -- Ephemeral volume configuration for pii-analyzer
     ephemeralVolumes:
       # -- Enable ephemeral storage for pii-analyzer (used for temporary processing)
@@ -451,6 +457,7 @@ k9:
     enableLabelPod: false
   tolerations: []
   nodeSelector: {}
+  affinity: {}
   serviceAccountAnnotations: {}
   # -- Ephemeral volume configuration for rad-k9
   ephemeralVolumes:
