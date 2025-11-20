@@ -49,7 +49,7 @@ bootstrapper:
   image:
     # -- The image to use for the rad-bootstrapper deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-bootstrapper
-    tag: v1.1.21
+    tag: v1.1.23
   env: {}
   resources:
     limits:
@@ -70,7 +70,7 @@ guard:
   image:
     # -- The image to use for the rad-guard deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-guard
-    tag: v1.1.30
+    tag: v1.1.32
   config:
     # -- Whether to block on error.
     BLOCK_ON_ERROR: false
@@ -123,7 +123,7 @@ sbom:
   image:
     # -- The image to use for the rad-sbom deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-sbom
-    tag: v1.1.52
+    tag: v1.1.55
   env:
     # -- Whether to mutate the image in pod spec by adding digest at the end. By default, digests are added to images to ensure
     # that the image that runs in the cluster matches the digest of the build.  Disable this if your continuous deployment
@@ -147,6 +147,8 @@ sbom:
     SBOM_CHECK_LATEST: false
     # -- The log level to use. Options are trace, debug, info, warn, error
     LOG_LEVEL: info
+    # -- Comma separated list of full image prefixes to ignore. Use `repo.io` to ignore the entire image repository, `repo.io/image` to ignore all versions of an image, or `repo.io/image:tag` to ignore a specific version.
+    IGNORE_IMAGE_PREFIXES: ""
   resources:
     requests:
       cpu: 500m
@@ -188,7 +190,7 @@ sync:
   image:
     # -- The image to use for the rad-sync deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-sync
-    tag: v1.1.25
+    tag: v1.1.27
   env: {}
   resources:
     limits:
@@ -227,7 +229,7 @@ watch:
   image:
     # -- The image to use for the rad-watch deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-watch
-    tag: v1.1.38
+    tag: v1.1.40
   env:
     # -- Whether to trigger reconciliation at startup.
     RECONCILIATION_AT_START: false
@@ -292,7 +294,7 @@ runtime:
         kube-system
     image:
       repository: public.ecr.aws/n8h5y2v5/rad-security/rad-runtime
-      tag: v0.1.31
+      tag: v0.1.32
     resources:
       limits:
         cpu: 200m
