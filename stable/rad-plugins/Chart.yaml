@@ -17,8 +17,16 @@ annotations:
   artifacthub.io/category: security
   # Possible kind options are added, changed, deprecated, removed, fixed and security.
   artifacthub.io/changes: |
+    - kind: changed
+      description: Improved collection of metrics and heartbeats for all plugins.
+    - kind: added
+      description: Added reverse DNS lookup to fill hostnames when tracing Network Connections in rad-runtime.
     - kind: fixed
-      description: Improved collection of metrics and heartbeats for all plugins. Improve DNS mapping in Runtime. Added fsGroup to enable write to ephemeral storage. Updated dependencies to fix vulnerabilities.
+      description: Added fsGroup to enable write to ephemeral storage. Updated dependencies to fix vulnerabilities.
+    - kind: fixed
+      description: Fixed cross-region ECR scanning in rad-sbom.
+    - kind: security
+      description: Updated dependencies to remove vulnerabilities in all plugins.
   artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/links: |
     - name: source
