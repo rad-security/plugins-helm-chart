@@ -24,7 +24,13 @@ In this way, we can avoid the degradation of the API server, which would occur i
 
 ### rad-sbom plugin
 
-`rad-sbom` is the plugin responsible for calculating [SBOMs](https://en.wikipedia.org/wiki/Software_supply_chain) directly on the customer cluster. The plugin is run as an admission/mutating webhook, adding an image digest next to its tag if it's missing. This mutation is performed so [TOCTOU](https://en.wikipedia.org/wiki/Time-of-check_to_time-of_use) does not impact the user. The image deployed is the image that RAD Security scanned. It sees all new workloads and calculates SBOMs for them. It continuously checks the RAD Security API to save time and resources to see if the SBOM is already known for any particular image digest. If not, it is being calculated and uploaded to RAD Security for further processing. By default we use `cyclonedx-json` format for SBOMs, but it can be changed to `spdx-json` or `syft-json` by setting the `SBOM_FORMAT` environment variable in the `values.yaml` file. To prevent the plugin from mutating the `Pod` resource, set the `MUTATE_IMAGE` and `MUTATE_ANNOTATIONS` environment variables to `false`. If observe a performance degradation while deploying new workloads, you can improve it significantly by disabling the mutation of the image tag and annotations.
+`rad-sbom` is the plugin responsible for calculating [SBOMs](https://en.wikipedia.org/wiki/Software_supply_chain) directly on the customer cluster. The plugin is run as an admission/mutating webhook, adding an image digest next to its tag if it's missing. This mutation is performed so [TOCTOU](https://en.wikipedia.org/wiki/Time-of-check_to_time-of_use) does not impact the user. The image deployed is the image that RAD Security scanned. It sees all new workloads and calculates SBOMs for them. It continuously checks the RAD Security API to save time and resources to see if the SBOM is already known for any particular image digest. If not, it is being calculated and uploaded to RAD Security for further processing.
+
+By default we use `cyclonedx-json` format for SBOMs, but it can be changed to `spdx-json` or `syft-json` by setting the `SBOM_FORMAT` environment variable in the `values.yaml` file.
+
+To prevent the plugin from mutating the `Pod` resource, set the `MUTATE_IMAGE` and `MUTATE_ANNOTATIONS` environment variables to `false`. If observe a performance degradation while deploying new workloads, you can improve it significantly by disabling the mutation of the image tag and annotations.
+
+In order to ignore images from scanning use the `IGNORE_IMAGE_PREFIXES` environment variable. It's a comma separated list of full image prefixes to ignore. Use `registry.io` to ignore the entire image registry, `registry.io/repo` to ignore a repository, `registry.io/repo/image` to ignore all versions of an image, or `registry.io/repo/image:tag` to ignore a specific version.
 
 ```yaml
 sbom:
@@ -32,6 +38,7 @@ sbom:
     SBOM_FORMAT: cyclonedx-json
     MUTATE_IMAGE: true
     MUTATE_ANNOTATIONS: false
+    IGNORE_IMAGE_PREFIXES: "registry.io/repo/image,registry.io/repo/anotherImage:tag"
 ```
 
 Currently, the plugin supports most of the popular container registries, via the `IMAGE_PULL_SECRETS` environment variable. Additionally we have native support for Azure Container Registries and ECR. See below for more details.
@@ -741,7 +748,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.updateStrategy.type | string | `"RollingUpdate"` |  |
 | sbom.affinity | object | `{}` |  |
 | sbom.enabled | bool | `true` |  |
-| sbom.env.IGNORE_IMAGE_PREFIXES | string | `""` | Comma separated list of full image prefixes to ignore. Use `repo.io` to ignore the entire image repository, `repo.io/image` to ignore all versions of an image, or `repo.io/image:tag` to ignore a specific version. |
+| sbom.env.IGNORE_IMAGE_PREFIXES | string | `""` | Comma separated list of full image prefixes to ignore. Use `registry.io` to ignore the entire image registry, `registry.io/repo` to ignore a repository, `registry.io/repo/image` to ignore all versions of an image, or `registry.io/repo/image:tag` to ignore a specific version. |
 | sbom.env.IMAGE_PULL_SECRETS | string | `""` | Comma separated list of image pull secrets to use to pull container images. Important: The secrets must be created in the same namespace as the rad-sbom deployment. By default 'rad-sbom' tries to read imagePullSecrets from the manifest spec, but additionally, you can specify the secrets here. If you use AWS ECR private registry, we recommend to use EKS Pod Identity or IRSA to add access to "rad-sbom" to the ECR registry. |
 | sbom.env.LOG_LEVEL | string | `"info"` | The log level to use. Options are trace, debug, info, warn, error |
 | sbom.env.MUTATE_ANNOTATIONS | bool | `false` | Whether to mutate the annotations in pod spec by adding images digests. Annotations can be used to track image digests in addition to, or instead of the image tag mutation. |
