@@ -147,7 +147,7 @@ sbom:
     SBOM_CHECK_LATEST: false
     # -- The log level to use. Options are trace, debug, info, warn, error
     LOG_LEVEL: info
-    # -- Comma separated list of full image prefixes to ignore. Use `repo.io` to ignore the entire image repository, `repo.io/image` to ignore all versions of an image, or `repo.io/image:tag` to ignore a specific version.
+    # -- Comma separated list of full image prefixes to ignore. Use `registry.io` to ignore the entire image registry, `registry.io/repo` to ignore a repository, `registry.io/repo/image` to ignore all versions of an image, or `registry.io/repo/image:tag` to ignore a specific version.
     IGNORE_IMAGE_PREFIXES: ""
   resources:
     requests:
