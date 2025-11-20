@@ -741,6 +741,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.updateStrategy.type | string | `"RollingUpdate"` |  |
 | sbom.affinity | object | `{}` |  |
 | sbom.enabled | bool | `true` |  |
+| sbom.env.IGNORE_IMAGE_PREFIXES | string | `""` | Comma separated list of full image prefixes to ignore. Use `repo.io` to ignore the entire image repository, `repo.io/image` to ignore all versions of an image, or `repo.io/image:tag` to ignore a specific version. |
 | sbom.env.IMAGE_PULL_SECRETS | string | `""` | Comma separated list of image pull secrets to use to pull container images. Important: The secrets must be created in the same namespace as the rad-sbom deployment. By default 'rad-sbom' tries to read imagePullSecrets from the manifest spec, but additionally, you can specify the secrets here. If you use AWS ECR private registry, we recommend to use EKS Pod Identity or IRSA to add access to "rad-sbom" to the ECR registry. |
 | sbom.env.LOG_LEVEL | string | `"info"` | The log level to use. Options are trace, debug, info, warn, error |
 | sbom.env.MUTATE_ANNOTATIONS | bool | `false` | Whether to mutate the annotations in pod spec by adding images digests. Annotations can be used to track image digests in addition to, or instead of the image tag mutation. |

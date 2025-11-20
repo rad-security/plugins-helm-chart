@@ -25,6 +25,8 @@ annotations:
       description: Added fsGroup to enable write to ephemeral storage. Updated dependencies to fix vulnerabilities.
     - kind: fixed
       description: Fixed cross-region ECR scanning in rad-sbom.
+    - kind: added
+      description: Added configuration to rad-sbom allowing to ignore specific repositories or images.
     - kind: security
       description: Updated dependencies to remove vulnerabilities in all plugins.
   artifacthub.io/containsSecurityUpdates: "true"
