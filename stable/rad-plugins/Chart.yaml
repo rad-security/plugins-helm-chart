@@ -1,9 +1,9 @@
 apiVersion: v2
 name: rad-plugins
-version: 2.3.41
+version: 2.3.42
 description: A Helm chart to run the RAD Security plugins
 home: https://rad.security
-icon: https://app.rad.security/apple-touch-icon-180x180.png
+icon: https://app.rad.security/assets/favicon.svg
 keywords:
   - security
   - rad
@@ -18,7 +18,7 @@ annotations:
   # Possible kind options are added, changed, deprecated, removed, fixed and security.
   artifacthub.io/changes: |
     - kind: fixed
-      version: Bump version of all plugins to fix vulnerabilities in stdlib
+      description: Bump version of all plugins to fix vulnerabilities in stdlib
   artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/links: |
     - name: source
