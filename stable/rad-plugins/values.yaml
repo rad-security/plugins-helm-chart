@@ -429,56 +429,6 @@ runtime:
     # -- Additional annotations for the ephemeral volume
     annotations: {}
 
-k9:
-  enabled: false
-  replicas: 1
-  frontend:
-    image:
-      repository: public.ecr.aws/n8h5y2v5/rad-security/rad-k9-frontend-agent
-      tag: v0.0.41
-    # -- The interval in which the agent polls the backend for new actions.
-    agentActionPollInterval: "5s"
-  backend:
-    image:
-      repository: public.ecr.aws/n8h5y2v5/rad-security/rad-k9-backend-agent
-      tag: v0.0.41
-  resources:
-    limits:
-      cpu: 250m
-      memory: 512Mi
-      ephemeral-storage: 1Gi
-    requests:
-      cpu: 100m
-      memory: 128Mi
-      ephemeral-storage: 100Mi
-  capabilities:
-    enableTerminatePod: false
-    enableTerminateNamespace: false
-    enableQuarantine: false
-    enableGetLogs: false
-    enableLabelPod: false
-  tolerations: []
-  nodeSelector: {}
-  affinity: {}
-  serviceAccountAnnotations: {}
-  # -- Ephemeral volume configuration for rad-k9
-  ephemeralVolumes:
-    # -- Enable ephemeral storage for rad-k9 (used as /tmp filesystem when enabled)
-    enabled: false
-    # -- Storage class to use. Use "" for default storage class, "-" for no storage class
-    storageClassName: ""
-    # -- Storage size for k9 ephemeral volume
-    size: 1Gi
-    # -- Access modes for the ephemeral volume
-    accessModes:
-      - ReadWriteOnce
-    # -- Mount path for the ephemeral volume in the k9 containers (used as /tmp when enabled)
-    mountPath: "/tmp"
-    # -- Additional labels for the ephemeral volume
-    labels: {}
-    # -- Additional annotations for the ephemeral volume
-    annotations: {}
-
 # Enables support for OpenShift.
 openshift:
   enabled: false

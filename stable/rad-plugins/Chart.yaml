@@ -1,6 +1,6 @@
 apiVersion: v2
 name: rad-plugins
-version: 2.3.43
+version: 2.4.1
 description: A Helm chart to run the RAD Security plugins
 home: https://rad.security
 icon: https://app.rad.security/assets/favicon.svg
@@ -17,9 +17,9 @@ annotations:
   artifacthub.io/category: security
   # Possible kind options are added, changed, deprecated, removed, fixed and security.
   artifacthub.io/changes: |
-    - kind: fixed
-      description: Bump version of rad-sbom plugin to fix vulnerabilities
-  artifacthub.io/containsSecurityUpdates: "true"
+    - kind: removed
+      description: Remove rad-k9 plugin and migrate its RBAC permissions to rad-sync
+  artifacthub.io/containsSecurityUpdates: "false"
   artifacthub.io/links: |
     - name: source
       url: https://github.com/rad-security/plugins-helm-chart
