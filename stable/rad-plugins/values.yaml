@@ -190,7 +190,7 @@ sync:
   image:
     # -- The image to use for the rad-sync deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-sync
-    tag: v1.1.29
+    tag: v1.1.30
   env: {}
   resources:
     limits:

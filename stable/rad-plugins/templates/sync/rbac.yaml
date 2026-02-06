@@ -81,7 +81,7 @@ rules:
     verbs: [ "get", "list", "watch", "create", "update", "patch" ]
   - apiGroups: [ "" ]
     resources: [ "pods", "pods/log" ]
-    verbs: [ "get", "list", "delete", "update" ]
+    verbs: [ "get", "list", "delete", "update", "patch" ]
   - apiGroups: [ "" ]
     resources: [ "configmaps", "secrets" ]
     verbs: [ "get", "list", "create", "update", "watch" ]

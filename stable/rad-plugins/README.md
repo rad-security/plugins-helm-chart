@@ -759,7 +759,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | sync.ephemeralVolumes.size | string | `"1Gi"` | Storage size for sync ephemeral volume |
 | sync.ephemeralVolumes.storageClassName | string | `""` | Storage class to use. Use "" for default storage class, "-" for no storage class |
 | sync.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-sync"` | The image to use for the rad-sync deployment |
-| sync.image.tag | string | `"v1.1.29"` |  |
+| sync.image.tag | string | `"v1.1.30"` |  |
 | sync.nodeSelector | object | `{}` |  |
 | sync.podAnnotations | object | `{}` |  |
 | sync.resources.limits.cpu | string | `"200m"` |  |
