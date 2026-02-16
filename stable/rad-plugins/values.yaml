@@ -49,7 +49,7 @@ bootstrapper:
   image:
     # -- The image to use for the rad-bootstrapper deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-bootstrapper
-    tag: v1.1.25
+    tag: v1.1.26
   env: {}
   resources:
     limits:
@@ -70,7 +70,7 @@ guard:
   image:
     # -- The image to use for the rad-guard deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-guard
-    tag: v1.1.34
+    tag: v1.1.35
   config:
     # -- Whether to block on error.
     BLOCK_ON_ERROR: false
@@ -123,7 +123,7 @@ sbom:
   image:
     # -- The image to use for the rad-sbom deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-sbom
-    tag: v1.1.58
+    tag: v1.1.59
   env:
     # -- Whether to mutate the image in pod spec by adding digest at the end. By default, digests are added to images to ensure
     # that the image that runs in the cluster matches the digest of the build.  Disable this if your continuous deployment
@@ -190,7 +190,7 @@ sync:
   image:
     # -- The image to use for the rad-sync deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-sync
-    tag: v1.1.29
+    tag: v1.1.31
   env: {}
   resources:
     limits:
@@ -229,7 +229,7 @@ watch:
   image:
     # -- The image to use for the rad-watch deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-watch
-    tag: v1.1.42
+    tag: v1.1.43
   env:
     # -- Whether to trigger reconciliation at startup.
     RECONCILIATION_AT_START: false
@@ -294,7 +294,7 @@ runtime:
         kube-system
     image:
       repository: public.ecr.aws/n8h5y2v5/rad-security/rad-runtime
-      tag: v0.1.36
+      tag: v0.1.38
     resources:
       limits:
         cpu: 200m
@@ -344,7 +344,7 @@ runtime:
 
     image:
       repository: public.ecr.aws/n8h5y2v5/rad-security/rad-runtime-exporter
-      tag: v0.1.36
+      tag: v0.1.38
 
     # -- Allows to specify wildcard rules for filtering command arguments.
     execFilters: []
@@ -423,56 +423,6 @@ runtime:
     accessModes:
       - ReadWriteOnce
     # -- Mount path for the ephemeral volume in the runtime containers (used as /tmp when enabled)
-    mountPath: "/tmp"
-    # -- Additional labels for the ephemeral volume
-    labels: {}
-    # -- Additional annotations for the ephemeral volume
-    annotations: {}
-
-k9:
-  enabled: false
-  replicas: 1
-  frontend:
-    image:
-      repository: public.ecr.aws/n8h5y2v5/rad-security/rad-k9-frontend-agent
-      tag: v0.0.41
-    # -- The interval in which the agent polls the backend for new actions.
-    agentActionPollInterval: "5s"
-  backend:
-    image:
-      repository: public.ecr.aws/n8h5y2v5/rad-security/rad-k9-backend-agent
-      tag: v0.0.41
-  resources:
-    limits:
-      cpu: 250m
-      memory: 512Mi
-      ephemeral-storage: 1Gi
-    requests:
-      cpu: 100m
-      memory: 128Mi
-      ephemeral-storage: 100Mi
-  capabilities:
-    enableTerminatePod: false
-    enableTerminateNamespace: false
-    enableQuarantine: false
-    enableGetLogs: false
-    enableLabelPod: false
-  tolerations: []
-  nodeSelector: {}
-  affinity: {}
-  serviceAccountAnnotations: {}
-  # -- Ephemeral volume configuration for rad-k9
-  ephemeralVolumes:
-    # -- Enable ephemeral storage for rad-k9 (used as /tmp filesystem when enabled)
-    enabled: false
-    # -- Storage class to use. Use "" for default storage class, "-" for no storage class
-    storageClassName: ""
-    # -- Storage size for k9 ephemeral volume
-    size: 1Gi
-    # -- Access modes for the ephemeral volume
-    accessModes:
-      - ReadWriteOnce
-    # -- Mount path for the ephemeral volume in the k9 containers (used as /tmp when enabled)
     mountPath: "/tmp"
     # -- Additional labels for the ephemeral volume
     labels: {}
