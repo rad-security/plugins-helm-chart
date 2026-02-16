@@ -19,7 +19,9 @@ annotations:
   artifacthub.io/changes: |
     - kind: removed
       description: Remove rad-k9 plugin and migrate its RBAC permissions to rad-sync
-  artifacthub.io/containsSecurityUpdates: "false"
+    - kind: security
+      description: Bump version of all plugins to fix vulnerabilities
+  artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/links: |
     - name: source
       url: https://github.com/rad-security/plugins-helm-chart
