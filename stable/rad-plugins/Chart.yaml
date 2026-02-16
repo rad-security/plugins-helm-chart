@@ -18,9 +18,13 @@ annotations:
   # Possible kind options are added, changed, deprecated, removed, fixed and security.
   artifacthub.io/changes: |
     - kind: removed
-      description: Remove rad-k9 plugin and migrate its RBAC permissions to rad-sync
+      description: Remove rad-k9 plugin
+    - kind: added
+      description: Add k9 plugin functionality to rad-sync and migrate its RBAC permissions to rad-sync
     - kind: security
       description: Bump version of all plugins to fix vulnerabilities
+    - kind: added
+      description: Improved runtime DNS mapping
   artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/links: |
     - name: source
