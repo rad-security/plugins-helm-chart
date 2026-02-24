@@ -242,7 +242,7 @@ helm install \
   cert-manager jetstack/cert-manager \
   --namespace cert-manager \
   --create-namespace \
-  --version v1.16.0 \
+  --version v1.19.2 \
   --set installCRDs=true
 ```
 
