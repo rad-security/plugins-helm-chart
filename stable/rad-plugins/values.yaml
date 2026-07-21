@@ -49,7 +49,7 @@ bootstrapper:
   image:
     # -- The image to use for the rad-bootstrapper deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-bootstrapper
-    tag: v1.1.31
+    tag: v1.1.32
   env: {}
   resources:
     limits:
@@ -70,7 +70,7 @@ guard:
   image:
     # -- The image to use for the rad-guard deployment
     repository: public.ecr.aws/n8h5y2v5/rad-security/rad-guard
-    tag: v1.1.41
+    tag: v1.1.42
   config:
     # -- Whether to block on error.
     BLOCK_ON_ERROR: false
