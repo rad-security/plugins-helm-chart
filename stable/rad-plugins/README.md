@@ -578,7 +578,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | bootstrapper.affinity | object | `{}` |  |
 | bootstrapper.env | object | `{}` |  |
 | bootstrapper.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-bootstrapper"` | The image to use for the rad-bootstrapper deployment |
-| bootstrapper.image.tag | string | `"v1.1.31"` |  |
+| bootstrapper.image.tag | string | `"v1.1.32"` |  |
 | bootstrapper.nodeSelector | object | `{}` |  |
 | bootstrapper.podAnnotations | object | `{}` |  |
 | bootstrapper.resources.limits.cpu | string | `"100m"` |  |
@@ -604,7 +604,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | guard.ephemeralVolumes.size | string | `"1Gi"` | Storage size for guard ephemeral volume |
 | guard.ephemeralVolumes.storageClassName | string | `""` | Storage class to use. Use "" for default storage class, "-" for no storage class |
 | guard.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-guard"` | The image to use for the rad-guard deployment |
-| guard.image.tag | string | `"v1.1.41"` |  |
+| guard.image.tag | string | `"v1.1.42"` |  |
 | guard.nodeSelector | object | `{}` |  |
 | guard.podAnnotations | object | `{}` |  |
 | guard.replicas | int | `1` |  |
