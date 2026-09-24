@@ -651,7 +651,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.agent.grpcServerBatchSize | int | `2000` |  |
 | runtime.agent.hostPID | string | `nil` |  |
 | runtime.agent.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-runtime"` |  |
-| runtime.agent.image.tag | string | `"v0.1.46"` |  |
+| runtime.agent.image.tag | string | `"v0.1.47"` |  |
 | runtime.agent.mounts.volumeMounts | list | `[]` |  |
 | runtime.agent.mounts.volumes | list | `[]` |  |
 | runtime.agent.resources.limits.cpu | string | `"200m"` |  |
@@ -677,7 +677,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | runtime.exporter.env.LOG_LEVEL | string | `"INFO"` |  |
 | runtime.exporter.execFilters | list | `[]` | Allows to specify wildcard rules for filtering command arguments. |
 | runtime.exporter.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-runtime-exporter"` |  |
-| runtime.exporter.image.tag | string | `"v0.1.46"` |  |
+| runtime.exporter.image.tag | string | `"v0.1.47"` |  |
 | runtime.exporter.resources.limits.cpu | string | `"500m"` |  |
 | runtime.exporter.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | runtime.exporter.resources.limits.memory | string | `"1Gi"` |  |
@@ -734,7 +734,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | sbom.ephemeralVolumes.size | string | `"25Gi"` | Storage size for SBOM ephemeral volume (larger size recommended for image processing) |
 | sbom.ephemeralVolumes.storageClassName | string | `""` | Storage class to use. Use "" for default storage class, "-" for no storage class |
 | sbom.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-sbom"` | The image to use for the rad-sbom deployment |
-| sbom.image.tag | string | `"v1.1.70"` |  |
+| sbom.image.tag | string | `"v1.1.71"` |  |
 | sbom.labels | object | `{}` |  |
 | sbom.nodeSelector | object | `{}` |  |
 | sbom.podAnnotations | object | `{}` |  |
