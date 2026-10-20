@@ -1,6 +1,6 @@
 apiVersion: v2
 name: rad-plugins
-version: 2.4.15
+version: 2.4.16
 description: A Helm chart to run the RAD Security plugins
 home: https://rad.security
 icon: https://app.rad.security/assets/favicon.svg
@@ -18,11 +18,11 @@ annotations:
   # Possible kind options are added, changed, deprecated, removed, fixed and security.
   artifacthub.io/changes: |
     - kind: security
-      description: Bump rad-runtime and rad-runtime-exporter to v0.1.47 for google.golang.org/grpc, containerd, docker/moby, cilium/ebpf, gopacket, oras-go, otel, golang.org/x/text and klauspost/compress vulnerabilities (containerd moved to v2, docker to the moby/moby client)
+      description: Rebuild rad-bootstrapper v1.1.35, rad-guard v1.1.45, rad-sbom v1.1.72, rad-sync v1.1.39, rad-watch v1.1.51, rad-runtime and rad-runtime-exporter v0.1.48 with Go 1.27.3 for stdlib CVE-2026-78667, CVE-2026-78669, CVE-2026-97031 and 10 medium/low stdlib CVEs
     - kind: security
-      description: Bump rad-sbom to v1.1.71 for google.golang.org/grpc GHSA-2v4p-qf9q-27wj, containerd GHSA-7jxh-36q5-gcqv, otel/sdk GHSA-8wmf-6v46-5gfg, klauspost/compress GO-2026-5841 and golang.org/x/crypto GO-2026-5932
-    - kind: fixed
-      description: rad-runtime socket enricher falls back to eBPF address resolution when /proc/kallsyms hides kernel addresses, so connections on sockets opened before the agent started are attributed to their process
+      description: Bump golang.org/x/net to v0.60.0 (CVE-2026-78669, CVE-2026-78659, CVE-2026-78660, CVE-2026-78663, CVE-2026-97032) and golang.org/x/text to v0.42.0 (CVE-2026-56851) in all plugins
+    - kind: security
+      description: Bump containerd/v2 to v2.2.9 (CVE-2026-53493) and moby/sys/user to v0.4.1 (CVE-2026-61801) in rad-sbom, rad-runtime and rad-runtime-exporter
   artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/links: |
     - name: source
