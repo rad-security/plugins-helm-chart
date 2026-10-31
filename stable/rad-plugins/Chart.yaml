@@ -1,6 +1,6 @@
 apiVersion: v2
 name: rad-plugins
-version: 2.4.17
+version: 2.4.18
 description: A Helm chart to run the RAD Security plugins
 home: https://rad.security
 icon: https://app.rad.security/assets/favicon.svg
@@ -17,13 +17,9 @@ annotations:
   artifacthub.io/category: security
   # Possible kind options are added, changed, deprecated, removed, fixed and security.
   artifacthub.io/changes: |
-    - kind: security
-      description: Bump rad-sbom to v1.1.73 with go-jose/go-jose/v4 v4.1.6 (GHSA-mgcc-cww5-fp2q)
-    - kind: security
-      description: Bump rad-guard to v1.1.46 with klauspost/compress v1.18.7 (GHSA-259r-337f-4rfw)
-    - kind: changed
-      description: Rebuild rad-bootstrapper v1.1.36, rad-sync v1.1.40, rad-watch v1.1.52, rad-runtime and rad-runtime-exporter v0.1.49 with updated internal libraries
-  artifacthub.io/containsSecurityUpdates: "true"
+    - kind: added
+      description: Add GPL-2.0 license notice and NOTICE file for the rad-runtime eBPF programs
+  artifacthub.io/containsSecurityUpdates: "false"
   artifacthub.io/links: |
     - name: source
       url: https://github.com/rad-security/plugins-helm-chart
