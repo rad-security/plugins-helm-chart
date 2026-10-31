@@ -1,0 +1,14 @@
+RAD Security Plugins (rad-plugins) — Third-Party License Notices
+================================================================
+
+eBPF programs (rad-runtime)
+---------------------------
+The rad-runtime plugin distributed in this chart includes eBPF programs
+licensed under the GNU General Public License, version 2 (GPL-2.0).
+
+Written offer for corresponding source
+--------------------------------------
+As required by the GPL-2.0, the complete corresponding source code for these
+eBPF programs is available on request. This written offer is valid for three
+years from the date you received this distribution and extends to any third
+party. To obtain the source, contact RAD Security at infrastructure@rad.security.
