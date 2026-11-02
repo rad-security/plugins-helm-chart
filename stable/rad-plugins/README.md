@@ -584,7 +584,7 @@ As required by the GPL-2.0, the complete corresponding source code for these eBP
 | bootstrapper.affinity | object | `{}` |  |
 | bootstrapper.env | object | `{}` |  |
 | bootstrapper.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-bootstrapper"` | The image to use for the rad-bootstrapper deployment |
-| bootstrapper.image.tag | string | `"v1.1.36"` |  |
+| bootstrapper.image.tag | string | `"v1.1.37"` |  |
 | bootstrapper.nodeSelector | object | `{}` |  |
 | bootstrapper.podAnnotations | object | `{}` |  |
 | bootstrapper.resources.limits.cpu | string | `"100m"` |  |
@@ -610,7 +610,7 @@ As required by the GPL-2.0, the complete corresponding source code for these eBP
 | guard.ephemeralVolumes.size | string | `"1Gi"` | Storage size for guard ephemeral volume |
 | guard.ephemeralVolumes.storageClassName | string | `""` | Storage class to use. Use "" for default storage class, "-" for no storage class |
 | guard.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-guard"` | The image to use for the rad-guard deployment |
-| guard.image.tag | string | `"v1.1.46"` |  |
+| guard.image.tag | string | `"v1.1.48"` |  |
 | guard.nodeSelector | object | `{}` |  |
 | guard.podAnnotations | object | `{}` |  |
 | guard.replicas | int | `1` |  |
@@ -657,7 +657,7 @@ As required by the GPL-2.0, the complete corresponding source code for these eBP
 | runtime.agent.grpcServerBatchSize | int | `2000` |  |
 | runtime.agent.hostPID | string | `nil` |  |
 | runtime.agent.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-runtime"` |  |
-| runtime.agent.image.tag | string | `"v0.1.49"` |  |
+| runtime.agent.image.tag | string | `"v0.1.50"` |  |
 | runtime.agent.mounts.volumeMounts | list | `[]` |  |
 | runtime.agent.mounts.volumes | list | `[]` |  |
 | runtime.agent.resources.limits.cpu | string | `"200m"` |  |
@@ -683,7 +683,7 @@ As required by the GPL-2.0, the complete corresponding source code for these eBP
 | runtime.exporter.env.LOG_LEVEL | string | `"INFO"` |  |
 | runtime.exporter.execFilters | list | `[]` | Allows to specify wildcard rules for filtering command arguments. |
 | runtime.exporter.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-runtime-exporter"` |  |
-| runtime.exporter.image.tag | string | `"v0.1.49"` |  |
+| runtime.exporter.image.tag | string | `"v0.1.50"` |  |
 | runtime.exporter.resources.limits.cpu | string | `"500m"` |  |
 | runtime.exporter.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | runtime.exporter.resources.limits.memory | string | `"1Gi"` |  |
@@ -740,7 +740,7 @@ As required by the GPL-2.0, the complete corresponding source code for these eBP
 | sbom.ephemeralVolumes.size | string | `"25Gi"` | Storage size for SBOM ephemeral volume (larger size recommended for image processing) |
 | sbom.ephemeralVolumes.storageClassName | string | `""` | Storage class to use. Use "" for default storage class, "-" for no storage class |
 | sbom.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-sbom"` | The image to use for the rad-sbom deployment |
-| sbom.image.tag | string | `"v1.1.73"` |  |
+| sbom.image.tag | string | `"v1.1.75"` |  |
 | sbom.labels | object | `{}` |  |
 | sbom.nodeSelector | object | `{}` |  |
 | sbom.podAnnotations | object | `{}` |  |
@@ -765,7 +765,7 @@ As required by the GPL-2.0, the complete corresponding source code for these eBP
 | sync.ephemeralVolumes.size | string | `"1Gi"` | Storage size for sync ephemeral volume |
 | sync.ephemeralVolumes.storageClassName | string | `""` | Storage class to use. Use "" for default storage class, "-" for no storage class |
 | sync.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-sync"` | The image to use for the rad-sync deployment |
-| sync.image.tag | string | `"v1.1.40"` |  |
+| sync.image.tag | string | `"v1.1.42"` |  |
 | sync.nodeSelector | object | `{}` |  |
 | sync.podAnnotations | object | `{}` |  |
 | sync.resources.limits.cpu | string | `"200m"` |  |
@@ -789,7 +789,7 @@ As required by the GPL-2.0, the complete corresponding source code for these eBP
 | watch.ephemeralVolumes.size | string | `"1Gi"` | Storage size for watch ephemeral volume |
 | watch.ephemeralVolumes.storageClassName | string | `""` | Storage class to use. Use "" for default storage class, "-" for no storage class |
 | watch.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-watch"` | The image to use for the rad-watch deployment |
-| watch.image.tag | string | `"v1.1.52"` |  |
+| watch.image.tag | string | `"v1.1.54"` |  |
 | watch.ingestCustomResources | bool | `false` | If set will allow ingesting Custom Resources specified in `customResourceRules` |
 | watch.nodeSelector | object | `{}` |  |
 | watch.podAnnotations | object | `{}` |  |
