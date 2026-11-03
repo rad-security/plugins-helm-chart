@@ -366,8 +366,8 @@ runtime:
     env:
       LOG_LEVEL: WARNING
     image:
-      repository: mcr.microsoft.com/presidio-analyzer
-      tag: 2.2.357
+      repository: ghcr.io/data-privacy-stack/presidio-analyzer
+      tag: 2.2.366
     nodeSelector: {}
     replicas: 3
     resources:
