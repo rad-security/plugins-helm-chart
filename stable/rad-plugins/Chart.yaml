@@ -1,6 +1,6 @@
 apiVersion: v2
 name: rad-plugins
-version: 2.4.20
+version: 2.4.21
 description: A Helm chart to run the RAD Security plugins
 home: https://rad.security
 icon: https://app.rad.security/assets/favicon.svg
@@ -18,7 +18,15 @@ annotations:
   # Possible kind options are added, changed, deprecated, removed, fixed and security.
   artifacthub.io/changes: |
     - kind: security
-      description: PII analyzer moves to presidio-analyzer 2.2.366 from ghcr.io/data-privacy-stack (the project left mcr.microsoft.com); the image no longer ships libbrotli (CVE-2026-111497)
+      description: Plugins rebuilt with Go 1.27.4, fixing high-severity standard library CVEs (CVE-2026-97033 to CVE-2026-97039, CVE-2026-97043)
+    - kind: security
+      description: rad-sbom updates andybalholm/brotli to v1.2.7 (GO-2026-6888, critical)
+    - kind: security
+      description: rad-sbom, rad-guard and rad-runtime update klauspost/compress to v1.20.2 (GO-2026-6865)
+    - kind: security
+      description: rad-sbom and rad-runtime update containerd to v2.2.10 (CVE-2026-95839); all plugins update golang.org/x/net to v0.62.0 (CVE-2026-78661)
+    - kind: changed
+      description: Bump bootstrapper v1.1.38, guard v1.1.49, sbom v1.1.76, sync v1.1.43, watch v1.1.55, runtime and exporter v0.1.51
   artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/links: |
     - name: source
