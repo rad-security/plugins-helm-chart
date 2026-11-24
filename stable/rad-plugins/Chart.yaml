@@ -26,7 +26,7 @@ annotations:
     - kind: security
       description: rad-sbom and rad-runtime update containerd to v2.2.10 (CVE-2026-95839); all plugins update golang.org/x/net to v0.62.0 (CVE-2026-78661)
     - kind: changed
-      description: Bump bootstrapper v1.1.38, guard v1.1.49, sbom v1.1.76, sync v1.1.43, watch v1.1.55, runtime and exporter v0.1.51
+      description: Bump bootstrapper v1.1.38, guard v1.1.49, sbom v1.1.76, sync v1.1.43, watch v1.1.55, runtime and exporter v0.1.52
   artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/links: |
     - name: source

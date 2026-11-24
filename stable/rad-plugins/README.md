@@ -657,7 +657,7 @@ As required by the GPL-2.0, the complete corresponding source code for these eBP
 | runtime.agent.grpcServerBatchSize | int | `2000` |  |
 | runtime.agent.hostPID | string | `nil` |  |
 | runtime.agent.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-runtime"` |  |
-| runtime.agent.image.tag | string | `"v0.1.51"` |  |
+| runtime.agent.image.tag | string | `"v0.1.52"` |  |
 | runtime.agent.mounts.volumeMounts | list | `[]` |  |
 | runtime.agent.mounts.volumes | list | `[]` |  |
 | runtime.agent.resources.limits.cpu | string | `"200m"` |  |
@@ -683,7 +683,7 @@ As required by the GPL-2.0, the complete corresponding source code for these eBP
 | runtime.exporter.env.LOG_LEVEL | string | `"INFO"` |  |
 | runtime.exporter.execFilters | list | `[]` | Allows to specify wildcard rules for filtering command arguments. |
 | runtime.exporter.image.repository | string | `"public.ecr.aws/n8h5y2v5/rad-security/rad-runtime-exporter"` |  |
-| runtime.exporter.image.tag | string | `"v0.1.51"` |  |
+| runtime.exporter.image.tag | string | `"v0.1.52"` |  |
 | runtime.exporter.resources.limits.cpu | string | `"500m"` |  |
 | runtime.exporter.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | runtime.exporter.resources.limits.memory | string | `"1Gi"` |  |
